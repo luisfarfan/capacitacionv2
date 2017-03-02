@@ -1,5 +1,5 @@
 {% load staticfiles %}
-<div class="sidebar sidebar-main sidebar-inei">
+<div class="sidebar sidebar-main sidebar-fixed sidebar-inei">
     <div class="sidebar-content">
 
         <!-- User menu -->
@@ -25,22 +25,16 @@
                 <li class="navigation-header text-white"><span class="titlesidebar">ETAPAS Y CURSOS</span> <i
                         class="icon-menu" title="Main pages"></i></li>
                 <li class="category-content ">
-                    <select class="form-control bg-white text-grey-400">
+                    <select id="etapa" class="form-control bg-white text-grey-400" onchange="getCursos(this.value)">
                         <option>Seleccione etapa</option>
                         <option>Censo experimental I</option>
                         <option>Censo experimental II</option>
                         <option>Empadronamiento</option>
                     </select>
                     <br>
-                    <select class="form-control bg-white text-grey-400">
+                    <select  id="cursos" name="id_curso" class="form-control bg-white text-grey-400">
                         <option value="">Seleccione curso</option>
-                        <option value="1">Curso 1: Jefe Distrital</option>
-                        <option value="2">Curso 2: Jefe de Zona</option>
-                        <option value="3">Curso 3: Jefe de Sección Urbana</option>
-                        <option value="4">Curso 4: Jefe de Sección Rural</option>
-                        <option value="5">Curso 5: Empadronador Rural (Inclute Jefe de Sección Rural)</option>
-                        <option value="6">Curso 6: Empadronador Urbano (Incluye Jefe de Sección Urbano)</option>
-                        <option value="13">Curso 3: Jefe de Sección Urbana Grupo 2</option>
+
                     </select>
 
                 </li>

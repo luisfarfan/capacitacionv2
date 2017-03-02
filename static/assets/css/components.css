@@ -23675,17 +23675,32 @@ label.display-block {
     display: block;
 }
 
-.sidebar-content {
-    z-index: 100;
+/*inei*/
+.titlesidebar{
+  font-size: 15px;
 }
-
-.bg-sidebar-inei {
+.navigation > li.active > a,
+.navigation > li.active > a:hover{
+  background-color: #0065a9 !important;
+    color: #fff;
+}
+.sidebar-content{
+  z-index: 100;
+}
+.bg-sidebar-inei{
     position: absolute;
     display: block;
     height: 100%;
     width: 100%;
     bottom: 0;
-    /*  background-size: cover;*/
+  /*  background-size: cover;*/
     opacity: 0.1;
     background-repeat: repeat-x;
+}
+.form-control{
+border: 1px solid #888;
+}
+.panel-inei{
+    box-shadow: 0px 0px 5px 1px #6d6d6d;
+    -webkit-box-shadow: 0px 0px 5px 1px #6d6d6d;
 }

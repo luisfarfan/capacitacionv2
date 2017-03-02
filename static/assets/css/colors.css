@@ -2538,4 +2538,22 @@
 }
 .text-inei{
   color: #0065A9;
+  font-weight: bold;
+}
+.bg-table-inei1{
+  background-color: #0065A9;
+  border-color: 1px solid #0065A9 !important;
+  color: #fff;
+  width: 12.5%;
+  text-align: center;
+}
+.bg-table-inei2{
+  background-color: #fff;
+  border: 1px solid #0065A9 !important;
+  color: #888;
+  width: 12.5%;
+  text-align: center;
+}
+.table tr > th{
+ border-color: #0065a9 !important;
 }
