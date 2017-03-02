@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {{ title }} {% endblock %}</title>
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="{% static "assets/css/icons/icomoon/styles.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/bootstrap.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/core.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/components.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/colors.css" %}" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+
+    <!-- own styles -->
+    {% block css %}
+    {% endblock %}
+    <!--/ -->
+</head>
+
+
+<body class="navbar-top">
+<!-- navbar -->
+{% include 'layout/navbar.html' %}
+<!-- /main navbar -->
+<!-- Page container -->
+<div class="page-container">
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Main sidebar -->
+        {% include 'layout/sidebar.html' %}
+        <!-- /main sidebar -->
+        <!-- Main content -->
+        <div class="content-wrapper">
+            <!-- Page header -->
+            {% include 'layout/page_header.html' %}
+            <!-- /page header -->
+            <!-- Content area -->
+            <div class="content">
+                <div style="display:none">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                </div>
+                {% block content %}
+                {% endblock %}
+            </div>
+            <!-- /content area -->
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+</div>
+<!-- /page container -->
+
+</body>
+<!-- Core JS files -->
+<script type="text/javascript" src="{% static "assets/js/core/libraries/jquery.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/core/libraries/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/loaders/blockui.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/ui/nicescroll.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/loaders/pace.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/layout_fixed_custom.js" %}"></script>
+<script type="text/javascript">
+    /** GLOBAL VARIABLES */
+    var pathArray = location.href.split('/');
+    var protocol = pathArray[0];
+    var host = pathArray[2];
+    BASEURL = protocol + '//' + host;
+</script>
+
+<!-- Utils Js files -->
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
+
+<!-- /core JS files -->
+{% block js %}
+{% endblock %}
+
+<script type="text/javascript" src="{% static "assets/js/core/app.min.js" %}"></script>
+</html>

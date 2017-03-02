@@ -1,0 +1,80 @@
+{% load staticfiles %}
+<div class="sidebar sidebar-main sidebar-inei">
+    <div class="sidebar-content">
+
+        <!-- User menu -->
+        <div class="sidebar-user">
+            <div class="category-content">
+                <div class="media">
+                    <a href="#" class="media-left"><img src="{% static "assets/images/image.png" %}"
+                                                        class="img-circle img-sm" alt=""></a>
+                    <div class="media-body">
+                        <h3 class="media-heading text-bold">Jefe Distrital</h3>
+                        <div class="text-size-mini text-muted">
+                            Curso 7<br>
+                            Empadronadores urbanos,
+                            rurales, especiales de
+                            comunidades indígenas
+                            y jefes de sección
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="sidebar-category navigation navigation-main navigation-accordion">
+                <!-- Main -->
+                <li class="navigation-header text-white"><span class="titlesidebar">ETAPAS Y CURSOS</span> <i
+                        class="icon-menu" title="Main pages"></i></li>
+                <li class="category-content ">
+                    <select class="form-control bg-white text-grey-400">
+                        <option>Seleccione etapa</option>
+                        <option>Censo experimental I</option>
+                        <option>Censo experimental II</option>
+                        <option>Empadronamiento</option>
+                    </select>
+                    <br>
+                    <select class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione curso</option>
+                        <option value="1">Curso 1: Jefe Distrital</option>
+                        <option value="2">Curso 2: Jefe de Zona</option>
+                        <option value="3">Curso 3: Jefe de Sección Urbana</option>
+                        <option value="4">Curso 4: Jefe de Sección Rural</option>
+                        <option value="5">Curso 5: Empadronador Rural (Inclute Jefe de Sección Rural)</option>
+                        <option value="6">Curso 6: Empadronador Urbano (Incluye Jefe de Sección Urbano)</option>
+                        <option value="13">Curso 3: Jefe de Sección Urbana Grupo 2</option>
+                    </select>
+
+                </li>
+            </ul>
+        </div>
+        <!-- /user menu -->
+
+
+        <!-- Main navigation -->
+        <div class="sidebar-category sidebar-category-visible">
+            <div class="category-content no-padding">
+                <ul class="navigation navigation-main navigation-accordion">
+                    <!-- Main -->
+                    <li class="navigation-header text-white"><span class="titlesidebar">CAPACITACIÓN</span> <i
+                            class="icon-menu" title="Main pages"></i></li>
+                    </li>
+                    <li id="modulo_registro"><a href="{% url 'modulo-de-registro' %}">Módulo de Registro de
+                        Local</a>
+                    </li>
+                    <li id="distribucion"><a href="">Módulo Distribucion de
+                        PEA</a></li>
+                    <li id="asistencia"><a href="">Módulo de
+                        Asistencia</a></li>
+                    <li id="notas"><a href="">Módulo de Registro de Notas y
+                        Resultado</a>
+                    </li>
+                    <!-- /main -->
+                </ul>
+            </div>
+        </div>
+        <!-- /main navigation -->
+
+    </div>
+    <div class="bg-sidebar-inei" style="background-image: url({% static "assets/images/bg-inei.png" %})">
+
+    </div>
+</div>
