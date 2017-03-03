@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "jquery": "registry:dt/jquery#1.10.0+20170123093700",
+    "webpack-env": "registry:dt/webpack-env#1.13.0+20170105061735"
+  }
+}
