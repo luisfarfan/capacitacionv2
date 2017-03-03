@@ -55,32 +55,36 @@
 
             <div class="row">
                 <div class="col-md-3">
-
+                    <label>Departamento</label>
 
                     <select id="departamentos" class="form-control bg-white text-grey-400">
-                        <option value="">Seleccione Departamento</option>
+
+                        <option value="">Seleccione departamento</option>
                     </select>
 
                 </div>
                 <div class="col-md-3">
 
-
+                    <label>Provincia</label>
                     <select id="provincias" class="form-control bg-white text-grey-400">
-                        <option value="">Seleccione Provincia</option>
+
+                        <option value="">Seleccione provincia</option>
                     </select>
 
                 </div>
                 <div class="col-md-3">
-
+                    <label>Distrito</label>
                     <select id="distritos" class=" form-control bg-white text-grey-400">
-                        <option value="">Seleccione Distrito</option>
+
+                        <option value="">Seleccione distrito</option>
                     </select>
 
                 </div>
                 <div class="col-md-3">
-
+                 <label>Zona</label>
                     <select id="zona" class="form-control bg-white text-grey-400">
-                        <option value="0">Seleccione Zona</option>
+
+                        <option value="0">Seleccione zona</option>
                     </select>
 
                 </div>
@@ -114,14 +118,16 @@
                         <div class="row">
                             <div class="col-md-9">
                                 <div class="form-group">
+                                    <label>Nombre del local</label>
                                     <input type="text" required="required" name="nombre_local"
-                                           class="form-control" placeholder="Nombre de Local">
+                                           class="form-control" placeholder=" Digite nombre del local">
                                 </div>
                             </div>
                             <div class="col-md-3">
+                                <label>Zona N°</label>
                                 <div class="form-group">
                                     <select name="zona_ubicacion_local" class="form-control bg-white text-grey-400" id="zona_ubicacion_local">
-                                        <option value="">Zona N°</option>
+                                        <option value="">Seleccione el N° de Zona</option>
                                     </select>
 
                                 </div>
@@ -129,9 +135,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3">
+                                <label>Tipo de vía</label>
                                 <div class="form-group">
                                     <select name="tipo_via" class="form-control bg-white text-grey-400" id="tipo_via">
-                                        <option value="">Tipo de Vía</option>
+                                        <option value="">Seleccione tipo de vía</option>
                                         <option value="1">AVENIDA</option>
                                         <option value="2">CALLE</option>
                                         <option value="3">JIRÓN</option>
@@ -142,59 +149,68 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
+                                <label>Nombre de vía</label>
                                 <div class="form-group">
                                     <input type="text" required="required" name="nombre_via"
-                                           class="form-control" placeholder="Nombre de Vía">
+                                           class="form-control" placeholder=" Digite nombre de vía">
                                 </div>
                             </div>
                             <div class="col-md-1">
+                                <label>N° de Puerta</label>
                                 <div class="form-group">
                                     <input type="text" required="required" name="n_direccion"
-                                           class="form-control" placeholder="N° de Puerta">
+                                           class="form-control" placeholder=" Puerta">
                                 </div>
                             </div>
                             <div class="col-md-1">
+                                <label>Piso</label>
                                 <div class="form-group">
                                     <input type="text" required="required" name="piso_direccion"
-                                           class="form-control" placeholder="Piso">
+                                           class="form-control" placeholder=" Piso">
                                 </div>
                             </div>
                             <div class="col-md-1">
+                                <label>MZ</label>
                                 <div class="form-group">
                                     <input type="text" name="mz_direccion"
-                                           class="form-control" placeholder="MZ">
+                                           class="form-control" placeholder=" Mz">
                                 </div>
                             </div>
                             <div class="col-md-1">
+                                <label>Lote</label>
                                 <div class="form-group">
                                     <input type="text" name="lote_direccion"
-                                           class="form-control" placeholder="Lote">
+                                           class="form-control" placeholder=" Lote">
                                 </div>
                             </div>
                             <div class="col-md-1">
+                                <label>KM</label>
                                 <div class="form-group">
                                     <input type="text" name="km_direccion"
-                                           class="form-control" placeholder="KM">
+                                           class="form-control" placeholder=" KM">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-8">
+                                <label>Referencia</label>
                                 <div class="form-group">
                                     <input type="text" name="referencia"
-                                           class="form-control" placeholder="Referencia">
+                                           class="form-control" placeholder=" Digite referencia para la ubicación del local">
                                 </div>
                             </div>
                             <div class="col-md-2">
+                                <label>Teléfono Fijo</label>
                                 <div class="form-group">
                                     <input type="text" name="telefono_local_fijo"
-                                           class="form-control" placeholder="Teléfono Fijo">
+                                           class="form-control" placeholder=" Digite N° Fijo">
                                 </div>
                             </div>
                             <div class="col-md-2">
+                                <label>Teléfono Celular</label>
                                 <div class="form-group">
                                     <input type="text" name="telefono_local_celular"
-                                           class="form-control" placeholder="Teléfono Celular">
+                                           class="form-control" placeholder=" Digite N° Celular">
                                 </div>
                             </div>
                         </div>
@@ -211,26 +227,27 @@
                     <fieldset class="content-group">
                         <div class="row">
                             <div class="col-md-3">
+                                <label>Fecha Inicio</label>
                                 <div class="form-group">
-                                    <label>Fecha Inicio</label>
                                     <input type="text" required="required" name="fecha_inicio"
-                                           class="daterange-single form-control" placeholder="">
+                                           class="daterange-single form-control" placeholder=" Ingrese fecha inicio">
                                 </div>
                             </div>
                             <div class="col-md-3">
+                                <label>Fecha Fin</label>
                                 <div class="form-group">
-                                    <label>Fecha Fin</label>
                                     <input type="text" required="required" name="fecha_fin"
-                                           class="daterange-single form-control" placeholder="">
+                                           class="daterange-single form-control" placeholder=" Ingrese fecha fin">
                                 </div>
                             </div>
                             <div class="col-md-3">
+                                <label>Turno</label>
                                 <div class="form-group">
-                                    <label>Turno de Uso Local</label>
-                                    <select name="turno_uso_local" class="select">
-                                        <option value="0">MAÑANA</option>
-                                        <option value="1">TARDE</option>
-                                        <option value="2">TODO EL DIA</option>
+                                    <select name="turno_uso_local" class="form-control bg-white text-grey-400">
+                                        <option value="">Seleccione Turno</option>
+                                        <option value="0">Mañana</option>
+                                        <option value="1">Tarde</option>
+                                        <option value="2">Todo el día</option>
                                     </select>
                                 </div>
                             </div>
@@ -242,7 +259,7 @@
                   </div>
                  <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
-            <h5 class="panel-title text-inei">Datos de Funcionario del INEI</h5>
+            <h5 class="panel-title text-inei">DATOS DE FUNCIONARIO DEL INEI</h5>
 
         </div>
         <div class="panel-body">
@@ -251,7 +268,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Apellidos y Nombres</label>
-                                    <select class="form_control select" name="funcionario_nombre"
+                                    <select class="form-control bg-white text-grey-400" name="funcionario_nombre"
                                             id="funcionario_nombre">
                                         <option value="-1">Seleccione</option>
                                         {% for funcionario in funcionarios %}
@@ -289,7 +306,7 @@
                  </div>
 <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
-            <h5 class="panel-title text-inei">Datos del Responsable del Local</h5>
+            <h5 class="panel-title text-inei">DATOS DEL RESPONSABLE DEL LOCAL</h5>
 
         </div>
         <div class="panel-body">
@@ -298,30 +315,30 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Apellidos y Nombres</label>
+                                    <label>Apellidos y Nombre</label>
                                     <input type="text" required="required" name="responsable_nombre"
-                                           class="form-control" placeholder="">
+                                           class="form-control" placeholder=" Digite Apellidos y Nombres">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Email</label>
+                                    <label>E-mail</label>
                                     <input type="text" required="required" name="responsable_email"
-                                           class="form-control" placeholder="">
+                                           class="form-control" placeholder=" Digite dirección Email">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Teléfono Fijo</label>
                                     <input type="text" name="responsable_telefono"
-                                           class="form-control" placeholder="">
+                                           class="form-control" placeholder=" Digite teléfono fijo">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Teléfono Celular</label>
                                     <input type="text" name="responsable_celular"
-                                           class="form-control" placeholder="">
+                                           class="form-control" placeholder=" Digite teléfono celular">
                                 </div>
                             </div>
                         </div>
@@ -339,9 +356,9 @@
                     <fieldset class="content-group" id="ambientesdata">
                         <div class="row">
                             <div class="col-md-8 col-md-offset-2">
-                                <table class="table table-responsive table-bordered">
+                                <table class="table-responsive table table-striped table-hover">
                                     <thead>
-                                    <tr class="bg-blue">
+                                    <tr class="bg-table-inei1">
                                         <th>Tipo de Ambiente</th>
                                         <th>Total</th>
                                         <th>Disponible</th>
@@ -425,9 +442,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Otro (Especifique): <input type="text" name="especifique_otros"
+                                        <td><input type="text" name="especifique_otros"
                                                                        id="especifique_otros"
-                                                                       class="form-control" value=""></td>
+                                                                       class="form-control" style="border-top:none;border-left:none;border-right:none;border-bottom-color: #ddd;" value="" placeholder="Otro (Especifique):"></td>
                                         <td><input type="text" name="cantidad_total_otros"
                                                    id="cantidad_total_otros"
                                                    class="form-control" value="">
@@ -447,6 +464,12 @@
                         </div>
                     </fieldset>
                 </div>
+            <div class="row">
+                <div class="text-right">
+                    <button type="reset" class="btn btn-primary" id="reset">GENERAR AMBIENTES A USAR <i
+                                class="icon-reload-alt position-right"></i></button>
+                </div>
+            </div>
         </div>
                         </div>
                          <div class="panel panel-flat panel-inei">
