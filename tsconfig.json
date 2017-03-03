@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es3",
+    "module": "amd",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "sourceRoot": "static/src",
+    "rootDir": "static/src",
+    "outDir": "static/build"
+  },
+  "exclude": [
+    "build",
+    "node_modules"
+  ]
+}
