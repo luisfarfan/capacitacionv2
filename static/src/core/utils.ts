@@ -1,9 +1,27 @@
 /**
  * Created by lfarfan on 19/02/2017.
  */
+
+/**
+ * Declarando la variable PNotify, plugin javascript para las alertas en modo popup.
+ */
 declare var PNotify: any;
+/**
+ * Declarando la variable swal, plugin javascript para las alertas en modo popup.
+ */
 declare var swal: any;
+/**
+ * Declarando la variable $ de jQuery para poder usarla sin problemas
+ * cuando se quiere usar alguna funcion que no este en la interface del jQuery Typings de TypeScript
+ */
 declare var $: any;
+
+/**
+ * div alert de limitless para mostrar mensajes de estado (exito,error,info,warning)
+ * @param message Mensaje del div.
+ * @param type Tipo del div (error, success, info, danger, warning)
+ * @returns      <Div> HTMLElement String.
+ */
 export function showDivAlert(message: string, type: string): string {
     return `<div class="alert bg-${type} alert-styled-left">
                 <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
@@ -11,6 +29,12 @@ export function showDivAlert(message: string, type: string): string {
             </div>`;
 }
 
+/**
+ * Popup alert notify para mostrar mensajes de estado (exito,error,info,warning)
+ * @param message Mensaje del div.
+ * @param type Tipo del div (error, success, info, danger, warning)
+ * @returns      <Div> HTMLElement String.
+ */
 export function showSwalAlert(message: string, title: string, type: string) {
     new PNotify({
         title: title,

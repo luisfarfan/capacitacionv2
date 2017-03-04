@@ -1,0 +1,15 @@
+{
+  "name": "capacitacionv2",
+  "version": "1.0.0",
+  "description": "Sistema de Capacitacion V2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.inei.gob.pe/lfarfan/capacitacionv2.git"
+  },
+  "author": "Luis Eduardo Farfán Melgar",
+  "license": "ISC"
+}
