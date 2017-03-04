@@ -1,9 +1,24 @@
+/**
+ * Created by lfarfan on 19/02/2017.
+ */
 define(["require", "exports"], function (require, exports) {
     "use strict";
+    /**
+     * div alert de limitless para mostrar mensajes de estado (exito,error,info,warning)
+     * @param message Mensaje del div.
+     * @param type Tipo del div (error, success, info, danger, warning)
+     * @returns      <Div> HTMLElement String.
+     */
     function showDivAlert(message, type) {
         return "<div class=\"alert bg-" + type + " alert-styled-left\">\n                <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span>\u00D7</span><span class=\"sr-only\">Close</span></button>\n                <span class=\"text-semibold\">" + message + "</span>\n            </div>";
     }
     exports.showDivAlert = showDivAlert;
+    /**
+     * Popup alert notify para mostrar mensajes de estado (exito,error,info,warning)
+     * @param message Mensaje del div.
+     * @param type Tipo del div (error, success, info, danger, warning)
+     * @returns      <Div> HTMLElement String.
+     */
     function showSwalAlert(message, title, type) {
         new PNotify({
             title: title,
