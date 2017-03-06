@@ -1,5 +1,12 @@
 {% load staticfiles %}
 <div class="navbar navbar-inverse navbar-fixed-top bg-indigo-inei">
+    <h5 style="
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+">SISTEMA DE CAPACITACIÓN</h5>
     <div class="navbar-header">
            <ul class="nav navbar-nav pull-right visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
@@ -25,7 +32,7 @@
 
             <li class="dropdown dropdown-user">
                 <a class="dropdown-toggle" data-toggle="dropdown">
-                    <img src='{% static "assets/images/image.png" %}' alt="">
+                    <img src='{% static "assets/images/icon_male.jpg" %}' alt="">
                     <span>{{ request.session.user_data.nombre }}</span>
                     <i class="caret"></i>
                 </a>
