@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^modulo-de-registro/$', TemplateView.as_view(template_name="modulo-de-registro.html"),
         name='modulo-de-registro'),
+    url(r'^distribucion/$', TemplateView.as_view(template_name="distribucion.html"),
+        name='distribucion'),
 
     url(r'^rest_localesconsecucion/', include(router.urls)),
     url(r'^ubigeo/', include('ubigeo.urls')),
