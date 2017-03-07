@@ -2,32 +2,23 @@
 {% load staticfiles %}
 
 {% block content %}
-
-    <div class="panel panel-primary panel-bordered">
+<div class="col-md-6">
+    <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
-            <h5 class="panel-title">Distribución</h5>
-            <div class="heading-elements">
-                <ul class="icons-list">
-                    <li>
-                        <a data-action="collapse"></a>
-                    </li>
-                    <li>
-                        <a data-action="close"></a>
-                    </li>
-                </ul>
-            </div>
+            <h5 class="panel-title text-inei">DISTRIBUCIÓN</h5>
+
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label>Local</label>
                         <select id="local" class="select form-control">
-                            <option value="">Seleccione</option>
+                            <option value="">Seleccione local</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-4 col-md-offset-1">
+                <div class="col-md-12">
                     <button data-toggle="modal" onclick="getSobrantes()" class="btn btn-primary">PEA SELECCIONADA
                     </button>
                     <button data-toggle="modal" onclick="getReserva()" class="btn btn-primary">PEA CONTINGENCIA
@@ -38,27 +29,67 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5">
-        <div class="panel panel-primary panel-bordered">
+
+</div>
+     <div class="col-md-6">
+        <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title">Detalle ambientes por local</h5>
-                <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li>
-                            <a data-action="collapse"></a>
-                        </li>
-                        <li>
-                            <a data-action="close"></a>
-                        </li>
-                    </ul>
+                <h5 class="panel-title text-inei">PEA POR AULA</h5>
+
+            </div>
+            <div class="panel-body">
+                <label>Fechas: </label>
+                <div id="div_fechas" class="row">
+
+                    <form action="" >
+
+                        <fieldset class="content-group">
+
+                            <div class="form-group">
+
+                                <div class="col-lg-6">
+                                    <select id="fechas" class="select form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
                 </div>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table id="tabla_pea" class="table-responsive table table-striped table-hover table-bordered">
+                            <thead>
+                            <tr class="bg-table-inei1">
+                                <th>N°</th>
+                                <th>DNI</th>
+                                <th>Apellido Paterno</th>
+                                <th>Apellido Materno</th>
+                                <th>Nombres</th>
+                                <th>Cargo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">DETALLE AMBIENTES POR LOCAL</h5>
+
             </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="table-responsive">
-                        <table id="tabla_detalle_ambientes" class="table table-bordered">
+                        <table id="tabla_detalle_ambientes" class="table-responsive table table-striped table-hover ">
                             <thead>
-                            <tr>
+                            <tr class="bg-table-inei1">
                                 <th>
                                     <center>Aula de capacitación</center>
                                     <center>N°</center>
@@ -80,58 +111,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-7">
-        <div class="panel panel-primary panel-bordered">
-            <div class="panel-heading">
-                <h5 class="panel-title">PEA por aula</h5>
-                <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li>
-                            <a data-action="collapse"></a>
-                        </li>
-                        <li>
-                            <a data-action="close"></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div id="div_fechas" class="row">
-                    <form action="" class="form-horizontal">
-                        <fieldset class="content-group">
-                            <div class="form-group">
-                                <label class="control-label col-lg-2">Fechas: </label>
-                                <div class="col-lg-7">
-                                    <select id="fechas" class="select form-control">
 
-                                    </select>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-                <div class="row">
-                    <div class="table-responsive">
-                        <table id="tabla_pea" class="table table-responsive table-bordered">
-                            <thead>
-                            <tr>
-                                <th>N°</th>
-                                <th>DNI</th>
-                                <th>Apellido Paterno</th>
-                                <th>Apellido Materno</th>
-                                <th>Nombres</th>
-                                <th>Cargo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div id="modal_pea_sobrante" class="modal fade">
         <input type="hidden" id="id_localambiente" name="id_localambiente">
@@ -154,7 +134,7 @@
                         <div class="table table-responsive">
                             <table id="tabla_pea_sobrante" class="table table-responsive table-bordered">
                                 <thead>
-                                <tr>
+                                <tr class="bg-table-inei1">
                                     <th>DNI</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
@@ -188,7 +168,7 @@
                         <div class="table table-responsive">
                             <table id="tabla_pea_reserva" class="table table-responsive table-bordered">
                                 <thead>
-                                <tr>
+                                <tr class="bg-table-inei1">
                                     <th>DNI</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
