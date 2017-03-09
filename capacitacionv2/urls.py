@@ -17,14 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 from locales_consecucion.urls import *
+from seguridad.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^modulo-de-registro/$', TemplateView.as_view(template_name="modulo-de-registro.html"),
-        name='modulo-de-registro'),
-    url(r'^distribucion/$', TemplateView.as_view(template_name="distribucion.html"),
-        name='distribucion'),
-
-    url(r'^rest_localesconsecucion/', include(router.urls)),
+    url(r'capacitacion/(?P<slug>.+)/$', RenderTemplate.as_view()),
+    url(r'^locales/', include(router.urls)),
+    url(r'^locales/', include('locales_consecucion.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
+    url('^setSession/$', setSession)
 ]

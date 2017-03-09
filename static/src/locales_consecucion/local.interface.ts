@@ -50,3 +50,17 @@ export interface ILocal {
     cantidad_disponible_computo: number;
     cantidad_usar_computo: number;
 }
+
+export interface ILocalCurso {
+    local: number,
+    curso: number
+}
+
+export interface ILocalAmbiente {
+    numero: number,
+    n_piso: number,
+    capacidad: number,
+    localcurso: ILocalCurso,
+    id_ambiente: number
+}
+

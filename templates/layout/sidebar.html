@@ -9,21 +9,18 @@
                     <a href="#" class="media-left"><img src="{% static "assets/images/icon_male.jpg" %}"
                                                         class="img-circle img-sm" alt=""></a>
                     <div class="media-body">
-                        <h3 class="media-heading text-bold">Jefe Distrital</h3>
+                        <h3 class="media-heading text-bold">{{ request.session.user_session.user_data.rol.nombre }}</h3>
                         <div class="text-size-mini text-muted">
-                            Curso 7<br>
-                            Empadronadores urbanos,
-                            rurales, especiales de
-                            comunidades indígenas
-                            y jefes de sección
+                            {{ request.session.user_session.user_data.nombre }} {{ request.session.user_session.user_data.ape_pat }} {{ request.session.user_session.user_data.ape_mat }}
                         </div>
                     </div>
                 </div>
             </div>
             <ul class="sidebar-category navigation navigation-main navigation-accordion">
                 <!-- Main -->
-                <li class="navigation-header text-white" style="margin-bottom: -30px;"><span class="titlesidebar">ETAPAS Y CURSOS</span> <i
-                        class="icon-menu" title="Main pages"></i></li>
+                <li class="navigation-header text-white" style="margin-bottom: -30px;"><span class="titlesidebar">ETAPAS Y CURSOS</span>
+                    <i
+                            class="icon-menu" title="Main pages"></i></li>
                 <li class="category-content ">
                     <select id="etapa" class="form-control bg-white text-grey-400" onchange="getCursos(this.value)">
                         <option>Seleccione etapa</option>
@@ -32,7 +29,8 @@
                         <option>Empadronamiento</option>
                     </select>
                     <br>
-                    <select  id="cursos" name="id_curso" class="form-control bg-white text-grey-400" style="margin-top: -15px;">
+                    <select id="cursos" name="id_curso" class="form-control bg-white text-grey-400"
+                            style="margin-top: -15px;">
                         <option value="">Seleccione curso</option>
 
                     </select>
@@ -48,27 +46,17 @@
             <div class="category-content no-padding">
                 <ul class="navigation navigation-main navigation-accordion">
                     <!-- Main -->
-                    <li class="navigation-header text-white"><span class="titlesidebar bordecapa">CAPACITACIÓN</span> <i
-                            class="icon-menu" title="Main pages"></i></li>
-                    </li>
-                    <li id="modulo_registro"><a href="{% url 'modulo-de-registro' %}"><span>Módulo de Registro de
-                        Local</span></a>
-                    </li>
-                    <li id="distribucion"><a href=""><span>Módulo Distribucion de
-                        PEA</span></a></li>
-                    <li id="asistencia"><a href=""><span>Módulo de
-                        Asistencia</span></a></li>
-                    <li id="notas"><a href=""><span>Módulo de Registro de Notas y
-                        Resultado</span></a>
-                    </li>
+                    {% autoescape off %}
+                        {{ CLIENT_MENU.menu }}
+                    {% endautoescape %}
                     <!-- /main -->
                 </ul>
             </div>
         </div>
         <!-- /main navigation -->
-<div class="bg-sidebar-inei" style="background-image: url({% static "assets/images/sidebar-5.png" %})">
+        <div class="bg-sidebar-inei" style="background-image: url({% static "assets/images/sidebar-5.png" %})">
 
-    </div>
+        </div>
     </div>
 
 </div>

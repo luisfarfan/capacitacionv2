@@ -12,3 +12,33 @@ class LocalAmbienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalAmbiente
         fields = '__all__'
+
+
+class DirectorioLocalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DirectorioLocal
+        fields = '__all__'
+
+
+class DirectorioLocalCursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DirectorioLocalCurso
+        fields = '__all__'
+
+
+class DirectorioLocalAmbienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DirectorioLocalAmbiente
+        fields = '__all__'
+
+
+class CursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curso
+        fields = '__all__'
+
+
+class LocalCursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalCurso
+        fields = '__all__'
