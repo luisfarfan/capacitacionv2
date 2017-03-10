@@ -69,6 +69,12 @@
     var protocol = pathArray[0];
     var host = pathArray[2];
     BASEURL = protocol + '//' + host;
+    ubigeo = {
+        ccdd: '{{ request.session.user_session.user_data.ccdd }}',
+        ccpp: '{{ request.session.user_session.user_data.ccpp}}',
+        ccdi: '{{ request.session.user_session.user_data.ccdi }}',
+        zona: '{{ request.session.user_session.user_data.zona }}'
+    }
 </script>
 
 <!-- Utils Js files -->

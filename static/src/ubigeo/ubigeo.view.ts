@@ -4,6 +4,13 @@
 import UbigeoService from './ubigeo.service';
 import * as utils from '../core/utils';
 
+
+export interface IUbigeo {
+    ccdd: string,
+    ccpp: string,
+    ccdi: string,
+    zona: string,
+}
 export default class UbigeoView {
     private ubigeoService = new UbigeoService();
     private ccdd: string;
@@ -20,15 +27,15 @@ export default class UbigeoView {
     private provincia_element_id: string;
     private distrito_element_id: string;
     private zona_element_id: string;
+    private setUbigeo: IUbigeo = null;
 
 
-    constructor(departamento_id: string, provincia_element_id: string, distrito_element_id: string, zona_element_id: string = '') {
-        this.setDepartamentos();
+    constructor(departamento_id: string, provincia_element_id: string, distrito_element_id: string, zona_element_id: string = '', setUbigeo: IUbigeo = null) {
         this.departamento_element_id = departamento_id;
         this.provincia_element_id = provincia_element_id;
         this.distrito_element_id = distrito_element_id;
         this.zona_element_id = zona_element_id;
-
+        this.setUbigeo = setUbigeo;
         $(`#${this.departamento_element_id}`).on('change', (event: any) => {
             this.ccdd = event.target.value;
             this.setProvincias(this.ccdd)
@@ -44,6 +51,7 @@ export default class UbigeoView {
             this.ubigeo = `${this.ccdd}${this.ccpp}${this.ccdi}`;
             this.setZonas(this.ubigeo);
         });
+        this.setDepartamentos();
     }
 
     setDepartamentos() {
@@ -53,7 +61,14 @@ export default class UbigeoView {
                 id_element: this.departamento_element_id,
                 bootstrap_multiselect: false,
                 select2: true
-            })
+            });
+            if (this.setUbigeo !== null) {
+                if (this.setUbigeo.ccdd !== "") {
+                    this.ccdd = this.setUbigeo.ccdd
+                    $(`#${this.departamento_element_id}`).val(this.setUbigeo.ccdd).trigger('change');
+                    $(`#${this.departamento_element_id}`).prop('disabled', true);
+                }
+            }
         }).fail((error: any) => {
             console.log(error)
         })
@@ -68,6 +83,11 @@ export default class UbigeoView {
                 bootstrap_multiselect: false,
                 select2: true
             })
+            if (this.setUbigeo.ccpp !== "") {
+                $(`#${this.provincia_element_id}`).val(this.setUbigeo.ccpp).trigger('change');
+                $(`#${this.provincia_element_id}`).prop('disabled', true)
+                this.ccpp = this.setUbigeo.ccpp
+            }
         }).fail((error: any) => {
             console.log(error)
         })
@@ -83,6 +103,11 @@ export default class UbigeoView {
                 bootstrap_multiselect: false,
                 select2: true
             })
+            if (this.setUbigeo.ccdi !== "") {
+                $(`#${this.distrito_element_id}`).val(this.setUbigeo.ccdi).trigger('change');
+                $(`#${this.distrito_element_id}`).prop('disabled', true)
+                this.ccdi = this.setUbigeo.ccdi
+            }
         }).fail((error: any) => {
             console.log(error)
         })
@@ -97,6 +122,11 @@ export default class UbigeoView {
                 bootstrap_multiselect: false,
                 select2: true
             })
+            if (this.setUbigeo.zona !== "") {
+                $(`#${this.zona_element_id}`).val(this.setUbigeo.zona).trigger('change');
+                $(`#${this.zona_element_id}`).prop('disabled', true)
+                this.zona = this.setUbigeo.zona
+            }
         }).fail((error: any) => {
             console.log(error)
         })

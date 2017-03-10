@@ -1,16 +1,21 @@
 /**
  * Created by Administrador on 3/03/2017.
  */
-import {LocalService} from './locales.service'
-import {ILocal} from './local.interface';
+import {LocalService, CursoService} from './locales.service'
+import {ILocal, ILocalAmbiente, ILocalCurso, ICurso} from './local.interface';
 import UbigeoView from '../ubigeo/ubigeo.view';
 import * as utils from '../core/utils';
+import {IUbigeo} from "../ubigeo/ubigeo.view";
 
 declare var $: any;
 declare var jQuery: any;
+declare var ubigeo: IUbigeo;
 class LocalController {
     private localService = new LocalService()
+    private cursoService = new CursoService()
+    private etapa_id: number;
     private local: ILocal;
+    private cursos: ICurso[];
     private localJsonRules: Object = {
         nombre_local: {
             maxlength: 100
@@ -95,7 +100,13 @@ class LocalController {
     private form_local_serializado: ILocal;
 
     constructor() {
-        new UbigeoView('departamentos', 'provincias', 'distritos', 'zona');
+        console.log(ubigeo)
+        new UbigeoView('departamentos', 'provincias', 'distritos', 'zona', {
+            ccdd: ubigeo.ccdd,
+            ccpp: ubigeo.ccpp,
+            ccdi: ubigeo.ccdi,
+            zona: ubigeo.zona,
+        });
         this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
         this.getLocales();
         this.setEvents();
@@ -106,6 +117,10 @@ class LocalController {
         $('#registrar').on('click', () => {
             this.addLocales();
         });
+        $('#etapa').on('change', () => {
+            this.etapa_id = $('#etapa').val();
+            this.getCursos();
+        })
     }
 
     addMethodJqueryValidator() {
@@ -174,6 +189,17 @@ class LocalController {
         }).fail((error: any) => {
             console.log(error)
         });
+    }
+
+    getCursos() {
+        this.cursoService.get(this.etapa_id).done((cursos) => {
+            this.cursos = cursos
+            utils.setDropdown(this.cursos, {id: 'id_curso', text: ['nombre_curso']}, {
+                id_element: 'cursos',
+                bootstrap_multiselect: true,
+                select2: false
+            })
+        })
     }
 
     addLocales() {

@@ -19,20 +19,18 @@
             <ul class="sidebar-category navigation navigation-main navigation-accordion">
                 <!-- Main -->
                 <li class="navigation-header text-white" style="margin-bottom: -30px;"><span class="titlesidebar">ETAPAS Y CURSOS</span>
-                    <i
-                            class="icon-menu" title="Main pages"></i></li>
+                    <i class="icon-menu" title="Main pages"></i></li>
                 <li class="category-content ">
-                    <select id="etapa" class="form-control bg-white text-grey-400" onchange="getCursos(this.value)">
-                        <option>Seleccione etapa</option>
-                        <option>Censo experimental I</option>
-                        <option>Censo experimental II</option>
-                        <option>Empadronamiento</option>
+                    <select id="etapa" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione etapa</option>
+                        <option value="1">Censo experimental I</option>
+                        <option value="2">Censo experimental II</option>
+                        <option value="3">Empadronamiento</option>
                     </select>
                     <br>
                     <select id="cursos" name="id_curso" class="form-control bg-white text-grey-400"
                             style="margin-top: -15px;">
-                        <option value="">Seleccione curso</option>
-
+                        <option value="">Seleccione</option>
                     </select>
 
                 </li>

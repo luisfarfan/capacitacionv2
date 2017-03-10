@@ -3,6 +3,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
     var LocalController = (function () {
         function LocalController() {
             this.localService = new locales_service_1.LocalService();
+            this.cursoService = new locales_service_1.CursoService();
             this.localJsonRules = {
                 nombre_local: {
                     maxlength: 100
@@ -83,7 +84,13 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                     esMenor: true
                 }
             };
-            new ubigeo_view_1["default"]('departamentos', 'provincias', 'distritos', 'zona');
+            console.log(ubigeo);
+            new ubigeo_view_1["default"]('departamentos', 'provincias', 'distritos', 'zona', {
+                ccdd: ubigeo.ccdd,
+                ccpp: ubigeo.ccpp,
+                ccdi: ubigeo.ccdi,
+                zona: ubigeo.zona
+            });
             this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
             this.getLocales();
             this.setEvents();
@@ -93,6 +100,10 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             var _this = this;
             $('#registrar').on('click', function () {
                 _this.addLocales();
+            });
+            $('#etapa').on('change', function () {
+                _this.etapa_id = $('#etapa').val();
+                _this.getCursos();
             });
         };
         LocalController.prototype.addMethodJqueryValidator = function () {
@@ -155,6 +166,17 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 console.log(response);
             }).fail(function (error) {
                 console.log(error);
+            });
+        };
+        LocalController.prototype.getCursos = function () {
+            var _this = this;
+            this.cursoService.get(this.etapa_id).done(function (cursos) {
+                _this.cursos = cursos;
+                utils.setDropdown(_this.cursos, { id: 'id_curso', text: ['nombre_curso'] }, {
+                    id_element: 'cursos',
+                    bootstrap_multiselect: true,
+                    select2: false
+                });
             });
         };
         LocalController.prototype.addLocales = function () {

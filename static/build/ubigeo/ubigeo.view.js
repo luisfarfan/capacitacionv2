@@ -1,15 +1,17 @@
 define(["require", "exports", "./ubigeo.service", "../core/utils"], function (require, exports, ubigeo_service_1, utils) {
     "use strict";
     var UbigeoView = (function () {
-        function UbigeoView(departamento_id, provincia_element_id, distrito_element_id, zona_element_id) {
+        function UbigeoView(departamento_id, provincia_element_id, distrito_element_id, zona_element_id, setUbigeo) {
             if (zona_element_id === void 0) { zona_element_id = ''; }
+            if (setUbigeo === void 0) { setUbigeo = null; }
             var _this = this;
             this.ubigeoService = new ubigeo_service_1["default"]();
-            this.setDepartamentos();
+            this.setUbigeo = null;
             this.departamento_element_id = departamento_id;
             this.provincia_element_id = provincia_element_id;
             this.distrito_element_id = distrito_element_id;
             this.zona_element_id = zona_element_id;
+            this.setUbigeo = setUbigeo;
             $("#" + this.departamento_element_id).on('change', function (event) {
                 _this.ccdd = event.target.value;
                 _this.setProvincias(_this.ccdd);
@@ -23,6 +25,7 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                 _this.ubigeo = "" + _this.ccdd + _this.ccpp + _this.ccdi;
                 _this.setZonas(_this.ubigeo);
             });
+            this.setDepartamentos();
         }
         UbigeoView.prototype.setDepartamentos = function () {
             var _this = this;
@@ -33,6 +36,13 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     bootstrap_multiselect: false,
                     select2: true
                 });
+                if (_this.setUbigeo !== null) {
+                    if (_this.setUbigeo.ccdd !== "") {
+                        _this.ccdd = _this.setUbigeo.ccdd;
+                        $("#" + _this.departamento_element_id).val(_this.setUbigeo.ccdd).trigger('change');
+                        $("#" + _this.departamento_element_id).prop('disabled', true);
+                    }
+                }
             }).fail(function (error) {
                 console.log(error);
             });
@@ -47,6 +57,11 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     bootstrap_multiselect: false,
                     select2: true
                 });
+                if (_this.setUbigeo.ccpp !== "") {
+                    $("#" + _this.provincia_element_id).val(_this.setUbigeo.ccpp).trigger('change');
+                    $("#" + _this.provincia_element_id).prop('disabled', true);
+                    _this.ccpp = _this.setUbigeo.ccpp;
+                }
             }).fail(function (error) {
                 console.log(error);
             });
@@ -62,6 +77,11 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     bootstrap_multiselect: false,
                     select2: true
                 });
+                if (_this.setUbigeo.ccdi !== "") {
+                    $("#" + _this.distrito_element_id).val(_this.setUbigeo.ccdi).trigger('change');
+                    $("#" + _this.distrito_element_id).prop('disabled', true);
+                    _this.ccdi = _this.setUbigeo.ccdi;
+                }
             }).fail(function (error) {
                 console.log(error);
             });
@@ -76,6 +96,11 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     bootstrap_multiselect: false,
                     select2: true
                 });
+                if (_this.setUbigeo.zona !== "") {
+                    $("#" + _this.zona_element_id).val(_this.setUbigeo.zona).trigger('change');
+                    $("#" + _this.zona_element_id).prop('disabled', true);
+                    _this.zona = _this.setUbigeo.zona;
+                }
             }).fail(function (error) {
                 console.log(error);
             });

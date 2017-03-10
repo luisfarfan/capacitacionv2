@@ -2,7 +2,7 @@ import urllib.request, json
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
 
 
 def setSession(request):
@@ -13,7 +13,7 @@ def setSession(request):
     if not request.session.session_key:
         request.session.save()
 
-    return redirect('/capacitacion/asistencia/')
+    return redirect('/capacitacion/registro-local/')
 
     # return JsonResponse(data, safe=False)
 

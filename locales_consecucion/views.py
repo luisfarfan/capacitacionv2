@@ -39,3 +39,9 @@ class CursoEtapaViewSet(generics.ListAPIView):
     def get_queryset(self):
         etapa_id = self.kwargs['etapa_id']
         return Curso.objects.filter(etapa_id=etapa_id)
+
+
+class DirectorioLocalbyUbigeo(viewsets.ModelViewSet):
+    queryset = DirectorioLocalSerializer
+
+    # def get_queryset(self):

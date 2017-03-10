@@ -64,3 +64,9 @@ export interface ILocalAmbiente {
     id_ambiente: number
 }
 
+export interface ICurso {
+    id_curso: number,
+    nombre_curso: string,
+    nota_minima: number,
+    etapa: number
+}
