@@ -15,8 +15,6 @@ def setSession(request):
 
     return redirect('/capacitacion/registro-local/')
 
-    # return JsonResponse(data, safe=False)
-
 
 class RenderTemplate(TemplateView):
     def get_template_names(self):

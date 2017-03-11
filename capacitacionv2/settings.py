@@ -81,21 +81,21 @@ WSGI_APPLICATION = 'capacitacionv2.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
     'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'CPV_CAPACITACION_PRUEBA',
-        'USER': 'us_capacitacion_web',
-        'PASSWORD': 'cap5wegU$re',
-        'HOST': '172.18.1.41',
-        'OPTIONS': {
-            'driver': 'SQL Server',
-            'unicode_results': True
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
+    # 'default': {
+    #     'ENGINE': 'sql_server.pyodbc',
+    #     'NAME': 'CPV_CAPACITACION_PRUEBA',
+    #     'USER': 'us_capacitacion_web',
+    #     'PASSWORD': 'cap5wegU$re',
+    #     'HOST': '172.18.1.41',
+    #     'OPTIONS': {
+    #         'driver': 'SQL Server',
+    #         'unicode_results': True
+    #     },
+    # },
 }
 
 # Password validation

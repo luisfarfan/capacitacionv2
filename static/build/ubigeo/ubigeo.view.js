@@ -96,6 +96,11 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     bootstrap_multiselect: false,
                     select2: true
                 });
+                utils.setDropdown(_this.zonas, { id: 'ZONA', text: ['ZONA'] }, {
+                    id_element: 'zona_ubicacion_local',
+                    bootstrap_multiselect: false,
+                    select2: true
+                });
                 if (_this.setUbigeo.zona !== "") {
                     $("#" + _this.zona_element_id).val(_this.setUbigeo.zona).trigger('change');
                     $("#" + _this.zona_element_id).prop('disabled', true);

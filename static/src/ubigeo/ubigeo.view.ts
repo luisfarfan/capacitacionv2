@@ -64,9 +64,9 @@ export default class UbigeoView {
             });
             if (this.setUbigeo !== null) {
                 if (this.setUbigeo.ccdd !== "") {
-                    this.ccdd = this.setUbigeo.ccdd
+                    this.ccdd = this.setUbigeo.ccdd;
                     $(`#${this.departamento_element_id}`).val(this.setUbigeo.ccdd).trigger('change');
-                    $(`#${this.departamento_element_id}`).prop('disabled', true);
+                    $(`#${this.departamento_element_id}`).prop('disabled', true)
                 }
             }
         }).fail((error: any) => {
@@ -102,11 +102,11 @@ export default class UbigeoView {
                 id_element: this.distrito_element_id,
                 bootstrap_multiselect: false,
                 select2: true
-            })
+            });
             if (this.setUbigeo.ccdi !== "") {
                 $(`#${this.distrito_element_id}`).val(this.setUbigeo.ccdi).trigger('change');
-                $(`#${this.distrito_element_id}`).prop('disabled', true)
-                this.ccdi = this.setUbigeo.ccdi
+                $(`#${this.distrito_element_id}`).prop('disabled', true);
+                this.ccdi = this.setUbigeo.ccdi;
             }
         }).fail((error: any) => {
             console.log(error)
@@ -121,7 +121,12 @@ export default class UbigeoView {
                 id_element: this.zona_element_id,
                 bootstrap_multiselect: false,
                 select2: true
-            })
+            });
+            utils.setDropdown(this.zonas, {id: 'ZONA', text: ['ZONA']}, {
+                id_element: 'zona_ubicacion_local',
+                bootstrap_multiselect: false,
+                select2: true
+            });
             if (this.setUbigeo.zona !== "") {
                 $(`#${this.zona_element_id}`).val(this.setUbigeo.zona).trigger('change');
                 $(`#${this.zona_element_id}`).prop('disabled', true)

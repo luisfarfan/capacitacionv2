@@ -1,6 +1,127 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
 
+{% block css %}
+    <style>
+        .pure-checkbox input[type="checkbox"], .pure-radiobutton input[type="checkbox"], .pure-checkbox input[type="radio"], .pure-radiobutton input[type="radio"] {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+
+        .pure-checkbox input[type="checkbox"]:focus + label:before, .pure-radiobutton input[type="checkbox"]:focus + label:before, .pure-checkbox input[type="radio"]:focus + label:before, .pure-radiobutton input[type="radio"]:focus + label:before, .pure-checkbox input[type="checkbox"]:hover + label:before, .pure-radiobutton input[type="checkbox"]:hover + label:before, .pure-checkbox input[type="radio"]:hover + label:before, .pure-radiobutton input[type="radio"]:hover + label:before {
+            border-color: #4f8196;
+            background-color: #f2f2f2;
+        }
+
+        .pure-checkbox input[type="checkbox"]:active + label:before, .pure-radiobutton input[type="checkbox"]:active + label:before, .pure-checkbox input[type="radio"]:active + label:before, .pure-radiobutton input[type="radio"]:active + label:before {
+            transition-duration: 0s;
+        }
+
+        .pure-checkbox input[type="checkbox"] + label, .pure-radiobutton input[type="checkbox"] + label, .pure-checkbox input[type="radio"] + label, .pure-radiobutton input[type="radio"] + label {
+            position: relative;
+            padding-left: 2em;
+            vertical-align: middle;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .pure-checkbox input[type="checkbox"] + label:before, .pure-radiobutton input[type="checkbox"] + label:before, .pure-checkbox input[type="radio"] + label:before, .pure-radiobutton input[type="radio"] + label:before {
+            box-sizing: content-box;
+            content: '';
+            color: #4f8196;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            margin-top: -9px;
+            border: 2px solid #4f8196;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .pure-checkbox input[type="checkbox"] + label:after, .pure-radiobutton input[type="checkbox"] + label:after, .pure-checkbox input[type="radio"] + label:after, .pure-radiobutton input[type="radio"] + label:after {
+            box-sizing: content-box;
+            content: '';
+            background-color: #4f8196;
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            width: 10px;
+            height: 10px;
+            margin-top: -5px;
+            transform: scale(0);
+            transform-origin: 50%;
+            transition: transform 200ms ease-out;
+        }
+
+        .pure-checkbox input[type="checkbox"]:disabled + label:before, .pure-radiobutton input[type="checkbox"]:disabled + label:before, .pure-checkbox input[type="radio"]:disabled + label:before, .pure-radiobutton input[type="radio"]:disabled + label:before {
+            border-color: #cccccc;
+        }
+
+        .pure-checkbox input[type="checkbox"]:disabled:focus + label:before, .pure-radiobutton input[type="checkbox"]:disabled:focus + label:before, .pure-checkbox input[type="radio"]:disabled:focus + label:before, .pure-radiobutton input[type="radio"]:disabled:focus + label:before, .pure-checkbox input[type="checkbox"]:disabled:hover + label:before, .pure-radiobutton input[type="checkbox"]:disabled:hover + label:before, .pure-checkbox input[type="radio"]:disabled:hover + label:before, .pure-radiobutton input[type="radio"]:disabled:hover + label:before {
+            background-color: inherit;
+        }
+
+        .pure-checkbox input[type="checkbox"]:disabled:checked + label:before, .pure-radiobutton input[type="checkbox"]:disabled:checked + label:before, .pure-checkbox input[type="radio"]:disabled:checked + label:before, .pure-radiobutton input[type="radio"]:disabled:checked + label:before {
+            background-color: #cccccc;
+        }
+
+        .pure-checkbox input[type="checkbox"] + label:after, .pure-radiobutton input[type="checkbox"] + label:after {
+            background-color: transparent;
+            top: 50%;
+            left: 4px;
+            width: 8px;
+            height: 3px;
+            margin-top: -4px;
+            border-style: solid;
+            border-color: #ffffff;
+            border-width: 0 0 3px 3px;
+            border-image: none;
+            transform: rotate(-45deg) scale(0);
+        }
+
+        .pure-checkbox input[type="checkbox"]:checked + label:after, .pure-radiobutton input[type="checkbox"]:checked + label:after {
+            content: '';
+            transform: rotate(-45deg) scale(1);
+            transition: transform 200ms ease-out;
+        }
+
+        .pure-checkbox input[type="radio"]:checked + label:before, .pure-radiobutton input[type="radio"]:checked + label:before {
+            animation: borderscale 300ms ease-in;
+            background-color: white;
+        }
+
+        .pure-checkbox input[type="radio"]:checked + label:after, .pure-radiobutton input[type="radio"]:checked + label:after {
+            transform: scale(1);
+        }
+
+        .pure-checkbox input[type="radio"] + label:before, .pure-radiobutton input[type="radio"] + label:before, .pure-checkbox input[type="radio"] + label:after, .pure-radiobutton input[type="radio"] + label:after {
+            border-radius: 50%;
+        }
+
+        .pure-checkbox input[type="checkbox"]:checked + label:before, .pure-radiobutton input[type="checkbox"]:checked + label:before {
+            animation: borderscale 200ms ease-in;
+            background: #4f8196;
+        }
+
+        .pure-checkbox input[type="checkbox"]:checked + label:after, .pure-radiobutton input[type="checkbox"]:checked + label:after {
+            transform: rotate(-45deg) scale(1);
+        }
+
+        @keyframes borderscale {
+            50% {
+                box-shadow: 0 0 0 2px #4f8196;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -22,26 +143,6 @@
                         </thead>
                     </table>
                 </div>
-                <!-- <div class="table-responsive">
-                     <table class="table table-bordered">
-                         <thead>
-                         <tr class="bg-blue">
-                             <th>PEA A CAPACITAR</th>
-                             <th>PEA RECLUTADA</th>
-                             <th>TOTAL DE AULAS</th>
-                             <th>AULAS OBTENIDAS</th>
-                         </tr>
-                         </thead>
-                         <tbody>
-                         <tr>
-                             <td><input type="text" class="form-control" id="cant_meta"></td>
-                             <td><input type="text" class="form-control" id="cant_reclutada"></td>
-                             <td><input type="text" class="form-control" id="aulas_meta_cantidad" value="10"></td>
-                             <td><input type="text" class="form-control" id="capacidad_ambiente"></td>
-                         </tr>
-                         </tbody>
-                     </table>
-                 </div>-->
             </div>
         </div>
 
@@ -86,32 +187,27 @@
 
                         <option value="0">Seleccione zona</option>
                     </select>
-
                 </div>
             </div>
             <br>
             <div class="row">
                 <div class="text-left">
-
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                            data-target="#modal_localesbyubigeo" id="buscarlocal" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocal" class="btn btn-primary">
                         Buscar Local Seleccionado <i
                             class="icon-arrow-right14 position-right"></i></button>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                            data-target="#modal_localesmarco" id="buscarlocalmarco" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocalmarco" class="btn btn-primary">
                         Buscar Local Marco <i
                             class="icon-arrow-right14 position-right"></i></button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">REGISTRO DE LOCAL</h5>
-
-        </div>
-        <div class="panel-body">
-            <form class="form-validate-jquery" id="form_local" action="#">
+    <form class="form-validate-jquery" id="form_local" action="#">
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">REGISTRO DE LOCAL</h5>
+            </div>
+            <div class="panel-body">
                 <input type="hidden" id="id_local">
                 <div id="localdata">
                     <fieldset class="content-group">
@@ -218,264 +314,265 @@
                         </div>
                     </fieldset>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">PERIODO DE CAPACITACIÓN Y TURNO</h5>
-        </div>
-        <div class="panel-body">
-            <fieldset class="content-group">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label>Fecha Inicio</label>
-                        <div class="form-group">
-                            <input type="text" required="required" name="fecha_inicio"
-                                   class="daterange-single form-control" placeholder=" Ingrese fecha inicio">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Fecha Fin</label>
-                        <div class="form-group">
-                            <input type="text" required="required" name="fecha_fin"
-                                   class="daterange-single form-control" placeholder=" Ingrese fecha fin">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Turno</label>
-                        <div class="form-group">
-                            <select name="turno_uso_local" class="form-control bg-white text-grey-400">
-                                <option value="">Seleccione Turno</option>
-                                <option value="0">Mañana</option>
-                                <option value="1">Tarde</option>
-                                <option value="2">Todo el día</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-        <input type="text" style="display: none" name="x" id="x">
-        <input type="text" style="display: none" name="y" id="y">
-    </div>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">DATOS DE FUNCIONARIO DEL INEI</h5>
 
-        </div>
-        <div class="panel-body">
-            <fieldset class="content-group">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Apellidos y Nombres</label>
-                            <select class="form-control bg-white text-grey-400" name="funcionario_nombre"
-                                    id="funcionario_nombre">
-                                <option value="-1">Seleccione</option>
-                                {% for funcionario in funcionarios %}
-                                    <option value="{{ funcionario.id_per }}">
-                                        {{ funcionario.dni }} - {{ funcionario.ape_paterno }}
-                                        {{ funcionario.ape_materno }} {{ funcionario.nombre }} </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Cargo</label>
-                            <input type="text" name="funcionario_cargo" disabled
-                                   class="form-control" placeholder="">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="text" required="required" name="funcionario_email" disabled
-                                   class="form-control" placeholder="">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Teléfono Celular</label>
-                            <input type="text" name="funcionario_celular" disabled
-                                   class="form-control" placeholder="">
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-    </div>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">DATOS DEL RESPONSABLE DEL LOCAL</h5>
-
-        </div>
-        <div class="panel-body">
-            <fieldset class="content-group">
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Apellidos y Nombre</label>
-                            <input type="text" required="required" name="responsable_nombre"
-                                   class="form-control" placeholder=" Digite Apellidos y Nombres">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>E-mail</label>
-                            <input type="text" required="required" name="responsable_email"
-                                   class="form-control" placeholder=" Digite dirección Email">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Teléfono Fijo</label>
-                            <input type="text" name="responsable_telefono"
-                                   class="form-control" placeholder=" Digite teléfono fijo">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Teléfono Celular</label>
-                            <input type="text" name="responsable_celular"
-                                   class="form-control" placeholder=" Digite teléfono celular">
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-    </div>
-
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">AMBIENTES</h5>
-
-        </div>
-        <div class="panel-body">
-            <div id="ambientes_esconder">
-                <fieldset class="content-group" id="ambientesdata">
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">PERIODO DE CAPACITACIÓN Y TURNO</h5>
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
                     <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <table class="table-responsive table table-striped table-hover">
-                                <thead>
-                                <tr class="bg-table-inei1">
-                                    <th>Tipo de Ambiente</th>
-                                    <th>Total</th>
-                                    <th>Disponible</th>
-                                    <th>A usar</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Aula</td>
-                                    <td><input type="text" name="cantidad_total_aulas"
-                                               id="cantidad_total_aulas"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_aulas"
-                                               id="cantidad_disponible_aulas"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_aulas"
-                                               id="cantidad_usar_aulas"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Auditorio</td>
-                                    <td><input type="text" name="cantidad_total_auditorios"
-                                               id="cantidad_total_auditorios"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_auditorios"
-                                               id="cantidad_disponible_auditorios"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_auditorios"
-                                               id="cantidad_usar_auditorios"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Sala de Reuniones</td>
-                                    <td><input type="text" name="cantidad_total_sala"
-                                               id="cantidad_total_sala"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_sala"
-                                               id="cantidad_disponible_sala"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_sala"
-                                               id="cantidad_usar_sala"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Oficina Administrativa</td>
-                                    <td><input type="text" name="cantidad_total_oficina"
-                                               id="cantidad_total_oficina"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_oficina"
-                                               id="cantidad_disponible_oficina"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_oficina"
-                                               id="cantidad_usar_oficina"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Sala de Cómputo</td>
-                                    <td><input type="text" name="cantidad_total_computo"
-                                               id="cantidad_total_computo"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_computo"
-                                               id="cantidad_disponible_computo"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_computo"
-                                               id="cantidad_usar_computo"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" name="especifique_otros"
-                                               id="especifique_otros"
-                                               class="form-control"
-                                               style="border-top:none;border-left:none;border-right:none;border-bottom-color: #ddd;"
-                                               value="" placeholder="Otro (Especifique):"></td>
-                                    <td><input type="text" name="cantidad_total_otros"
-                                               id="cantidad_total_otros"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_disponible_otros"
-                                               id="cantidad_disponible_otros"
-                                               class="form-control" value="">
-                                    </td>
-                                    <td><input type="text" name="cantidad_usar_otros"
-                                               id="cantidad_usar_otros"
-                                               class="form-control" value="">
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-md-3">
+                            <label>Fecha Inicio</label>
+                            <div class="form-group">
+                                <input type="text" required="required" name="fecha_inicio"
+                                       class="daterange-single form-control" placeholder=" Ingrese fecha inicio">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Fecha Fin</label>
+                            <div class="form-group">
+                                <input type="text" required="required" name="fecha_fin"
+                                       class="daterange-single form-control" placeholder=" Ingrese fecha fin">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Turno</label>
+                            <div class="form-group">
+                                <select name="turno_uso_local" class="form-control bg-white text-grey-400">
+                                    <option value="">Seleccione Turno</option>
+                                    <option value="0">Mañana</option>
+                                    <option value="1">Tarde</option>
+                                    <option value="2">Todo el día</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
-            <div class="row">
-                <div class="text-right">
-                    <button type="reset" class="btn btn-primary" id="reset">GENERAR AMBIENTES A USAR <i
-                            class="icon-reload-alt position-right"></i></button>
+            <input type="text" style="display: none" name="x" id="x">
+            <input type="text" style="display: none" name="y" id="y">
+        </div>
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">DATOS DE FUNCIONARIO DEL INEI</h5>
+
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label>Apellidos y Nombres</label>
+                                    <input type="text" required="required" name="funcionario_nombre"
+                                           class="form-control" placeholder="Digite Apellidos y Nombres">
+                                </div>
+                                {#                                <select class="form-control bg-white text-grey-400" name="funcionario_nombre"#}
+                                {#                                        id="funcionario_nombre">#}
+                                {#                                    <option value="">Seleccione</option>#}
+                                {#                                </select>#}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Cargo</label>
+                                <input type="text" name="funcionario_cargo"
+                                       class="form-control" placeholder="Digite cargo">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" required="required" name="funcionario_email"
+                                       class="form-control" placeholder="Digite Email">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Teléfono Celular</label>
+                                <input type="text" name="funcionario_celular"
+                                       class="form-control" placeholder="Digite Teléfono Celular">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">DATOS DEL RESPONSABLE DEL LOCAL</h5>
+
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Apellidos y Nombre</label>
+                                <input type="text" required="required" name="responsable_nombre"
+                                       class="form-control" placeholder=" Digite Apellidos y Nombres">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>E-mail</label>
+                                <input type="text" required="required" name="responsable_email"
+                                       class="form-control" placeholder=" Digite dirección Email">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Teléfono Fijo</label>
+                                <input type="text" name="responsable_telefono"
+                                       class="form-control" placeholder=" Digite teléfono fijo">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Teléfono Celular</label>
+                                <input type="text" name="responsable_celular"
+                                       class="form-control" placeholder=" Digite teléfono celular">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">AMBIENTES</h5>
+
+            </div>
+            <div class="panel-body">
+                <div id="ambientes_esconder">
+                    <fieldset class="content-group" id="ambientesdata">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2">
+                                <table class="table-responsive table table-striped table-hover">
+                                    <thead>
+                                    <tr class="bg-table-inei1">
+                                        <th>Tipo de Ambiente</th>
+                                        <th>Total</th>
+                                        <th>Disponible</th>
+                                        <th>A usar</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Aula</td>
+                                        <td><input type="text" name="cantidad_total_aulas"
+                                                   id="cantidad_total_aulas"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_aulas"
+                                                   id="cantidad_disponible_aulas"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_aulas"
+                                                   id="cantidad_usar_aulas"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auditorio</td>
+                                        <td><input type="text" name="cantidad_total_auditorios"
+                                                   id="cantidad_total_auditorios"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_auditorios"
+                                                   id="cantidad_disponible_auditorios"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_auditorios"
+                                                   id="cantidad_usar_auditorios"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sala de Reuniones</td>
+                                        <td><input type="text" name="cantidad_total_sala"
+                                                   id="cantidad_total_sala"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_sala"
+                                                   id="cantidad_disponible_sala"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_sala"
+                                                   id="cantidad_usar_sala"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Oficina Administrativa</td>
+                                        <td><input type="text" name="cantidad_total_oficina"
+                                                   id="cantidad_total_oficina"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_oficina"
+                                                   id="cantidad_disponible_oficina"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_oficina"
+                                                   id="cantidad_usar_oficina"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sala de Cómputo</td>
+                                        <td><input type="text" name="cantidad_total_computo"
+                                                   id="cantidad_total_computo"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_computo"
+                                                   id="cantidad_disponible_computo"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_computo"
+                                                   id="cantidad_usar_computo"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" name="especifique_otros"
+                                                   id="especifique_otros"
+                                                   class="form-control"
+                                                   style="border-top:none;border-left:none;border-right:none;border-bottom-color: #ddd;"
+                                                   value="" placeholder="Otro (Especifique):"></td>
+                                        <td><input type="text" name="cantidad_total_otros"
+                                                   id="cantidad_total_otros"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_disponible_otros"
+                                                   id="cantidad_disponible_otros"
+                                                   class="form-control" value="">
+                                        </td>
+                                        <td><input type="text" name="cantidad_usar_otros"
+                                                   id="cantidad_usar_otros"
+                                                   class="form-control" value="">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="row">
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" id="btn_generar_ambientes">GENERAR AMBIENTES A
+                            USAR
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
     <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
             <h5 class="panel-title text-inei">REGISTRO DE AULA/S</h5>
@@ -519,7 +616,7 @@
         <div class="text-left">
             <button type="reset" class="btn btn-primary" id="reset">NUEVO LOCAL <i
                     class="icon-reload-alt position-right"></i></button>
-            <button type="button" id="registrar" class="btn btn-primary">Guardar <i
+            <button type="button" id="btn_save_local" class="btn btn-primary">Guardar <i
                     class="icon-arrow-right14 position-right"></i></button>
         </div>
     </div>
@@ -539,7 +636,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <table class="table datatable-basic table-bordered" id="table_localesubigeo">
+                    <table class="table datatable-basic table-bordered" id="tabla_locales_filter">
                         <thead>
                         <tr class="bg-blue">
                             <th>Nombre Local</th>
@@ -566,9 +663,10 @@
                 </div>
 
                 <div class="modal-body">
-                    <table class="table datatable-basic table-bordered" id="table_localesmarco">
+                    <table class="table datatable-basic table-bordered" id="tabla_directorio_locales_filter">
                         <thead>
                         <tr class="bg-blue">
+                            <th>#</th>
                             <th>Nombre Local</th>
                             <th>Zona</th>
                             <th>Acción</th>
@@ -582,64 +680,15 @@
         </div>
     </div>
 
-    <div id="modal_registroaula" class="modal fade">
-        <input type="hidden" id="id_localambiente" name="id_localambiente">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">Registro de Aula</h6>
-                </div>
-
-                <div class="modal-body">
-                    <div id="msg_error" class="alert alert-warning" style="display: none;">No se puede agregar mas
-                        ambientes de los que se puede usar
-                    </div>
-                    <form id="form_aula" class="form-validate-aula" action="#">
-                        <fieldset class="content-group">
-                            <legend>Ambiente</legend>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Ambiente</label>
-                                        <select name="id_ambiente" class="select2 form-control"
-                                                id="id_ambiente"></select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Capacidad Ambiente</label>
-                                        <input type="text" name="capacidad" class="form-control" required
-                                               placeholder="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Piso</label>
-                                        <input type="text" name="n_piso" class="form-control" required placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div class="text-left">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">CERRAR</button>
-                            <button type="button" id="registrar_aula_submit" class="btn btn-primary">GUARDAR</button>
-                            <button type="button" id="limpiar_form_aula" class="btn btn-primary">NUEVO LOCAL</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- /.modal -->
 {% endblock %}
 
 {% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/ui/moment/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/ui/moment/moment_locales.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/pickers/daterangepicker.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/require.js" %}"
             data-main="{% static "build/locales_consecucion/locales.view.js" %}"></script>

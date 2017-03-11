@@ -20,6 +20,7 @@ class Curso(models.Model):
     nombre_curso = models.CharField(max_length=100, blank=True, null=True)
     etapa = models.ForeignKey(Etapa)
     locales = models.ManyToManyField('Local', through='LocalCurso')
+    directoriolocales = models.ManyToManyField('DirectorioLocal', through='DirectorioLocalCurso')
     # funcionarios = models.ManyToManyField('Funcionario', through='CursoFuncionario')
     criterios = models.ManyToManyField('Criterio', through='CursoCriterio')
     nota_minima = models.IntegerField(blank=True, null=True)
@@ -88,7 +89,7 @@ class Local(models.Model):
     id_local = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(Ubigeo)
     nombre_local = models.CharField(max_length=300, blank=True, null=True)
-    zona_ubicacion_local = models.CharField(max_length=5, blank=True, null=True)
+    zona_ubicacion_local = models.CharField(max_length=5, blank=True, null=True, db_column='zona_ubicacion_local')
     tipo_via = models.CharField(max_length=300, blank=True, null=True)
     nombre_via = models.CharField(max_length=300, blank=True, null=True)
     referencia = models.CharField(max_length=300, blank=True, null=True)
@@ -131,6 +132,7 @@ class Local(models.Model):
     cantidad_total_computo = models.IntegerField(blank=True, null=True)
     cantidad_disponible_computo = models.IntegerField(blank=True, null=True)
     cantidad_usar_computo = models.IntegerField(blank=True, null=True)
+    id_directoriolocal = models.ForeignKey('DirectorioLocal', blank=True, null=True)
 
     class Meta:
         managed = True
@@ -172,7 +174,7 @@ class DirectorioLocal(models.Model):
     id_local = models.AutoField(primary_key=True)
     ubigeo = models.ForeignKey(Ubigeo)
     nombre_local = models.CharField(max_length=300, blank=True, null=True)
-    zona_ubicacion_local = models.CharField(max_length=5, blank=True, null=True)
+    zona_ubicacion_local = models.CharField(max_length=5, blank=True, null=True, db_column='zona_ubicacion_local')
     tipo_via = models.CharField(max_length=300, blank=True, null=True)
     nombre_via = models.CharField(max_length=300, blank=True, null=True)
     referencia = models.CharField(max_length=300, blank=True, null=True)

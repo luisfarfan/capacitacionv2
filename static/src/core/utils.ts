@@ -42,7 +42,7 @@ export function showSwalAlert(message: string, title: string, type: string) {
         type: type
     });
 }
-export function alert_confirm(callback: any, title = 'Está seguro de Guardar?', type = 'success') {
+export function alert_confirm(callback: any, title = 'Está seguro de Guardar?', type = 'success', callback2: any = null) {
     swal({
         title: title,
         text: '',
@@ -57,6 +57,8 @@ export function alert_confirm(callback: any, title = 'Está seguro de Guardar?',
     }, (confirm: any) => {
         if (confirm) {
             callback()
+        } else {
+            callback2 != null ? callback2 : '';
         }
     });
 }
@@ -240,7 +242,10 @@ interface optionsTable {
     edit_name: string,
     delete_name: string,
     enumerar: boolean,
-    table_id: string
+    table_id: string,
+    datatable: boolean,
+    checkbox: string,
+    checked: boolean,
 }
 export function drawTable(data: Array<Object>, campos: Array<string>, pk: string = null, options: optionsTable = null) {
     let html: string = '';
@@ -249,17 +254,35 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
 
         html += options.enumerar ? `<td>${key + 1}</td>` : '';
         campos.map((val: any, pos: any) => {
-            html += `<td>${value[val]}</td>`;
+            html += `<td>${value[val] == null ? '-' : value[val]}</td>`;
         })
         if (options !== null) {
             html += `<td><ul class="icons-list">
                             ${options.edit_name !== '' ? `<li name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
                             ${options.delete_name !== '' ? `<li name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
-						 </ul></td>`;
+                            ${options.checkbox !== '' ? `<li><div class="pure-checkbox">
+                                                            <input id="${options.checkbox}${value[pk]}" name="${options.checkbox}" value="${value[pk]}" type="checkbox">
+                                                            <label for="${options.checkbox}${value[pk]}"></label>
+                                                         </div></li>` : ''}
+						  </ul></td>`;
         }
         html += `</tr>`;
-    })
-    $(`#${options.table_id}`).find('tbody').html(html);
+    });
+
+    if (options.datatable) {
+        let table = $(`#${options.table_id}`).DataTable();
+        if ($.fn.DataTable.isDataTable(`#${options.table_id}`)) {
+            table.destroy();
+            $(`#${options.table_id}`).find('tbody').html(html);
+            table = $(`#${options.table_id}`).DataTable();
+            $('.dataTables_length select').select2({
+                minimumResultsForSearch: Infinity,
+                width: 'auto'
+            });
+        }
+    } else {
+        $(`#${options.table_id}`).find('tbody').html(html);
+    }
 }
 
 interface CamposSelect {
@@ -290,4 +313,18 @@ export function formToObject(form: Array<Object>) {
         formObject[value.name] = value.value;
     });
     return formObject;
+}
+
+export function objectToForm(data: any) {
+    for (let key in data) {
+        if ($(`[name="${key}"]`).is('select')) {
+            $(`[name="${key}"]`).val(data[key]).trigger('change');
+        } else {
+            $(`[name="${key}"]`).val(data[key]);
+        }
+
+    }
+}
+export function showInfo(message: String) {
+    swal(message);
 }

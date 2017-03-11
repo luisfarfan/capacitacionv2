@@ -27,9 +27,10 @@ define(["require", "exports"], function (require, exports) {
         });
     }
     exports.showSwalAlert = showSwalAlert;
-    function alert_confirm(callback, title, type) {
+    function alert_confirm(callback, title, type, callback2) {
         if (title === void 0) { title = 'Está seguro de Guardar?'; }
         if (type === void 0) { type = 'success'; }
+        if (callback2 === void 0) { callback2 = null; }
         swal({
             title: title,
             text: '',
@@ -44,6 +45,9 @@ define(["require", "exports"], function (require, exports) {
         }, function (confirm) {
             if (confirm) {
                 callback();
+            }
+            else {
+                callback2 != null ? callback2 : '';
             }
         });
     }
@@ -217,14 +221,28 @@ define(["require", "exports"], function (require, exports) {
             html += "<tr>";
             html += options.enumerar ? "<td>" + (key + 1) + "</td>" : '';
             campos.map(function (val, pos) {
-                html += "<td>" + value[val] + "</td>";
+                html += "<td>" + (value[val] == null ? '-' : value[val]) + "</td>";
             });
             if (options !== null) {
-                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n\t\t\t\t\t\t </ul></td>";
+                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n                            " + (options.checkbox !== '' ? "<li><div class=\"pure-checkbox\">\n                                                            <input id=\"" + options.checkbox + value[pk] + "\" name=\"" + options.checkbox + "\" value=\"" + value[pk] + "\" type=\"checkbox\">\n                                                            <label for=\"" + options.checkbox + value[pk] + "\"></label>\n                                                         </div></li>" : '') + "\n\t\t\t\t\t\t  </ul></td>";
             }
             html += "</tr>";
         });
-        $("#" + options.table_id).find('tbody').html(html);
+        if (options.datatable) {
+            var table = $("#" + options.table_id).DataTable();
+            if ($.fn.DataTable.isDataTable("#" + options.table_id)) {
+                table.destroy();
+                $("#" + options.table_id).find('tbody').html(html);
+                table = $("#" + options.table_id).DataTable();
+                $('.dataTables_length select').select2({
+                    minimumResultsForSearch: Infinity,
+                    width: 'auto'
+                });
+            }
+        }
+        else {
+            $("#" + options.table_id).find('tbody').html(html);
+        }
     }
     exports.drawTable = drawTable;
     function setDropdown(data, campos, extra) {
@@ -248,5 +266,20 @@ define(["require", "exports"], function (require, exports) {
         return formObject;
     }
     exports.formToObject = formToObject;
+    function objectToForm(data) {
+        for (var key in data) {
+            if ($("[name=\"" + key + "\"]").is('select')) {
+                $("[name=\"" + key + "\"]").val(data[key]).trigger('change');
+            }
+            else {
+                $("[name=\"" + key + "\"]").val(data[key]);
+            }
+        }
+    }
+    exports.objectToForm = objectToForm;
+    function showInfo(message) {
+        swal(message);
+    }
+    exports.showInfo = showInfo;
 });
 //# sourceMappingURL=utils.js.map

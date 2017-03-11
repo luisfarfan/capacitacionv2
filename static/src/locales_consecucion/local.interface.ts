@@ -3,7 +3,6 @@
  */
 export interface ILocal {
     id_local: number;
-    ambientes: number[];
     ubigeo: string;
     nombre_local: string;
     zona_ubicacion_local: string;
@@ -49,19 +48,23 @@ export interface ILocal {
     cantidad_total_computo: number;
     cantidad_disponible_computo: number;
     cantidad_usar_computo: number;
+    id_directoriolocal: number;
 }
 
 export interface ILocalCurso {
-    local: number,
-    curso: number
+    id: number,
+    local: ILocal,
+    curso: number,
+    ambienteslocalcurso: ILocalAmbiente[]
 }
 
 export interface ILocalAmbiente {
+    id_localambiente: number,
     numero: number,
     n_piso: number,
     capacidad: number,
     localcurso: ILocalCurso,
-    id_ambiente: number
+    id_ambiente: any
 }
 
 export interface ICurso {

@@ -10,10 +10,17 @@ interface urls {
 
 export class LocalService {
     private url: urls = {local: `${BASEURL}/locales/local/`}
+    private urlAmbito: string = `${BASEURL}/locales/localcurso_filter/`;
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
             url: pk === null ? this.url.local : `${this.url.local}${pk}/`,
+        });
+    }
+
+    getbyAmbienteGeografico(curso: number, ubigeo: string, zona: string = null): JQueryXHR {
+        return $.ajax({
+            url: zona === null ? `${this.urlAmbito}${curso}/${ubigeo}/` : `${this.urlAmbito}${curso}/${ubigeo}/${zona}/`,
         })
     }
 
@@ -50,7 +57,7 @@ export class LocalCurso {
         })
     }
 
-    update(pk: number, obj: Array<Object>): JQueryXHR {
+    update(pk: number, obj: Object): JQueryXHR {
         return $.ajax({
             url: `${this.url.local}${pk}/`,
             type: 'PUT',
@@ -75,7 +82,19 @@ export class LocalCurso {
 }
 
 export class LocalAmbienteService {
-    private url: urls = {local: `${BASEURL}/locales/localambiente/`}
+    private url: urls = {
+        local: `${BASEURL}/locales/localambiente/`,
+    }
+    private generar_ambientes: string = `${BASEURL}/locales/generar_ambientes/`;
+
+
+    generarAmbientes(object: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.generar_ambientes}`,
+            type: 'POST',
+            data: object,
+        })
+    }
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -83,7 +102,7 @@ export class LocalAmbienteService {
         })
     }
 
-    update(pk: number, obj: Array<Object>): JQueryXHR {
+    update(pk: number, obj: Object): JQueryXHR {
         return $.ajax({
             url: `${this.url.local}${pk}/`,
             type: 'PUT',
@@ -109,6 +128,12 @@ export class LocalAmbienteService {
 
 export class DirectorioLocalService {
     private url: urls = {local: `${BASEURL}/locales/directoriolocal/`}
+    private urlAmbito: string = `${BASEURL}/locales/directoriolocal_byambito/`;
+    private urlDirectorioLocal: string = `${BASEURL}/locales/directoriolocal_ambientes/`;
+    private urldirectoriolocal_ambiente: string = `${BASEURL}/locales/directoriolocalambientes_detalle/`;
+    private urlLocalAmbientes: string = `${BASEURL}/locales/directoriolocal_ambiente/`;
+    private urldirectorioSeleccionado: string = `${BASEURL}/locales/directorioSeleccionado/`;
+
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -116,7 +141,39 @@ export class DirectorioLocalService {
         })
     }
 
-    update(pk: number, obj: Array<Object>): JQueryXHR {
+    setDirectorioLocal(curso: number, local: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.urlDirectorioLocal}${curso}/${local}/`,
+        })
+    }
+
+    saveDetalleAmbiente(pk: number, object: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.urlLocalAmbientes}${pk}/`,
+            type: 'PATCH',
+            data: object
+        });
+    }
+
+    seleccionarDirectorio(directoriolocal_id: number, curso_id: number) {
+        return $.ajax({
+            url: `${this.urldirectorioSeleccionado}${directoriolocal_id}/${curso_id}/`,
+        });
+    }
+
+    getbyAmbienteGeografico(curso: number, ubigeo: string, zona: string = null): JQueryXHR {
+        return $.ajax({
+            url: zona === null ? `${this.urlAmbito}${curso}/${ubigeo}/` : `${this.urlAmbito}${curso}/${ubigeo}/${zona}/`,
+        })
+    }
+
+    getAmbientes(localcurso: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.urldirectoriolocal_ambiente}${localcurso}/`,
+        })
+    }
+
+    update(pk: number, obj: Object): JQueryXHR {
         return $.ajax({
             url: `${this.url.local}${pk}/`,
             type: 'PUT',
@@ -140,6 +197,17 @@ export class DirectorioLocalService {
     }
 }
 
+export class DirectorioLocalCursoService {
+    private url: urls = {local: `${BASEURL}/locales/directoriolocalcurso/`}
+
+    add(obj: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.url.local}`,
+            type: 'POST',
+            data: obj,
+        });
+    }
+}
 export class CursoService {
     private url: string = `${BASEURL}/locales/curso_etapa/`;
 

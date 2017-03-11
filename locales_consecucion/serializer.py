@@ -26,7 +26,33 @@ class DirectorioLocalCursoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AmbienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ambiente
+        fields = '__all__'
+
+
+class DirectorioLocalCursoDetalleSerializer(serializers.ModelSerializer):
+    local = DirectorioLocalSerializer()
+    ambientes = AmbienteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = DirectorioLocalCurso
+        fields = '__all__'
+
+
+class LocalCursoDetalleSerializer(serializers.ModelSerializer):
+    local = LocalSerializer()
+    ambientes = AmbienteSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = LocalCurso
+        fields = '__all__'
+
+
 class DirectorioLocalAmbienteSerializer(serializers.ModelSerializer):
+    id_ambiente = AmbienteSerializer()
+
     class Meta:
         model = DirectorioLocalAmbiente
         fields = '__all__'

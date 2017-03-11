@@ -1,7 +1,14 @@
 /**
  * Created by Administrador on 3/03/2017.
  */
-import {LocalService, CursoService} from './locales.service'
+import {
+    LocalService,
+    LocalAmbienteService,
+    DirectorioLocalService,
+    DirectorioLocalCursoService,
+    LocalCurso,
+    CursoService
+} from './locales.service'
 import {ILocal, ILocalAmbiente, ILocalCurso, ICurso} from './local.interface';
 import UbigeoView from '../ubigeo/ubigeo.view';
 import * as utils from '../core/utils';
@@ -13,8 +20,16 @@ declare var ubigeo: IUbigeo;
 class LocalController {
     private localService = new LocalService()
     private cursoService = new CursoService()
+    private directoriolocalService = new DirectorioLocalService();
+    private dirlocalcursoService = new DirectorioLocalCursoService();
+    private localambienteService = new LocalAmbienteService();
     private etapa_id: number;
-    private local: ILocal;
+    private local: ILocal = null;
+    private locales: ILocal[] = null;
+    private directorioLocal: ILocal = null;
+    private directorioLocales: ILocal[] = null;
+    private localCurso: ILocalCurso = null;
+    private directoriolocalCurso: ILocalCurso = null;
     private cursos: ICurso[];
     private localJsonRules: Object = {
         nombre_local: {
@@ -100,27 +115,79 @@ class LocalController {
     private form_local_serializado: ILocal;
 
     constructor() {
-        console.log(ubigeo)
+        this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
+        this.setEvents();
+        this.addMethodJqueryValidator();
         new UbigeoView('departamentos', 'provincias', 'distritos', 'zona', {
             ccdd: ubigeo.ccdd,
             ccpp: ubigeo.ccpp,
             ccdi: ubigeo.ccdi,
             zona: ubigeo.zona,
         });
-        this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
-        this.getLocales();
-        this.setEvents();
-        this.addMethodJqueryValidator();
     }
 
+
     setEvents() {
-        $('#registrar').on('click', () => {
-            this.addLocales();
-        });
         $('#etapa').on('change', () => {
             this.etapa_id = $('#etapa').val();
             this.getCursos();
-        })
+        });
+        $('#btn_save_local').on('click', () => {
+            this.form_local_validate.form()
+            if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
+                utils.showInfo('Por favor, seleccione un curso');
+                return false
+            }
+            if (this.form_local_validate.valid()) {
+                this.saveLocales()
+            }
+        });
+        $('#btn_generar_ambientes').on('click', () => {
+            this.generarAmbientes();
+        });
+        $('#buscarlocalmarco').on('click', () => {
+            if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
+                utils.showInfo('Por favor, seleccione un curso');
+                return false
+            } else {
+                this.filterDirectorioLocal();
+                $('#modal_localesmarco').modal('show');
+            }
+        });
+        $('#buscarlocal').on('click', () => {
+            if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
+                utils.showInfo('Por favor, seleccione un curso');
+                return false
+            } else {
+                this.filterLocal();
+                $('#modal_localesbyubigeo').modal('show');
+            }
+        });
+        $('#tabla_directorio_locales_filter').DataTable();
+
+        $('input[name="fecha_inicio"]').daterangepicker({
+            //"minDate": fecha_hoy,
+            "minDate": "19/01/2017",
+            "maxDate": "31/10/2017",
+            singleDatePicker: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function (chosen_date: any) {
+            $('input[name="fecha_inicio"]').val(chosen_date.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="fecha_fin"]').daterangepicker({
+            //"minDate": fecha_hoy,
+            "minDate": "19/01/2017",
+            "maxDate": "31/10/2017",
+            singleDatePicker: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        }, function (chosen_date: any) {
+            $('input[name="fecha_fin"]').val(chosen_date.format('DD/MM/YYYY'));
+        });
     }
 
     addMethodJqueryValidator() {
@@ -183,14 +250,6 @@ class LocalController {
         }, jQuery.validator.format("Fecha de Fin tiene que ser mayor que la Fecha Inicio"));
     }
 
-    getLocales() {
-        this.localService.get().done((response) => {
-            console.log(response)
-        }).fail((error: any) => {
-            console.log(error)
-        });
-    }
-
     getCursos() {
         this.cursoService.get(this.etapa_id).done((cursos) => {
             this.cursos = cursos
@@ -202,8 +261,185 @@ class LocalController {
         })
     }
 
-    addLocales() {
-        console.log(this.form_local_serializado = utils.formToObject(utils.serializeForm('form_local')));
+    saveLocales() {
+        this.form_local_serializado = utils.formToObject(utils.serializeForm('form_local'));
+        this.form_local_serializado.ubigeo = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`
+        if (this.directorioLocal == null) {
+            this.directoriolocalService.add(this.form_local_serializado).done((directoriolocal: ILocal) => {
+                this.directorioLocal = directoriolocal;
+                this.dirlocalcursoService.add({
+                    local: this.directorioLocal.id_local,
+                    curso: $('#cursos').val()
+                }).done((directoriolocalCurso: ILocalCurso) => {
+                    this.directoriolocalCurso = directoriolocalCurso;
+                    utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
+                    this.form_local_validate.resetForm();
+                }).fail()
+            }).fail(() => {
+                utils.showSwalAlert('Errorrrr!!', 'Error', 'error');
+            });
+        } else {
+            this.directoriolocalService.update(this.directorioLocal.id_local, this.form_local_serializado).done((directoriolocal: ILocal) => {
+                this.directorioLocal = directoriolocal;
+                utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+            });
+        }
+    }
+
+    generarAmbientes() {
+        let object: Object = {}
+        if (this.directorioLocal) {
+            object = {
+                'local': this.directoriolocalCurso.local,
+                'curso': this.directoriolocalCurso.curso,
+                'cantidad_usar_aulas': this.directorioLocal.cantidad_usar_aulas,
+                'cantidad_usar_auditorios': this.directorioLocal.cantidad_usar_auditorios,
+                'cantidad_usar_sala': this.directorioLocal.cantidad_usar_sala,
+                'cantidad_usar_oficina': this.directorioLocal.cantidad_usar_oficina,
+                'cantidad_usar_computo': this.directorioLocal.cantidad_usar_computo,
+                'cantidad_usar_otros': this.directorioLocal.cantidad_usar_otros,
+                'directorio': 1
+            }
+        }
+        if (this.local) {
+            object = {
+                'local': this.localCurso.local.id_local,
+                'curso': this.localCurso.curso,
+                'cantidad_usar_aulas': this.local.cantidad_usar_aulas,
+                'cantidad_usar_auditorios': this.local.cantidad_usar_auditorios,
+                'cantidad_usar_sala': this.local.cantidad_usar_sala,
+                'cantidad_usar_oficina': this.local.cantidad_usar_oficina,
+                'cantidad_usar_computo': this.local.cantidad_usar_computo,
+                'cantidad_usar_otros': this.local.cantidad_usar_otros,
+                'directorio': 0
+            }
+        }
+
+        this.localambienteService.generarAmbientes(object).done(() => {
+            this.setDirectorioLocalAmbientes();
+        });
+    }
+
+    filterLocal() {
+        utils.drawTable(this.locales, ['nombre_local', 'nombre_via', 'referencia', 'zona_ubicacion_local'], 'id_local', {
+            edit_name: 'local_edit',
+            delete_name: 'local_delete',
+            enumerar: false,
+            table_id: 'tabla_locales_filter',
+            datatable: true,
+            checkbox: '',
+            checked: false
+        });
+        $('[name="local_edit"]').on('click', (element: JQueryEventObject) => {
+            this.setDirectorioLocal($(element.currentTarget).data('value'));
+            $('#modal_localesmarco').modal('hide');
+        });
+        $('[name="local_delete"]').on('click', (element: JQueryEventObject) => {
+            utils.alert_confirm(() => {
+
+            }, 'Esta quitar este local de los locales seleccionados', 'error')
+        });
+    }
+
+    filterDirectorioLocal() {
+        let curso: number = $('#cursos').val();
+        let ubigeo: string = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`;
+        let zona: string = $('#zona').val() == "-1" ? null : $('#zona').val();
+        this.directoriolocalService.getbyAmbienteGeografico(curso, ubigeo, zona).done((directorioLocales: ILocal[]) => {
+            this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done((locales: ILocal[]) => {
+                this.locales = locales;
+                this.filterLocal();
+                this.directorioLocales = directorioLocales;
+                let directoriolocales_ids: Array<number> = []
+                this.locales.map((value: ILocal, index: number) => directoriolocales_ids.push(value.id_directoriolocal));
+                utils.drawTable(this.directorioLocales, ['nombre_local', 'zona_ubicacion_local'], 'id_local', {
+                    edit_name: 'directoriolocal_edit',
+                    delete_name: '',
+                    enumerar: true,
+                    table_id: 'tabla_directorio_locales_filter',
+                    datatable: true,
+                    checkbox: 'chk_directoriolocal_seleccionado',
+                    checked: false,
+                });
+                $('[name="directoriolocal_edit"]').on('click', (element: JQueryEventObject) => {
+                    this.setDirectorioLocal($(element.currentTarget).data('value'));
+                    $('#modal_localesmarco').modal('hide');
+                });
+                $('[name="chk_directoriolocal_seleccionado"]').on('click', (element: JQueryEventObject) => {
+                    utils.alert_confirm(() => {
+                        this.directoriolocalService.seleccionarDirectorio($(element.currentTarget).val(), $('#cursos').val()).done(() => {
+                            $(element.currentTarget).prop('checked', true)
+                        });
+                    }, 'Esta seguro de guardar este elemento?', 'info', $(element.currentTarget).prop('checked', false))
+                });
+                let chk_directoriolocal: any = $('[name="chk_directoriolocal_seleccionado"]');
+                chk_directoriolocal.map((index: number, value: any) => {
+                    directoriolocales_ids.indexOf(parseInt(value.value)) != -1 ? $(value).prop('checked', true) && $(value).prop('disabled', true) : '';
+                })
+            });
+        })
+    }
+
+    setDirectorioLocal(local_id: number) {
+        let curso: number = $('#cursos').val();
+        this.directoriolocalService.setDirectorioLocal(curso, local_id).done((directoriolocal: ILocalCurso[]) => {
+            this.directoriolocalCurso = directoriolocal[0]
+            this.directorioLocal = this.directoriolocalCurso.local;
+            this.setForm();
+        });
+    }
+
+    setForm() {
+        utils.objectToForm(this.directorioLocal);
+        this.setDirectorioLocalAmbientes();
+    }
+
+    setDirectorioLocalAmbientes() {
+        this.directoriolocalService.getAmbientes(this.directoriolocalCurso.id).done((ambientes: ILocalAmbiente[]) => {
+            this.directoriolocalCurso.ambienteslocalcurso = ambientes;
+            this.formatAmbienteCurso()
+        }).fail()
+    }
+
+    formatAmbienteCurso() {
+        let html: string = ``;
+        this.directoriolocalCurso.ambienteslocalcurso.map((value: ILocalAmbiente, index: number) => {
+            html += `<tr>
+                        <td>${index + 1}</td><td>${value.numero}</td><td>${value.id_ambiente.nombre_ambiente}</td>
+                        <td><input type="number" name="capacidad_ambiente" class="form-control" value="${value.capacidad == null ? '' : value.capacidad}"></td>
+                        <td><input type="number" name="piso_ambiente" class="form-control" value="${value.n_piso == null ? '' : value.n_piso}"></td>
+                        <td>
+                            <ul class="icons-list">
+                                <li name="li_save_capacidad_piso" data-value="${value.id_localambiente}" class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
+                            </ul>
+                        </td>
+                     </tr>`
+        });
+        if ($.fn.DataTable.isDataTable('#tabla_aulas')) {
+            $('#tabla_aulas').DataTable().destroy()
+            $('#tabla_aulas').find('tbody').html(html);
+            $('#tabla_aulas').DataTable()
+            $('.dataTables_length select').select2({
+                minimumResultsForSearch: Infinity,
+                width: 'auto'
+            });
+        } else {
+            $('#tabla_aulas').find('tbody').html(html);
+            $('#tabla_aulas').DataTable();
+        }
+        $('[name="li_save_capacidad_piso"]').on('click', (element: JQueryEventObject) => {
+            let li: any = $(element.currentTarget);
+            let tr: any = li.parent().parent().parent();
+            let capacidad: number = tr.find('[name="capacidad_ambiente"]').val()
+            let piso: number = tr.find('[name="piso_ambiente"]').val();
+            let pk: number = li.data('value');
+            this.directoriolocalService.saveDetalleAmbiente(pk, {
+                capacidad: capacidad,
+                n_piso: piso
+            }).done(() => {
+                utils.showSwalAlert('Se grabo con éxito!', 'Correcto', 'success');
+            });
+        });
     }
 
 }
