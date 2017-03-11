@@ -11,6 +11,8 @@ interface urls {
 export class LocalService {
     private url: urls = {local: `${BASEURL}/locales/local/`}
     private urlAmbito: string = `${BASEURL}/locales/localcurso_filter/`;
+    private urldirectoriolocal_ambiente: string = `${BASEURL}/locales/directoriolocalambientes_detalle/`;
+    private urlLocalAmbientes: string = `${BASEURL}/locales/localambiente/`;
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -24,7 +26,21 @@ export class LocalService {
         })
     }
 
-    update(pk: number, obj: Array<Object>): JQueryXHR {
+    getAmbientes(localcurso: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.urldirectoriolocal_ambiente}${localcurso}/0/`,
+        })
+    }
+
+    saveDetalleAmbiente(pk: number, object: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.urlLocalAmbientes}${pk}/`,
+            type: 'PATCH',
+            data: object
+        });
+    }
+
+    update(pk: number, obj: Object): JQueryXHR {
         return $.ajax({
             url: `${this.url.local}${pk}/`,
             type: 'PUT',
@@ -169,7 +185,7 @@ export class DirectorioLocalService {
 
     getAmbientes(localcurso: number): JQueryXHR {
         return $.ajax({
-            url: `${this.urldirectoriolocal_ambiente}${localcurso}/`,
+            url: `${this.urldirectoriolocal_ambiente}${localcurso}/1/`,
         })
     }
 

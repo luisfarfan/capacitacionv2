@@ -7,6 +7,8 @@ define(["require", "exports"], function (require, exports) {
         function LocalService() {
             this.url = { local: BASEURL + "/locales/local/" };
             this.urlAmbito = BASEURL + "/locales/localcurso_filter/";
+            this.urldirectoriolocal_ambiente = BASEURL + "/locales/directoriolocalambientes_detalle/";
+            this.urlLocalAmbientes = BASEURL + "/locales/localambiente/";
         }
         LocalService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
@@ -18,6 +20,18 @@ define(["require", "exports"], function (require, exports) {
             if (zona === void 0) { zona = null; }
             return $.ajax({
                 url: zona === null ? "" + this.urlAmbito + curso + "/" + ubigeo + "/" : "" + this.urlAmbito + curso + "/" + ubigeo + "/" + zona + "/"
+            });
+        };
+        LocalService.prototype.getAmbientes = function (localcurso) {
+            return $.ajax({
+                url: "" + this.urldirectoriolocal_ambiente + localcurso + "/0/"
+            });
+        };
+        LocalService.prototype.saveDetalleAmbiente = function (pk, object) {
+            return $.ajax({
+                url: "" + this.urlLocalAmbientes + pk + "/",
+                type: 'PATCH',
+                data: object
             });
         };
         LocalService.prototype.update = function (pk, obj) {
@@ -34,7 +48,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalService.prototype["delete"] = function (pk) {
+        LocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -67,7 +81,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalCurso.prototype["delete"] = function (pk) {
+        LocalCurso.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -110,7 +124,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalAmbienteService.prototype["delete"] = function (pk) {
+        LocalAmbienteService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -159,7 +173,7 @@ define(["require", "exports"], function (require, exports) {
         };
         DirectorioLocalService.prototype.getAmbientes = function (localcurso) {
             return $.ajax({
-                url: "" + this.urldirectoriolocal_ambiente + localcurso + "/"
+                url: "" + this.urldirectoriolocal_ambiente + localcurso + "/1/"
             });
         };
         DirectorioLocalService.prototype.update = function (pk, obj) {
@@ -176,7 +190,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DirectorioLocalService.prototype["delete"] = function (pk) {
+        DirectorioLocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'

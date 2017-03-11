@@ -16,7 +16,7 @@ urlpatterns = [
         DirectorioLocalbyUbigeo.as_view()),
     url(r'generar_ambientes/$', generar_ambientes),
     url(r'directoriolocal_ambientes/(?P<curso>[0-9]+)/(?P<local>[0-9]+)/$', DirectorioLocalCursoFilter.as_view()),
-    url(r'directoriolocalambientes_detalle/(?P<localcurso>[0-9]+)/$',
+    url(r'directoriolocalambientes_detalle/(?P<localcurso>[0-9]+)/(?P<is_directorio>[0-9]+)/$',
         DirectorioLocalAmbienteFilterViewSet.as_view()),
     url(r'directorioSeleccionado/(?P<id_directoriolocal>[0-9]+)/(?P<id_curso>[0-9]+)/$', directorioSeleccionado),
     url(r'localcurso_filter/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$', LocalCursoFilter.as_view()),

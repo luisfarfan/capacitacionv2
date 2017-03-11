@@ -1,4 +1,4 @@
-define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../core/utils"], function (require, exports, locales_service_1, ubigeo_view_1, utils) {
+define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../core/utils'], function (require, exports, locales_service_1, ubigeo_view_1, utils) {
     "use strict";
     var LocalController = (function () {
         function LocalController() {
@@ -8,10 +8,11 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             this.dirlocalcursoService = new locales_service_1.DirectorioLocalCursoService();
             this.localambienteService = new locales_service_1.LocalAmbienteService();
             this.local = null;
-            this.locales = null;
+            this.locales = [];
             this.directorioLocal = null;
             this.directorioLocales = null;
             this.localCurso = null;
+            this.localesCurso = null;
             this.directoriolocalCurso = null;
             this.localJsonRules = {
                 nombre_local: {
@@ -236,7 +237,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             var _this = this;
             this.form_local_serializado = utils.formToObject(utils.serializeForm('form_local'));
             this.form_local_serializado.ubigeo = "" + $('#departamentos').val() + $('#provincias').val() + $('#distritos').val();
-            if (this.directorioLocal == null) {
+            if (this.directorioLocal == null && this.local == null) {
                 this.directoriolocalService.add(this.form_local_serializado).done(function (directoriolocal) {
                     _this.directorioLocal = directoriolocal;
                     _this.dirlocalcursoService.add({
@@ -251,10 +252,15 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                     utils.showSwalAlert('Errorrrr!!', 'Error', 'error');
                 });
             }
-            else {
+            else if (this.directorioLocal) {
                 this.directoriolocalService.update(this.directorioLocal.id_local, this.form_local_serializado).done(function (directoriolocal) {
                     _this.directorioLocal = directoriolocal;
                     utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                });
+            }
+            else if (this.local) {
+                this.localService.update(this.local.id_local, this.form_local_serializado).done(function (local) {
+                    _this.local = local;
                 });
             }
         };
@@ -293,22 +299,32 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
         };
         LocalController.prototype.filterLocal = function () {
             var _this = this;
-            utils.drawTable(this.locales, ['nombre_local', 'nombre_via', 'referencia', 'zona_ubicacion_local'], 'id_local', {
-                edit_name: 'local_edit',
-                delete_name: 'local_delete',
-                enumerar: false,
-                table_id: 'tabla_locales_filter',
-                datatable: true,
-                checkbox: '',
-                checked: false
-            });
-            $('[name="local_edit"]').on('click', function (element) {
-                _this.setDirectorioLocal($(element.currentTarget).data('value'));
-                $('#modal_localesmarco').modal('hide');
-            });
-            $('[name="local_delete"]').on('click', function (element) {
-                utils.alert_confirm(function () {
-                }, 'Esta quitar este local de los locales seleccionados', 'error');
+            var curso = $('#cursos').val();
+            var ubigeo = "" + $('#departamentos').val() + $('#provincias').val() + $('#distritos').val();
+            var zona = $('#zona').val() == "-1" ? null : $('#zona').val();
+            this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (localcurso) {
+                _this.localesCurso = localcurso;
+                _this.locales = [];
+                _this.localesCurso.map(function (value, index) { return _this.locales.push(value.local); });
+                utils.drawTable(_this.locales, ['nombre_local', 'nombre_via', 'referencia', 'zona_ubicacion_local'], 'id_local', {
+                    edit_name: 'local_edit',
+                    delete_name: 'local_delete',
+                    enumerar: false,
+                    table_id: 'tabla_locales_filter',
+                    datatable: true,
+                    checkbox: '',
+                    checked: false
+                });
+                $('[name="local_edit"]').on('click', function (element) {
+                    _this.setDirectorioLocal($(element.currentTarget).data('value'), false);
+                    _this.directorioLocal = null;
+                    _this.directoriolocalCurso = null;
+                    $('#modal_localesmarco').modal('hide');
+                });
+                $('[name="local_delete"]').on('click', function (element) {
+                    utils.alert_confirm(function () {
+                    }, 'Esta quitar este local de los locales seleccionados', 'error');
+                });
             });
         };
         LocalController.prototype.filterDirectorioLocal = function () {
@@ -317,8 +333,11 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             var ubigeo = "" + $('#departamentos').val() + $('#provincias').val() + $('#distritos').val();
             var zona = $('#zona').val() == "-1" ? null : $('#zona').val();
             this.directoriolocalService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (directorioLocales) {
-                _this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (locales) {
-                    _this.locales = locales;
+                _this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (localcurso) {
+                    _this.localesCurso = localcurso;
+                    _this.locales = [];
+                    console.log(_this.localesCurso);
+                    _this.localesCurso.map(function (value, index) { return _this.locales.push(value.local); });
                     _this.filterLocal();
                     _this.directorioLocales = directorioLocales;
                     var directoriolocales_ids = [];
@@ -332,8 +351,12 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                         checkbox: 'chk_directoriolocal_seleccionado',
                         checked: false
                     });
+                    $('[name="directoriolocal_edit"]').off('click');
+                    $('[name="chk_directoriolocal_seleccionado"]').off('click');
                     $('[name="directoriolocal_edit"]').on('click', function (element) {
                         _this.setDirectorioLocal($(element.currentTarget).data('value'));
+                        _this.local = null;
+                        _this.localCurso = null;
                         $('#modal_localesmarco').modal('hide');
                     });
                     $('[name="chk_directoriolocal_seleccionado"]').on('click', function (element) {
@@ -350,30 +373,53 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 });
             });
         };
-        LocalController.prototype.setDirectorioLocal = function (local_id) {
+        LocalController.prototype.setDirectorioLocal = function (local_id, is_directorio) {
             var _this = this;
+            if (is_directorio === void 0) { is_directorio = true; }
             var curso = $('#cursos').val();
-            this.directoriolocalService.setDirectorioLocal(curso, local_id).done(function (directoriolocal) {
-                _this.directoriolocalCurso = directoriolocal[0];
-                _this.directorioLocal = _this.directoriolocalCurso.local;
-                _this.setForm();
-            });
+            if (is_directorio) {
+                this.directoriolocalService.setDirectorioLocal(curso, local_id).done(function (directoriolocal) {
+                    console.log(_this.directoriolocalCurso);
+                    _this.directoriolocalCurso = directoriolocal[0];
+                    _this.directorioLocal = _this.directoriolocalCurso.local;
+                    _this.setForm(_this.directorioLocal);
+                });
+            }
+            else {
+                this.localesCurso.map(function (value, index) {
+                    if (value.local.id_local == local_id) {
+                        _this.local = value.local;
+                        _this.localCurso = value;
+                    }
+                });
+                this.setForm(this.local);
+            }
         };
-        LocalController.prototype.setForm = function () {
-            utils.objectToForm(this.directorioLocal);
+        LocalController.prototype.setForm = function (obj) {
+            utils.objectToForm(obj);
             this.setDirectorioLocalAmbientes();
         };
         LocalController.prototype.setDirectorioLocalAmbientes = function () {
             var _this = this;
-            this.directoriolocalService.getAmbientes(this.directoriolocalCurso.id).done(function (ambientes) {
-                _this.directoriolocalCurso.ambienteslocalcurso = ambientes;
-                _this.formatAmbienteCurso();
-            }).fail();
+            if (this.local) {
+                this.localService.getAmbientes(this.localCurso.id).done(function (ambientes) {
+                    _this.localCurso.ambienteslocalcurso = ambientes;
+                    console.log(_this.localesCurso);
+                    _this.formatAmbienteCurso(ambientes);
+                }).fail();
+            }
+            else {
+                this.directoriolocalService.getAmbientes(this.directoriolocalCurso.id).done(function (ambientes) {
+                    _this.directoriolocalCurso.ambienteslocalcurso = ambientes;
+                    console.log(_this.localesCurso);
+                    _this.formatAmbienteCurso(ambientes);
+                }).fail();
+            }
         };
-        LocalController.prototype.formatAmbienteCurso = function () {
+        LocalController.prototype.formatAmbienteCurso = function (ambientes) {
             var _this = this;
             var html = "";
-            this.directoriolocalCurso.ambienteslocalcurso.map(function (value, index) {
+            ambientes.map(function (value, index) {
                 html += "<tr>\n                        <td>" + (index + 1) + "</td><td>" + value.numero + "</td><td>" + value.id_ambiente.nombre_ambiente + "</td>\n                        <td><input type=\"number\" name=\"capacidad_ambiente\" class=\"form-control\" value=\"" + (value.capacidad == null ? '' : value.capacidad) + "\"></td>\n                        <td><input type=\"number\" name=\"piso_ambiente\" class=\"form-control\" value=\"" + (value.n_piso == null ? '' : value.n_piso) + "\"></td>\n                        <td>\n                            <ul class=\"icons-list\">\n                                <li name=\"li_save_capacidad_piso\" data-value=\"" + value.id_localambiente + "\" class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            </ul>\n                        </td>\n                     </tr>";
             });
             if ($.fn.DataTable.isDataTable('#tabla_aulas')) {
@@ -395,12 +441,22 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 var capacidad = tr.find('[name="capacidad_ambiente"]').val();
                 var piso = tr.find('[name="piso_ambiente"]').val();
                 var pk = li.data('value');
-                _this.directoriolocalService.saveDetalleAmbiente(pk, {
-                    capacidad: capacidad,
-                    n_piso: piso
-                }).done(function () {
-                    utils.showSwalAlert('Se grabo con éxito!', 'Correcto', 'success');
-                });
+                if (_this.local) {
+                    _this.localService.saveDetalleAmbiente(pk, {
+                        capacidad: capacidad,
+                        n_piso: piso
+                    }).done(function () {
+                        utils.showSwalAlert('Se grabo con éxito!', 'Correcto', 'success');
+                    });
+                }
+                else {
+                    _this.directoriolocalService.saveDetalleAmbiente(pk, {
+                        capacidad: capacidad,
+                        n_piso: piso
+                    }).done(function () {
+                        utils.showSwalAlert('Se grabo con éxito!', 'Correcto', 'success');
+                    });
+                }
             });
         };
         return LocalController;

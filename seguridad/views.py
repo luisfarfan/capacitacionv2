@@ -5,6 +5,9 @@ from django.views.generic import TemplateView
 URL_USERDATASESSION = 'http://cpv.inei.gob.pe:8080/seguridad/getUserData/?key={}'
 
 
+# URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
+
+
 def setSession(request):
     key = request.GET['key']
     response = urllib.request.urlopen(URL_USERDATASESSION.format(key))

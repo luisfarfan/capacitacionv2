@@ -41,7 +41,11 @@ class DirectorioLocalAmbienteFilterViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
-        return DirectorioLocalAmbiente.objects.filter(localcurso_id=localcurso)
+        is_directorio = self.kwargs['is_directorio']
+        if is_directorio == "1":
+            return DirectorioLocalAmbiente.objects.filter(localcurso_id=localcurso)
+        else:
+            return LocalAmbiente.objects.filter(localcurso_id=localcurso)
 
 
 class CursoEtapaViewSet(generics.ListAPIView):
@@ -62,17 +66,16 @@ class DirectorioLocalCursoFilter(generics.ListAPIView):
 
 
 class LocalCursoFilter(generics.ListAPIView):
-    serializer_class = LocalSerializer
+    serializer_class = LocalCursoDetalleSerializer
 
     def get_queryset(self):
         curso = self.kwargs['curso']
         ubigeo = self.kwargs['ubigeo']
         if 'zona' in self.kwargs:
             zona = self.kwargs['zona']
-            query = Local.objects.filter(localcurso__curso_id=curso, ubigeo_id=ubigeo,
-                                         zona_ubicacion_local=zona)
+            query = LocalCurso.objects.filter(curso_id=curso, local__ubigeo_id=ubigeo, local__zona_ubicacion_local=zona)
         else:
-            query = Local.objects.filter(localcurso__curso_id=curso, ubigeo_id=ubigeo)
+            query = LocalCurso.objects.filter(curso_id=curso, local__ubigeo_id=ubigeo)
 
         return query
 
