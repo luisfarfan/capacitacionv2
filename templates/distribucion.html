@@ -2,36 +2,39 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="col-md-6">
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">DISTRIBUCIÓN</h5>
-
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Local</label>
-                        <select id="local" class="select form-control">
-                            <option value="">Seleccione local</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <button data-toggle="modal" onclick="getSobrantes()" class="btn btn-primary">PEA SELECCIONADA
-                    </button>
-                    <button data-toggle="modal" onclick="getReserva()" class="btn btn-primary">PEA CONTINGENCIA
-                    </button>
-                    <button onclick="reporte_pea_asistencia_blanco()" class="btn btn-primary">Ver Listado Reporte
+    <div class="col-md-6">
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">DISTRIBUCIÓN</h5>
+                <div class="heading-elements">
+                    <button type="button" class="btn btn-primary heading-btn legitRipple">Asignar Zonas por Local
                     </button>
                 </div>
             </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Local</label>
+                            <select id="local" class="select form-control">
+                                <option value="">Seleccione local</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button data-toggle="modal" onclick="getSobrantes()" class="btn btn-primary">PEA SELECCIONADA
+                        </button>
+                        <button data-toggle="modal" onclick="getReserva()" class="btn btn-primary">PEA CONTINGENCIA
+                        </button>
+                        <button onclick="reporte_pea_asistencia_blanco()" class="btn btn-primary">Ver Listado Reporte
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-</div>
-     <div class="col-md-6">
+    </div>
+    <div class="col-md-6">
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
                 <h5 class="panel-title text-inei">PEA POR AULA</h5>
@@ -41,7 +44,7 @@
                 <label>Fechas: </label>
                 <div id="div_fechas" class="row">
 
-                    <form action="" >
+                    <form action="">
 
                         <fieldset class="content-group">
 
@@ -243,4 +246,8 @@
 
 {% block js %}
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/distribucion/distribucion.view.js" %}"></script>
 {% endblock %}

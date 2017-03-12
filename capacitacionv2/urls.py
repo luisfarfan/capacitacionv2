@@ -21,7 +21,7 @@ from seguridad.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'capacitacion/(?P<slug>.+)/$', RenderTemplate.as_view()),
+    url(r'modulos/(?P<slug>.+)/$', RenderTemplate.as_view()),
     url(r'^locales/', include(router.urls)),
     url(r'^locales/', include('locales_consecucion.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),

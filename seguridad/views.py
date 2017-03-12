@@ -2,10 +2,10 @@ import urllib.request, json
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-URL_USERDATASESSION = 'http://cpv.inei.gob.pe:8080/seguridad/getUserData/?key={}'
+# URL_USERDATASESSION = 'http://cpv.inei.gob.pe:8080/seguridad/getUserData/?key={}'
 
 
-# URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
 
 
 def setSession(request):
@@ -16,14 +16,14 @@ def setSession(request):
     if not request.session.session_key:
         request.session.save()
 
-    return redirect('/capacitacion/registro-local/')
+    return redirect('/modulos/registro-local/')
 
 
 class RenderTemplate(TemplateView):
     def get_template_names(self):
         try:
             modulos = self.request.session['user_session']['modulos']['CPV']['modulos_individuales']
-            slug = self.kwargs.get('slug')
+            slug = 'modulos/{}'.format(self.kwargs.get('slug'))
             for modulo in modulos:
                 if modulo['slug'] == slug:
                     return modulo['template_html']
