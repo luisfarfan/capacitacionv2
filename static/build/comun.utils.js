@@ -1,4 +1,4 @@
-define(["require", "exports", './locales_consecucion/locales.service', './core/utils'], function (require, exports, locales_service_1, utils) {
+define(["require", "exports", "./locales_consecucion/locales.service", "./core/utils"], function (require, exports, locales_service_1, utils) {
     "use strict";
     var Curso = (function () {
         function Curso() {

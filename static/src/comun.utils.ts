@@ -13,7 +13,7 @@ export class Curso {
     constructor() {
         $('#etapa').on('change', (element: JQueryEventObject) => {
             this.getCursos($(element.currentTarget).val())
-        })
+        });
         $('#cursos').on('change', (element: JQueryEventObject) => {
             let curso_val = $(element.currentTarget).val();
             this.cursos.filter((value: ICurso) => value.id_curso == curso_val ? this.curso_selected = value : '');
@@ -27,7 +27,7 @@ export class Curso {
     }
 
     setCurso() {
-        return localStorage.getItem('curso_id')
+        return localStorage.getItem('curso_id');
     }
 
     getCursos(etapa_id: number) {

@@ -31,7 +31,7 @@ class DistritosList(APIView):
 class ZonasList(APIView):
     def get(self, request, ubigeo):
         zonas = list(
-            Zona.objects.filter(UBIGEO=ubigeo).values('UBIGEO', 'ZONA', 'ETIQ_ZONA').annotate(
+            Zona.objects.filter(UBIGEO=ubigeo).values('ID', 'UBIGEO', 'ZONA', 'ETIQ_ZONA').annotate(
                 dcount=Count('UBIGEO', 'ZONA')))
         response = JsonResponse(zonas, safe=False)
         return response

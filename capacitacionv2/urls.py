@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'modulos/(?P<slug>.+)/$', RenderTemplate.as_view()),
     url(r'^locales/', include(router.urls)),
     url(r'^locales/', include('locales_consecucion.urls')),
+    url(r'^distribucion/', include('distribucion.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
     url('^setSession/$', setSession)
 ]

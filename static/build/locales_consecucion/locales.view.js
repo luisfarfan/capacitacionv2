@@ -1,4 +1,4 @@
-define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../core/utils'], function (require, exports, locales_service_1, ubigeo_view_1, utils) {
+define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../core/utils"], function (require, exports, locales_service_1, ubigeo_view_1, utils) {
     "use strict";
     var LocalController = (function () {
         function LocalController() {
