@@ -7,11 +7,32 @@ export class DistribucionService {
     private url_localzonaDetalle: string = `${BASEURL}/distribucion/localzona_detalle/`;
     private url_asignarZonas: string = `${BASEURL}/distribucion/asignarZonas/`;
     private url_zonas_libres: string = `${BASEURL}/distribucion/zonas_libres_por_asignar/`;
+    private url_localambientes_detalle: string = `${BASEURL}/distribucion/localambiente_detalle/`;
+    private url_personal_bylocalcurso: string = `${BASEURL}/distribucion/personalcapacitar_bylocalcurso/`;
+    private url_distribuir: string = `${BASEURL}/distribucion/distribuir/`;
 
 
-    get(pk: number = null): JQueryXHR {
+    filterLocalZona(pk: number): JQueryXHR {
         return $.ajax({
-            url: pk === null ? this.url_localzonaDetalle : `${this.url_localzonaDetalle}${pk}/`,
+            url: `${this.url_localzonaDetalle}${pk}/`,
+        });
+    }
+
+    filterLocalAmbientes(localcurso: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_localambientes_detalle}${localcurso}/`,
+        });
+    }
+
+    getPersonalbylocalCurso(localcurso: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_personal_bylocalcurso}${localcurso}/`,
+        });
+    }
+
+    distribuirPersonal(localcurso: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_distribuir}${localcurso}/`,
         });
     }
 

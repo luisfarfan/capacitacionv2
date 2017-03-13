@@ -6,11 +6,28 @@ define(["require", "exports"], function (require, exports) {
             this.url_localzonaDetalle = BASEURL + "/distribucion/localzona_detalle/";
             this.url_asignarZonas = BASEURL + "/distribucion/asignarZonas/";
             this.url_zonas_libres = BASEURL + "/distribucion/zonas_libres_por_asignar/";
+            this.url_localambientes_detalle = BASEURL + "/distribucion/localambiente_detalle/";
+            this.url_personal_bylocalcurso = BASEURL + "/distribucion/personalcapacitar_bylocalcurso/";
+            this.url_distribuir = BASEURL + "/distribucion/distribuir/";
         }
-        DistribucionService.prototype.get = function (pk) {
-            if (pk === void 0) { pk = null; }
+        DistribucionService.prototype.filterLocalZona = function (pk) {
             return $.ajax({
-                url: pk === null ? this.url_localzonaDetalle : "" + this.url_localzonaDetalle + pk + "/"
+                url: "" + this.url_localzonaDetalle + pk + "/"
+            });
+        };
+        DistribucionService.prototype.filterLocalAmbientes = function (localcurso) {
+            return $.ajax({
+                url: "" + this.url_localambientes_detalle + localcurso + "/"
+            });
+        };
+        DistribucionService.prototype.getPersonalbylocalCurso = function (localcurso) {
+            return $.ajax({
+                url: "" + this.url_personal_bylocalcurso + localcurso + "/"
+            });
+        };
+        DistribucionService.prototype.distribuirPersonal = function (localcurso) {
+            return $.ajax({
+                url: "" + this.url_distribuir + localcurso + "/"
             });
         };
         DistribucionService.prototype.update = function (pk, obj) {
@@ -27,7 +44,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DistribucionService.prototype["delete"] = function (pk) {
+        DistribucionService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url_localzona + pk + "/",
                 type: 'DELETE'

@@ -4,6 +4,7 @@
 
 
 export interface IZona {
+    CODCCPP:string,
     ETIQ_ZONA: string,
     UBIGEO: string,
     ZONA: string,

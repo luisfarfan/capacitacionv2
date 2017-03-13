@@ -273,7 +273,7 @@ class Personal(models.Model):
     nombre = models.CharField(max_length=100, blank=True, null=True)
     id_cargofuncional = models.ForeignKey(CargoFuncional)
     id_convocatoriacargo = models.CharField(max_length=4, blank=True, null=True)
-    zona = models.ForeignKey(Zona)
+    zona = models.CharField(max_length=5, blank=True, null=True)
     ubigeo = models.ForeignKey(Ubigeo)
     contingencia = models.IntegerField(blank=True, null=True)
     baja_estado = models.IntegerField(null=True, blank=True, default=0)
@@ -288,9 +288,21 @@ class PersonalAula(models.Model):
     id_peaaula = models.AutoField(primary_key=True)
     id_pea = models.ForeignKey(Personal, on_delete=models.CASCADE)
     id_localambiente = models.ForeignKey('LocalAmbiente', on_delete=models.CASCADE)
-    # id_instructor = models.ForeignKey('Instructor', blank=True, null=True, on_delete=models.CASCADE)
-    pea_fecha = models.CharField(max_length=100, blank=True, null=True)
+    id_instructor = models.IntegerField(null=True, blank=True)
+
+    # pea_fecha = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'PersonalAula'
+
+
+class PersonalAulaAsistencia(models.Model):
+    peaaula = models.ForeignKey(PersonalAula)
+    turno_manana = models.IntegerField(null=True, blank=True)
+    turno_tarde = models.IntegerField(null=True, blank=True)
+    fecha = models.CharField(max_length=50)
+
+    class Meta:
+        managed = True
+        db_table = 'PersonalAulaAsistencia'

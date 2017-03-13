@@ -73,3 +73,17 @@ export interface ICurso {
     nota_minima: number,
     etapa: number
 }
+
+export interface ILocalAmbienteDetail {
+    id_localambiente: number,
+    numero: number,
+    n_piso: number,
+    capacidad: number,
+    localcurso: number,
+    id_ambiente: IAmbiente
+}
+
+export interface IAmbiente {
+    id_ambiente: number,
+    nombre_ambiente: string,
+}

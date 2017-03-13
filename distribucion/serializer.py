@@ -1,5 +1,5 @@
 from locales_consecucion.models import *
-from locales_consecucion.serializer import LocalSerializer
+from locales_consecucion.serializer import LocalSerializer, LocalAmbienteDetalleSerializer
 from rest_framework import routers, serializers, viewsets
 
 
@@ -23,4 +23,15 @@ class LocalZonasDetalleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CargoFuncionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CargoFuncional
+        fields = '__all__'
 
+
+class PersonalSerializer(serializers.ModelSerializer):
+    id_cargofuncional = CargoFuncionalSerializer()
+
+    class Meta:
+        model = Personal
+        fields = '__all__'

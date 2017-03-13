@@ -32,6 +32,14 @@ class AmbienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LocalAmbienteDetalleSerializer(serializers.ModelSerializer):
+    id_ambiente = AmbienteSerializer()
+
+    class Meta:
+        model = LocalAmbiente
+        fields = '__all__'
+
+
 class DirectorioLocalCursoDetalleSerializer(serializers.ModelSerializer):
     local = DirectorioLocalSerializer()
     ambientes = AmbienteSerializer(many=True, read_only=True)

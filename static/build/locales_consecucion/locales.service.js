@@ -48,7 +48,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalService.prototype["delete"] = function (pk) {
+        LocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -81,7 +81,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalCurso.prototype["delete"] = function (pk) {
+        LocalCurso.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -124,7 +124,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalAmbienteService.prototype["delete"] = function (pk) {
+        LocalAmbienteService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -190,7 +190,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DirectorioLocalService.prototype["delete"] = function (pk) {
+        DirectorioLocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
