@@ -131,13 +131,13 @@
                     <table class="table  table-striped table-hover">
                         <thead>
                         <tr>
-                            <th class="bg-table-inei1">PEA A CAPACITAR</th>
+                            <th class="bg-table-inei1">META A CAPACITAR</th>
                             <th class="bg-table-inei2" id="cant_meta"></th>
-                            <th class="bg-table-inei1">PEA A RECLUTAR</th>
+                            <th class="bg-table-inei1">SELECCIONADOS PARA CAPACITAR</th>
                             <th class="bg-table-inei2" id="cant_reclutada"></th>
-                            <th class="bg-table-inei1">TOTAL DE AULAS</th>
+                            <th class="bg-table-inei1">META DE AULA</th>
                             <th class="bg-table-inei2" id="aulas_meta_cantidad"></th>
-                            <th class="bg-table-inei1">AULAS OBTENIDAS</th>
+                            <th class="bg-table-inei1">AULAS A USAR</th>
                             <th class="bg-table-inei2" id="capacidad_ambiente"></th>
                         </tr>
                         </thead>
@@ -192,12 +192,13 @@
             <br>
             <div class="row">
                 <div class="text-left">
-                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocal" class="btn btn-primary">
-                        Buscar Local Seleccionado <i
-                            class="icon-arrow-right14 position-right"></i></button>
                     <button type="button" class="btn btn-primary btn-sm" id="buscarlocalmarco" class="btn btn-primary">
                         Buscar Local Marco <i
                             class="icon-arrow-right14 position-right"></i></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocal" class="btn btn-primary">
+                        Buscar Local Seleccionado <i
+                            class="icon-arrow-right14 position-right"></i></button>
+
                 </div>
             </div>
         </div>
@@ -205,7 +206,7 @@
     <form class="form-validate-jquery" id="form_local" action="#">
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title text-inei">REGISTRO DE LOCAL</h5>
+                <h5 class="panel-title text-inei">NOMBRE DEL LOCAL Y DIRECCION</h5>
             </div>
             <div class="panel-body">
                 <input type="hidden" id="id_local">
@@ -316,91 +317,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="panel panel-flat panel-inei">
-            <div class="panel-heading">
-                <h5 class="panel-title text-inei">PERIODO DE CAPACITACIÓN Y TURNO</h5>
-            </div>
-            <div class="panel-body">
-                <fieldset class="content-group">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Fecha Inicio</label>
-                            <div class="form-group">
-                                <input type="text" required="required" name="fecha_inicio"
-                                       class="daterange-single form-control" placeholder=" Ingrese fecha inicio">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Fecha Fin</label>
-                            <div class="form-group">
-                                <input type="text" required="required" name="fecha_fin"
-                                       class="daterange-single form-control" placeholder=" Ingrese fecha fin">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Turno</label>
-                            <div class="form-group">
-                                <select name="turno_uso_local" class="form-control bg-white text-grey-400">
-                                    <option value="">Seleccione Turno</option>
-                                    <option value="0">Mañana</option>
-                                    <option value="1">Tarde</option>
-                                    <option value="2">Todo el día</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <input type="text" style="display: none" name="x" id="x">
-            <input type="text" style="display: none" name="y" id="y">
-        </div>
-        <div class="panel panel-flat panel-inei">
-            <div class="panel-heading">
-                <h5 class="panel-title text-inei">DATOS DE FUNCIONARIO DEL INEI</h5>
-
-            </div>
-            <div class="panel-body">
-                <fieldset class="content-group">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label>Apellidos y Nombres</label>
-                                    <input type="text" required="required" name="funcionario_nombre"
-                                           class="form-control" placeholder="Digite Apellidos y Nombres">
-                                </div>
-                                {#                                <select class="form-control bg-white text-grey-400" name="funcionario_nombre"#}
-                                {#                                        id="funcionario_nombre">#}
-                                {#                                    <option value="">Seleccione</option>#}
-                                {#                                </select>#}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Cargo</label>
-                                <input type="text" name="funcionario_cargo"
-                                       class="form-control" placeholder="Digite cargo">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" required="required" name="funcionario_email"
-                                       class="form-control" placeholder="Digite Email">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Teléfono Celular</label>
-                                <input type="text" name="funcionario_celular"
-                                       class="form-control" placeholder="Digite Teléfono Celular">
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
                 <h5 class="panel-title text-inei">DATOS DEL RESPONSABLE DEL LOCAL</h5>
@@ -442,10 +358,49 @@
                 </fieldset>
             </div>
         </div>
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">PERIODO DE CAPACITACIÓN Y TURNO</h5>
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Fecha Inicio</label>
+                            <div class="form-group">
+                                <input type="text" required="required" name="fecha_inicio"
+                                       class="daterange-single form-control" placeholder=" Ingrese fecha inicio">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Fecha Fin</label>
+                            <div class="form-group">
+                                <input type="text" required="required" name="fecha_fin"
+                                       class="daterange-single form-control" placeholder=" Ingrese fecha fin">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Turno</label>
+                            <div class="form-group">
+                                <select name="turno_uso_local" class="form-control bg-white text-grey-400">
+                                    <option value="">Seleccione Turno</option>
+                                    <option value="0">Mañana</option>
+                                    <option value="1">Tarde</option>
+                                    <option value="2">Todo el día</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <input type="text" style="display: none" name="x" id="x">
+            <input type="text" style="display: none" name="y" id="y">
+        </div>
+
 
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title text-inei">AMBIENTES</h5>
+                <h5 class="panel-title text-inei">REGISTRO DE AULA Y/O AMBIENTES</h5>
 
             </div>
             <div class="panel-body">
@@ -456,10 +411,18 @@
                                 <table class="table-responsive table table-striped table-hover">
                                     <thead>
                                     <tr class="bg-table-inei1">
-                                        <th>Tipo de Ambiente</th>
-                                        <th>Total</th>
-                                        <th>Disponible</th>
-                                        <th>A usar</th>
+                                        <th>
+                                            <center>Tipo de Ambiente</center>
+                                        </th>
+                                        <th>
+                                            <center>Total</center>
+                                        </th>
+                                        <th>
+                                            <center>Disponible</center>
+                                        </th>
+                                        <th>
+                                            <center>A usar</center>
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -572,55 +535,113 @@
                 </div>
             </div>
         </div>
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">REGISTRO DE AULA/S</h5>
+
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
+
+                    <div class="row">
+                        <table id="tabla_aulas" class="table table-bordered table-responsive">
+
+                            <thead>
+
+                            <tr>
+                                <th>
+                                    <center>N° Ord.</center>
+                                </th>
+                                <th>
+                                    <center>Tipo de Ambiente</center>
+                                </th>
+                                <th>
+                                    <center>N° Ambiente</center>
+                                </th>
+                                <th>
+                                    <center>Capacidad</center>
+                                </th>
+                                <th>
+                                    <center>Piso</center>
+                                </th>
+                                <th>
+                                    <center>Guardar</center>
+                                </th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            </tbody>
+                            <tfoot>
+                            <tr style="background-color:#A5C25C">
+                                <td colspan="3">TOTAL</td>
+                                <td>
+                                    <span id="capacidad_total"></span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">DATOS DE FUNCIONARIO DEL INEI</h5>
+
+            </div>
+            <div class="panel-body">
+                <fieldset class="content-group">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label>Apellidos y Nombres</label>
+                                    <input type="text" required="required" name="funcionario_nombre"
+                                           class="form-control" placeholder="Digite Apellidos y Nombres">
+                                </div>
+                                {#                                <select class="form-control bg-white text-grey-400" name="funcionario_nombre"#}
+                                {#                                        id="funcionario_nombre">#}
+                                {#                                    <option value="">Seleccione</option>#}
+                                {#                                </select>#}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Cargo</label>
+                                <input type="text" name="funcionario_cargo"
+                                       class="form-control" placeholder="Digite cargo">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" required="required" name="funcionario_email"
+                                       class="form-control" placeholder="Digite Email">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Teléfono Celular</label>
+                                <input type="text" name="funcionario_celular"
+                                       class="form-control" placeholder="Digite Teléfono Celular">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
     </form>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">REGISTRO DE AULA/S</h5>
-
-        </div>
-        <div class="panel-body">
-            <fieldset class="content-group">
-
-                <div class="row">
-                    <table id="tabla_aulas" class="table table-bordered table-responsive">
-                        <thead>
-                        <tr>
-                            <th>N° Ord.</th>
-                            <th>Tipo de Ambiente</th>
-                            <th>N° Ambiente</th>
-                            <th>Capacidad</th>
-                            <th>Piso</th>
-                            <th>Guardar</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                        <tfoot>
-                        <tr style="background-color:#A5C25C">
-                            <td colspan="3">TOTAL</td>
-                            <td>
-                                <span id="capacidad_total"></span>
-                            </td>
-                            <td></td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </fieldset>
-        </div>
-    </div>
-
-
     <div class="row">
         <div class="text-left">
-            <button type="reset" class="btn btn-primary" id="reset">NUEVO LOCAL <i
-                    class="icon-reload-alt position-right"></i></button>
             <button type="button" id="btn_save_local" class="btn btn-primary">Guardar <i
                     class="icon-arrow-right14 position-right"></i></button>
         </div>
     </div>
-    </form>
     </div>
 
     <!-- /simple panel -->
@@ -663,6 +684,8 @@
                 </div>
 
                 <div class="modal-body">
+                    <button type="button" class="btn btn-primary" id="reset">NUEVO LOCAL <i
+                            class="icon-reload-alt position-right"></i></button>
                     <table class="table datatable-basic table-bordered" id="tabla_directorio_locales_filter">
                         <thead>
                         <tr class="bg-blue">

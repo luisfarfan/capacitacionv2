@@ -35,3 +35,17 @@ class PersonalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personal
         fields = '__all__'
+
+
+class PersonalAulaCrudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalAula
+        fields = '__all__'
+
+
+class PersonalAulaSerializer(serializers.ModelSerializer):
+    id_pea = PersonalSerializer()
+
+    class Meta:
+        model = PersonalAula
+        fields = '__all__'

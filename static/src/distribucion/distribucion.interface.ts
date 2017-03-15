@@ -26,3 +26,10 @@ export interface ICargoFuncional {
     id_cargofuncional: number,
     nombre_funcionario: string,
 }
+
+export interface IPersonalAula {
+    id_instructor: number,
+    id_localambiente: number,
+    id_pea: IPersonal,
+    id_peaaula: number,
+}

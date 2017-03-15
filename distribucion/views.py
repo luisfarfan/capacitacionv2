@@ -54,8 +54,18 @@ class PersonalCapacitarbyCursoViewSet(generics.ListAPIView):
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso_id).values_list('id_cargofuncional', flat=True)
         zonas = LocalZonas.objects.filter(localcurso_id=localcurso).values_list('zona__ZONA', flat=True)
         ubigeos = LocalZonas.objects.filter(localcurso_id=localcurso).values_list('zona__UBIGEO', flat=True).distinct()
-        return Personal.objects.filter(ubigeo_id__in=ubigeos, zona__in=zonas, id_cargofuncional_id__in=cargos,
-                                       contingencia=0, baja_estado=0)
+        peaDistribuida = PersonalAula.objects.filter(id_pea__ubigeo_id__in=ubigeos, id_pea__zona__in=zonas,
+                                                     id_pea__id_cargofuncional_id__in=cargos).values_list('id_pea',
+                                                                                                          flat=True)
+        if 'contingencia' in self.kwargs:
+            query = Personal.objects.exclude(id_pea__in=peaDistribuida).filter(ubigeo_id__in=ubigeos, zona__in=zonas,
+                                                                               id_cargofuncional_id__in=cargos,
+                                                                               contingencia=1)
+        else:
+            query = Personal.objects.exclude(id_pea__in=peaDistribuida).filter(ubigeo_id__in=ubigeos, zona__in=zonas,
+                                                                               id_cargofuncional_id__in=cargos,
+                                                                               contingencia=0, baja_estado=0)
+        return query
 
 
 @csrf_exempt
@@ -97,4 +107,27 @@ class LocalAmbienteDetalleViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
-        return LocalAmbiente.objects.filter(localcurso_id=localcurso)
+        return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente')
+
+
+class PersonalAulaViewSet(viewsets.ModelViewSet):
+    queryset = PersonalAula.objects.all()
+    serializer_class = PersonalAulaCrudSerializer
+
+
+@csrf_exempt
+def setInstructor(request):
+    localambiente_id = request.POST['localambiente_id']
+    instructor_id = request.POST['instructor_id']
+
+    PersonalAula.objects.filter(id_localambiente_id=localambiente_id).update(id_instructor=instructor_id)
+
+    return JsonResponse(list(PersonalAula.objects.filter(id_localambiente_id=localambiente_id).values()), safe=False)
+
+
+class PersonalAulaDetalleViewSet(generics.ListAPIView):
+    serializer_class = PersonalAulaSerializer
+
+    def get_queryset(self):
+        localambiente = self.kwargs['id_localambiente']
+        return PersonalAula.objects.filter(id_localambiente_id=localambiente)

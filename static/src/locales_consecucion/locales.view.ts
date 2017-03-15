@@ -13,6 +13,7 @@ import {ILocal, ILocalAmbiente, ILocalCurso, ICurso} from './local.interface';
 import UbigeoView from '../ubigeo/ubigeo.view';
 import * as utils from '../core/utils';
 import {IUbigeo} from "../ubigeo/ubigeo.view";
+import {CursoInyection} from '../comun.utils';
 
 declare var $: any;
 declare var jQuery: any;
@@ -115,7 +116,10 @@ class LocalController {
     private form_local_validate: any;
     private form_local_serializado: ILocal;
 
+    private cursoInyection: CursoInyection;
+
     constructor() {
+        this.cursoInyection = new CursoInyection();
         this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
         this.setEvents();
         this.addMethodJqueryValidator();
@@ -129,6 +133,11 @@ class LocalController {
 
 
     setEvents() {
+        $('#reset').on('click', () => {
+            this.resetForm();
+            $('#modal_localesmarco').modal('hide');
+        })
+
         $('#etapa').on('change', () => {
             this.etapa_id = $('#etapa').val();
             this.getCursos();
@@ -144,7 +153,8 @@ class LocalController {
             }
         });
         $('#btn_generar_ambientes').on('click', () => {
-            this.generarAmbientes();
+            this.saveLocales();
+            //this.generarAmbientes();
         });
         $('#buscarlocalmarco').on('click', () => {
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
@@ -275,6 +285,7 @@ class LocalController {
                     this.directoriolocalCurso = directoriolocalCurso;
                     utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
                     this.form_local_validate.resetForm();
+                    this.generarAmbientes();
                 }).fail()
             }).fail(() => {
                 utils.showSwalAlert('Errorrrr!!', 'Error', 'error');
@@ -283,10 +294,13 @@ class LocalController {
             this.directoriolocalService.update(this.directorioLocal.id_local, this.form_local_serializado).done((directoriolocal: ILocal) => {
                 this.directorioLocal = directoriolocal;
                 utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                this.generarAmbientes();
             });
         } else if (this.local) {
             this.localService.update(this.local.id_local, this.form_local_serializado).done((local) => {
                 this.local = local;
+                utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                this.generarAmbientes();
             })
         }
     }
@@ -345,12 +359,11 @@ class LocalController {
                 this.setDirectorioLocal($(element.currentTarget).data('value'), false);
                 this.directorioLocal = null;
                 this.directoriolocalCurso = null;
-                $('#modal_localesmarco').modal('hide');
+                $('#modal_localesbyubigeo').modal('hide');
             });
             $('[name="local_delete"]').on('click', (element: JQueryEventObject) => {
-                utils.alert_confirm(() => {
+                utils.alert_confirm(() => this.deleteLocal($(element.currentTarget).data('value')), 'Esta seguro de quitar este local de los locales seleccionados?', 'error');
 
-                }, 'Esta quitar este local de los locales seleccionados', 'error')
             });
         });
     }
@@ -391,7 +404,7 @@ class LocalController {
                         this.directoriolocalService.seleccionarDirectorio($(element.currentTarget).val(), $('#cursos').val()).done(() => {
                             $(element.currentTarget).prop('checked', true)
                         });
-                    }, 'Esta seguro de guardar este elemento?', 'info', $(element.currentTarget).prop('checked', false))
+                    }, 'Esta seguro de guardar?', 'info', $(element.currentTarget).prop('checked', false))
                 });
                 let chk_directoriolocal: any = $('[name="chk_directoriolocal_seleccionado"]');
                 chk_directoriolocal.map((index: number, value: any) => {
@@ -448,7 +461,7 @@ class LocalController {
         let html: string = ``;
         ambientes.map((value: ILocalAmbiente, index: number) => {
             html += `<tr>
-                        <td>${index + 1}</td><td>${value.numero}</td><td>${value.id_ambiente.nombre_ambiente}</td>
+                        <td>${index + 1}</td><td>${value.id_ambiente.nombre_ambiente}</td><td>${value.numero}</td>
                         <td><input type="number" name="capacidad_ambiente" class="form-control" value="${value.capacidad == null ? '' : value.capacidad}"></td>
                         <td><input type="number" name="piso_ambiente" class="form-control" value="${value.n_piso == null ? '' : value.n_piso}"></td>
                         <td>
@@ -494,6 +507,21 @@ class LocalController {
         });
     }
 
+    deleteLocal(id_local: number) {
+        this.localService.delete(id_local).done((deleted) => {
+            $('#modal_localesbyubigeo').modal('hide');
+        })
+    }
+
+    resetForm() {
+        this.local = null;
+        this.directorioLocal = null;
+        let table = $('#tabla_aulas').DataTable()
+        table.destroy();
+        $('#tabla_aulas').find('tbody').html('');
+
+        $('#form_local')[0].reset();
+    }
 }
 
 new LocalController();

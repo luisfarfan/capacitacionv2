@@ -1,377 +1,141 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
 {% block content %}
-    <div class="panel panel-flat panel-inei">
-
-        <div class="panel-body">
-
-            <div class="row">
-                <label class="col-lg-1 col-label-inei">Local</label>
-                <div class="col-md-4">
-
-
-                    <select id="departamentos" class="form-control bg-white text-grey-400">
-
-                        <option value="">Seleccione local</option>
-                    </select>
-
-                </div>
-                <label class="col-lg-1 col-label-inei">Aula</label>
-                <div class="col-md-4">
-
-
-                    <select id="provincias" class="form-control bg-white text-grey-400">
-
-                        <option value="">Seleccione aula</option>
-                    </select>
-                </div>
-                <div class="col-md-3 text-right">
-
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                            data-target="#modal_localesbyubigeo" id="buscarlocal" class="btn btn-primary">MOSTRAR PEA
-                    </button>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                            data-target="#modal_pea_dar_baja">EJECUTAR BAJA Y ALTA
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">AMBIENTES</h5>
-
-        </div>
-
-        <div class="panel-body">
-            <div class="text-right">
-                <button type="button" class="btn btn-primary btn-sm" class="btn btn-primary">VER LISTADO REPORTE EN
-                    BLANCO
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" class="btn btn-primary">VER LISTADO REPORTE
-                </button>
-            </div>
-            <br>
-
-
-            <fieldset class="content-group">
-                <div class="row">
-                    <div class="col-md-12">
-                        <table class="table-responsive table table-striped table-hover table-bordered">
-                            <thead>
-                            <tr class="bg-table-inei1">
-                                <th>Nombres completos</th>
-                                <th>Cargo</th>
-                                <th>Turno mañana</th>
-                                <th>Turno tarde</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-    </div>
-    <div id="modal_pea_dar_baja" class="modal fade">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-indigo-inei">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title text-center text-bold">EJECUTAR BAJA Y ALTA</h6>
-                </div>
-                <div class="modal-body">
-                    <div id="tabla_pea_filter" class="dataTables_filter">
-                        <label><input type="search" class="" placeholder="Buscar en tabla"
-                                      aria-controls="tabla_pea"></label></div>
-                    <div class="text-right">
-                        <button type="button" class="btn btn-primary btn-sm" class="btn btn-primary">Guardar</button>
-                        <button type="button" class="btn btn-primary btn-sm" class="btn btn-primary">Exportar</button>
-                    </div>
-                    <div class="row">
-
-                        <div class="table table-responsive">
-                            <table class="table-responsive table table-striped table-hover ">
-                                <thead>
-                                <tr class="bg-table-inei1">
-                                    <th>Cargo</th>
-                                    <th>Status</th>
-                                    <th>DNI</th>
-                                    <th>Departamento</th>
-                                    <th>Apellido Parterno</th>
-                                    <th>Apellido materno</th>
-                                    <th>Nombres</th>
-                                    <th>Fecha de registro</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Jefe</td>
-                                    <td>Baja</td>
-                                    <td>40208879</td>
-                                    <td>Junin</td>
-                                    <td>Davalos</td>
-                                    <td>Jimenez</td>
-                                    <td>Ana</td>
-                                    <td>08/03/2017</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="datatable-footer">
-                            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-                                Motrando 1 de 10 registros
-                            </div>
-                            <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><a
-                                    class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
-                                    data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous">←</a><span><a
-                                    class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1"
-                                    tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_0"
-                                                         data-dt-idx="2" tabindex="0">2</a></span><a
-                                    class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="3"
-                                    tabindex="0" id="DataTables_Table_0_next">→</a></div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="modal_pea_dar_alta" class="modal fade">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">Dar Alta</h6>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 col-md-offset-3">
-                            <button data-toggle="modal" onclick="darAlta()" id="btn_dar_alta"
-                                    class="btn btn-primary">
-                                Realizar
-                                Dar de Alta
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="table table-responsive">
-                            <table id="tabla_pea_dar_alta" class="table table-responsive table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>DNI</th>
-                                    <th>Apellido Paterno</th>
-                                    <th>Apellido Materno</th>
-                                    <th>Nombre</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal_reporte_pea_exportar" class="modal fade">
-        <div class="modal-dialog modal-full">
-            <div class="row">
-                <a href="#" download="" id="btn_exportar_evaluacion" class="btn btn-primary">Exportar</a>
-            </div>
-            <div id="div_listado_reporte" class="modal-content">
-                <div class="modal-header bg-primary">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">Reporte PEA Asistencia</h6>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="table table-responsive">
-                            <table align="left" style="font-family:Arial; font-size:10px; width: 90%;" border="1"
-                                   cellpadding="2" cellspacing="2" bordercolor="#DFDFDF"
-                                   id="tabla_reporte_pea_asistencia" class="table table-bordered">
-                                <caption>
-                                    <center><h4 class="text-center">CENSOS NACIONALES 2017: XII DE POBLACIÓN, VII DE
-                                        VIVIENDA Y III DE COMUNIDADES INDÍGENAS</h4>
-                                        <h4 class="text-center">CENSO EXPERIMENTAL</h4>
-                                        <h4 class="text-center">RELACIÓN DE PARTICIPANTES</h4>
-                                        <h4 id="descripcion_curso_aula" class="text-center"></h4>
-                                        <h4 id="descripcion_aula" class="text-center"></h4></center>
-                                </caption>
-                                <caption>
-                                    <label>NOMBRE DE LOCAL :</label><label id="listado_nombre_local"></label><br>
-                                    <label>DIRECCIÓN DE LOCAL :</label><label
-                                        id="listado_direccion_local"></label><br>
-                                    <label>FECHA DE CAPACITACIÓN :</label><label
-                                        id="listado_fecha_local"></label><br>
-                                    <label>AULA :</label><label id="listado_aula_local"></label>
-                                </caption>
-                                <thead>
-
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-    <div id="div_is_6" style="display: none">
-
-        <div class="panel panel-primary panel-bordered">
+    <div class="col-md-12">
+        <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title"><font id="nombre_reporte">PRIMER DIA</font>
-                    <span id="contador" style="font-size: 16px !important;"
-                          class="label label-success position-right">Contador: </span>
-                </h5>
+                <h6 class="panel-title text-inei">Aulas asignadas<a class="heading-elements-toggle"><i
+                        class="icon-more"></i></a>
+                </h6>
                 <div class="heading-elements">
-                    <button type="button" id="btn_cierre_dia1" onclick="cerrarAsistenciaDia1()"
-                            class="btn btn-danger heading-btn legitRipple">Cierre
-                        del Dia1
+                    <button type="button" id="btn_bajas_altas" class="btn btn-primary heading-btn legitRipple">Bajas y
+                        Altas
                     </button>
+                </div>
+            </div>
 
-                    <button type="button" onclick="saveCurso6()" class="btn btn-danger heading-btn legitRipple">
-                        Guardar
-                    </button>
+            <div class="panel-body">
+                <label>Aula: </label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <select id="select_aulas_asignadas" class="form-control">
+                                <option value="">Seleccione aula</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-flat panel-inei">
+            <div class="panel-heading">
+                <h5 class="panel-title text-inei">Asistencia</h5>
+                <div class="heading-elements">
+                    <div class="heading-btn">
+                        <button type="button" data-popup="tooltip" title="Exportar"
+                                class="btn btn-primary btn-icon legitRipple"><i
+                                class="icon-file-excel"></i></button>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div id="content_tables_reportes" class="table-responsive">
-                        <table id="pea_total_distrito" class="table table-bordered">
+                    <p class="text-primary text-center text-bold">CENSOS NACIONALES 2017: XII DE POBLACIÓN,
+                        VII DE
+                        VIVIENDA Y III DE
+                        COMUNIDADES INDÍGENAS</p>
+                    <p class="text-primary text-center text-bold">CENSO EXPERIMENTAL</p>
+                    <p class="text-primary text-center text-bold">RELACIÓN DE PARTICIPANTES</p>
+                    <p id="p_curso_actual" class="text-primary text-center text-bold"></p>
+                    <p class="text-primary text-left text-bold">NOMBRE DE LOCAL: <span
+                            id="span_nombre_local"></span></p>
+                    <p class="text-primary text-left text-bold">DIRECCIÓN: <span id="span_direccion"></span>
+                    </p>
+                    <p class="text-primary text-left text-bold">FECHA DE CAPACITACIÓN: <span
+                            id="span_fecha_inicio"></span></p>
+                    <p class="text-primary text-left text-bold">AULA: <span id="span_aula"></span></p>
+                    <p class="text-primary text-left text-bold">INSTRUCTOR: <span
+                            id="span_nombre_instructor"></span>
+                    </p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-md-offset-5">
+                        <button id="btn_save_asistencia" type="button"
+                                class="pull-right btn bg-primary btn-raised active legitRipple btn-labeled btn-rounded">
+                            <b><i class="icon-reading"></i></b> Guardar Asistencia
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="tabla_asistencia"
+                                   class="table table-striped table-hover table-bordered">
+                                <thead>
+
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal_bajas_altas" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Bajas y altas</h6>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                <label>Locales</label>
+                                <select id="select_locales_seleccionados_asignacion" class="select form-control">
+                                    <option value="">Seleccione local</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table id="table_localzonas_detalle" class="table table-responsive table-bordered">
                             <thead>
-                            <tr>
-                                <th>N°</th>
-                                <th>Apellido Paterno</th>
-                                <th>Apellido Materno</th>
-                                <th>Nombres</th>
+                            <tr class="bg-blue-400">
+                                <th>#</th>
+                                <th>Nombre Local</th>
                                 <th>Zona</th>
-                                <th>Asistió</th>
+                                <th>Etiqueta Zona</th>
                             </tr>
                             </thead>
                             <tbody>
 
                             </tbody>
+
+
                         </table>
                     </div>
-
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btn_asignar_zonas" class="btn btn-primary legitRipple">Asignar</button>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block js %}
-    <script type="text/javascript" src="{% static "assets/js/pages/components_modals.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
-
-
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/asistencia/asistencia.view.js" %}"></script>
 {% endblock %}

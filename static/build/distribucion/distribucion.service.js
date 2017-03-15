@@ -9,6 +9,8 @@ define(["require", "exports"], function (require, exports) {
             this.url_localambientes_detalle = BASEURL + "/distribucion/localambiente_detalle/";
             this.url_personal_bylocalcurso = BASEURL + "/distribucion/personalcapacitar_bylocalcurso/";
             this.url_distribuir = BASEURL + "/distribucion/distribuir/";
+            this.url_personalaula = BASEURL + "/distribucion/personalaula/";
+            this.url_crudpersonalaula = BASEURL + "/distribucion/crudpersonalaula/";
         }
         DistribucionService.prototype.filterLocalZona = function (pk) {
             return $.ajax({
@@ -20,14 +22,20 @@ define(["require", "exports"], function (require, exports) {
                 url: "" + this.url_localambientes_detalle + localcurso + "/"
             });
         };
-        DistribucionService.prototype.getPersonalbylocalCurso = function (localcurso) {
+        DistribucionService.prototype.getPersonalbylocalCurso = function (localcurso, contingencia) {
+            if (contingencia === void 0) { contingencia = false; }
             return $.ajax({
-                url: "" + this.url_personal_bylocalcurso + localcurso + "/"
+                url: "" + this.url_personal_bylocalcurso + localcurso + "/" + (contingencia ? '1/' : '')
             });
         };
         DistribucionService.prototype.distribuirPersonal = function (localcurso) {
             return $.ajax({
                 url: "" + this.url_distribuir + localcurso + "/"
+            });
+        };
+        DistribucionService.prototype.filterPersonalbyAula = function (localambiente_id) {
+            return $.ajax({
+                url: "" + this.url_personalaula + localambiente_id + "/"
             });
         };
         DistribucionService.prototype.update = function (pk, obj) {
@@ -44,7 +52,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DistribucionService.prototype.delete = function (pk) {
+        DistribucionService.prototype["delete"] = function (pk) {
             return $.ajax({
                 url: "" + this.url_localzona + pk + "/",
                 type: 'DELETE'
@@ -60,6 +68,13 @@ define(["require", "exports"], function (require, exports) {
         DistribucionService.prototype.getZonasLibres = function (curso, ubigeo) {
             return $.ajax({
                 url: "" + this.url_zonas_libres + curso + "/" + ubigeo + "/"
+            });
+        };
+        DistribucionService.prototype.updateLocalAmbiente = function (localambiente_id, object) {
+            return $.ajax({
+                url: "" + this.url_crudpersonalaula + localambiente_id + "/",
+                type: 'PUT',
+                data: object
             });
         };
         return DistribucionService;

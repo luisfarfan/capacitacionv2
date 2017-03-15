@@ -1,10 +1,10 @@
-define(["require", "exports", './ubigeo.service', '../core/utils'], function (require, exports, ubigeo_service_1, utils) {
+define(["require", "exports", "./ubigeo.service", "../core/utils"], function (require, exports, ubigeo_service_1, utils) {
     "use strict";
     var UbigeoView = (function () {
         function UbigeoView(departamento_id, provincia_element_id, distrito_element_id, zona_element_id, setUbigeo) {
-            var _this = this;
             if (zona_element_id === void 0) { zona_element_id = ''; }
             if (setUbigeo === void 0) { setUbigeo = null; }
+            var _this = this;
             this.ubigeoService = new ubigeo_service_1["default"]();
             this.setUbigeo = null;
             this.departamento_element_id = departamento_id;

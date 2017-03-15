@@ -23708,3 +23708,21 @@ border: 1px solid #888;
     box-shadow: 0px 0px 5px 1px #6d6d6d;
     -webkit-box-shadow: 0px 0px 5px 1px #6d6d6d;
 }
+.col-label-inei{
+    width: 3.333333%;
+}
+.tabs.nav-tabs-highlight > li.active > a:hover, .nav-tabs.nav-tabs-highlight > li.active > a:focus{
+    border-top-color: #0065a9;
+    background-color: #328ecc;
+    color: white;
+    font-weight: bold;
+}
+.nav-tabs.nav-tabs-highlight > li.active > a{
+     border-top-color: #0065a9;
+    background-color: #328ecc;
+    color: white;
+    font-weight: bold;
+}
+.nav-tabs {
+    border-bottom: 1px solid #0065a9 !important;
+}

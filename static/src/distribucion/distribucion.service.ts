@@ -10,6 +10,8 @@ export class DistribucionService {
     private url_localambientes_detalle: string = `${BASEURL}/distribucion/localambiente_detalle/`;
     private url_personal_bylocalcurso: string = `${BASEURL}/distribucion/personalcapacitar_bylocalcurso/`;
     private url_distribuir: string = `${BASEURL}/distribucion/distribuir/`;
+    private url_personalaula: string = `${BASEURL}/distribucion/personalaula/`;
+    private url_crudpersonalaula: string = `${BASEURL}/distribucion/crudpersonalaula/`;
 
 
     filterLocalZona(pk: number): JQueryXHR {
@@ -24,15 +26,21 @@ export class DistribucionService {
         });
     }
 
-    getPersonalbylocalCurso(localcurso: number): JQueryXHR {
+    getPersonalbylocalCurso(localcurso: number, contingencia: boolean = false): JQueryXHR {
         return $.ajax({
-            url: `${this.url_personal_bylocalcurso}${localcurso}/`,
+            url: `${this.url_personal_bylocalcurso}${localcurso}/${contingencia ? '1/' : ''}`,
         });
     }
 
     distribuirPersonal(localcurso: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_distribuir}${localcurso}/`,
+        });
+    }
+
+    filterPersonalbyAula(localambiente_id: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_personalaula}${localambiente_id}/`,
         });
     }
 
@@ -70,6 +78,14 @@ export class DistribucionService {
     getZonasLibres(curso: number, ubigeo: string): JQueryXHR {
         return $.ajax({
             url: `${this.url_zonas_libres}${curso}/${ubigeo}/`,
+        });
+    }
+
+    updateLocalAmbiente(localambiente_id: number, object: Object) {
+        return $.ajax({
+            url: `${this.url_crudpersonalaula}${localambiente_id}/`,
+            type: 'PUT',
+            data: object
         });
     }
 }

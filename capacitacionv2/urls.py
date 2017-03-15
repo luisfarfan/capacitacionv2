@@ -17,6 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 from locales_consecucion.urls import *
+from distribucion.urls import routerDistribucion
+from asistencia.urls import routerAsistencia
 from seguridad.views import *
 
 urlpatterns = [
@@ -24,7 +26,10 @@ urlpatterns = [
     url(r'modulos/(?P<slug>.+)/$', RenderTemplate.as_view()),
     url(r'^locales/', include(router.urls)),
     url(r'^locales/', include('locales_consecucion.urls')),
+    url(r'^distribucion/', include(routerDistribucion.urls)),
     url(r'^distribucion/', include('distribucion.urls')),
+    url(r'^asistencia/', include(routerAsistencia.urls)),
+    url(r'^asistencia/', include('asistencia.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
     url('^setSession/$', setSession)
 ]

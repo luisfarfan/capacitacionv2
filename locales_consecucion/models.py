@@ -53,7 +53,7 @@ class CursoCriterio(models.Model):
 
 
 class LocalCurso(models.Model):
-    local = models.ForeignKey('Local')
+    local = models.ForeignKey('Local', on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso)
     ambientes = models.ManyToManyField('Ambiente', through='LocalAmbiente')
     zonas = models.ManyToManyField(Zona, through='LocalZonas')
@@ -155,8 +155,8 @@ class LocalAmbiente(models.Model):
     numero = models.IntegerField(blank=True, null=True)
     n_piso = models.IntegerField(blank=True, null=True)
     capacidad = models.IntegerField(blank=True, null=True)
-
-    # pea = models.ManyToManyField('PEA', through='PEA_AULA')
+    id_instructor = models.IntegerField(null=True, blank=True)
+    pea = models.ManyToManyField('Personal', through='PersonalAula')
 
     class Meta:
         managed = True
@@ -288,7 +288,6 @@ class PersonalAula(models.Model):
     id_peaaula = models.AutoField(primary_key=True)
     id_pea = models.ForeignKey(Personal, on_delete=models.CASCADE)
     id_localambiente = models.ForeignKey('LocalAmbiente', on_delete=models.CASCADE)
-    id_instructor = models.IntegerField(null=True, blank=True)
 
     # pea_fecha = models.CharField(max_length=100, blank=True, null=True)
 
@@ -298,7 +297,7 @@ class PersonalAula(models.Model):
 
 
 class PersonalAulaAsistencia(models.Model):
-    peaaula = models.ForeignKey(PersonalAula)
+    peaaula = models.ForeignKey(PersonalAula, related_name='personalaula')
     turno_manana = models.IntegerField(null=True, blank=True)
     turno_tarde = models.IntegerField(null=True, blank=True)
     fecha = models.CharField(max_length=50)

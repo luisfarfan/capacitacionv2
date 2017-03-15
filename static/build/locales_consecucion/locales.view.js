@@ -1,4 +1,4 @@
-define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../core/utils'], function (require, exports, locales_service_1, ubigeo_view_1, utils) {
+define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../core/utils", "../comun.utils"], function (require, exports, locales_service_1, ubigeo_view_1, utils, comun_utils_1) {
     "use strict";
     var LocalController = (function () {
         function LocalController() {
@@ -94,6 +94,7 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                     esMenor: true
                 }
             };
+            this.cursoInyection = new comun_utils_1.CursoInyection();
             this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
             this.setEvents();
             this.addMethodJqueryValidator();
@@ -106,6 +107,10 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
         }
         LocalController.prototype.setEvents = function () {
             var _this = this;
+            $('#reset').on('click', function () {
+                _this.resetForm();
+                $('#modal_localesmarco').modal('hide');
+            });
             $('#etapa').on('change', function () {
                 _this.etapa_id = $('#etapa').val();
                 _this.getCursos();
@@ -121,7 +126,8 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                 }
             });
             $('#btn_generar_ambientes').on('click', function () {
-                _this.generarAmbientes();
+                _this.saveLocales();
+                //this.generarAmbientes();
             });
             $('#buscarlocalmarco').on('click', function () {
                 if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
@@ -247,6 +253,7 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                         _this.directoriolocalCurso = directoriolocalCurso;
                         utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
                         _this.form_local_validate.resetForm();
+                        _this.generarAmbientes();
                     }).fail();
                 }).fail(function () {
                     utils.showSwalAlert('Errorrrr!!', 'Error', 'error');
@@ -256,11 +263,14 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                 this.directoriolocalService.update(this.directorioLocal.id_local, this.form_local_serializado).done(function (directoriolocal) {
                     _this.directorioLocal = directoriolocal;
                     utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                    _this.generarAmbientes();
                 });
             }
             else if (this.local) {
                 this.localService.update(this.local.id_local, this.form_local_serializado).done(function (local) {
                     _this.local = local;
+                    utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                    _this.generarAmbientes();
                 });
             }
         };
@@ -319,11 +329,10 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                     _this.setDirectorioLocal($(element.currentTarget).data('value'), false);
                     _this.directorioLocal = null;
                     _this.directoriolocalCurso = null;
-                    $('#modal_localesmarco').modal('hide');
+                    $('#modal_localesbyubigeo').modal('hide');
                 });
                 $('[name="local_delete"]').on('click', function (element) {
-                    utils.alert_confirm(function () {
-                    }, 'Esta quitar este local de los locales seleccionados', 'error');
+                    utils.alert_confirm(function () { return _this.deleteLocal($(element.currentTarget).data('value')); }, 'Esta seguro de quitar este local de los locales seleccionados?', 'error');
                 });
             });
         };
@@ -364,7 +373,7 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                             _this.directoriolocalService.seleccionarDirectorio($(element.currentTarget).val(), $('#cursos').val()).done(function () {
                                 $(element.currentTarget).prop('checked', true);
                             });
-                        }, 'Esta seguro de guardar este elemento?', 'info', $(element.currentTarget).prop('checked', false));
+                        }, 'Esta seguro de guardar?', 'info', $(element.currentTarget).prop('checked', false));
                     });
                     var chk_directoriolocal = $('[name="chk_directoriolocal_seleccionado"]');
                     chk_directoriolocal.map(function (index, value) {
@@ -420,7 +429,7 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
             var _this = this;
             var html = "";
             ambientes.map(function (value, index) {
-                html += "<tr>\n                        <td>" + (index + 1) + "</td><td>" + value.numero + "</td><td>" + value.id_ambiente.nombre_ambiente + "</td>\n                        <td><input type=\"number\" name=\"capacidad_ambiente\" class=\"form-control\" value=\"" + (value.capacidad == null ? '' : value.capacidad) + "\"></td>\n                        <td><input type=\"number\" name=\"piso_ambiente\" class=\"form-control\" value=\"" + (value.n_piso == null ? '' : value.n_piso) + "\"></td>\n                        <td>\n                            <ul class=\"icons-list\">\n                                <li name=\"li_save_capacidad_piso\" data-value=\"" + value.id_localambiente + "\" class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            </ul>\n                        </td>\n                     </tr>";
+                html += "<tr>\n                        <td>" + (index + 1) + "</td><td>" + value.id_ambiente.nombre_ambiente + "</td><td>" + value.numero + "</td>\n                        <td><input type=\"number\" name=\"capacidad_ambiente\" class=\"form-control\" value=\"" + (value.capacidad == null ? '' : value.capacidad) + "\"></td>\n                        <td><input type=\"number\" name=\"piso_ambiente\" class=\"form-control\" value=\"" + (value.n_piso == null ? '' : value.n_piso) + "\"></td>\n                        <td>\n                            <ul class=\"icons-list\">\n                                <li name=\"li_save_capacidad_piso\" data-value=\"" + value.id_localambiente + "\" class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>\n                            </ul>\n                        </td>\n                     </tr>";
             });
             if ($.fn.DataTable.isDataTable('#tabla_aulas')) {
                 $('#tabla_aulas').DataTable().destroy();
@@ -458,6 +467,19 @@ define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../
                     });
                 }
             });
+        };
+        LocalController.prototype.deleteLocal = function (id_local) {
+            this.localService["delete"](id_local).done(function (deleted) {
+                $('#modal_localesbyubigeo').modal('hide');
+            });
+        };
+        LocalController.prototype.resetForm = function () {
+            this.local = null;
+            this.directorioLocal = null;
+            var table = $('#tabla_aulas').DataTable();
+            table.destroy();
+            $('#tabla_aulas').find('tbody').html('');
+            $('#form_local')[0].reset();
         };
         return LocalController;
     }());

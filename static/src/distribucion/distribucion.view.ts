@@ -1,11 +1,11 @@
 /**
  * Created by lfarfan on 12/03/2017.
  */
-import {Curso} from '../comun.utils';
+import {CursoInyection} from '../comun.utils';
 import {DistribucionService} from '../distribucion/distribucion.service';
 import {LocalService} from '../locales_consecucion/locales.service';
-import {ILocalCurso, ILocal, ILocalAmbienteDetail} from '../locales_consecucion/local.interface';
-import {ILocalZona, IPersonal} from 'distribucion.interface';
+import {ILocalCurso, ILocal, ILocalAmbienteDetail, ILocalAmbiente} from '../locales_consecucion/local.interface';
+import {ILocalZona, IPersonal, IPersonalAula} from 'distribucion.interface';
 import UbigeoService from '../ubigeo/ubigeo.service';
 import {IZona} from '../ubigeo/ubigeo.interface';
 import * as utils from '../core/utils';
@@ -21,7 +21,7 @@ interface FilterFields {
     curso: number
 }
 class DistribucionView {
-    private curso: Curso;
+    private curso: CursoInyection;
     private localService: LocalService = new LocalService();
     private ubigeoService: UbigeoService = new UbigeoService();
     private distribucionService: DistribucionService = new DistribucionService();
@@ -39,10 +39,13 @@ class DistribucionView {
     private localAmbientes: ILocalAmbienteDetail[] = []
     private localZonas: ILocalZona[] = [];
     private locales: ILocal[] = [];
-    private personal: IPersonal[] = []
+    private personal: IPersonal[] = [];
+    private personalContingencia: IPersonal[] = [];
+    private localAmbienteSelected: ILocalAmbienteDetail = null;
+    private personalAula: IPersonalAula[] = [];
 
     constructor() {
-        this.curso = new Curso();
+        this.curso = new CursoInyection();
         $('#cursos').on('change', () => {
             this.filterFields.curso = this.curso.curso_selected.id_curso;
             this.filterLocalesSeleccionados();
@@ -81,10 +84,28 @@ class DistribucionView {
         });
 
         $('#btn_distribuir').on('click', () => {
-            this.distribuirPersonal();
-        })
-
-
+            if (this.personal.length == 0) {
+                utils.showInfo('No existe personal para realizar la distribución');
+                return false;
+            }
+            utils.alert_confirm(() => this.distribuirPersonal(), 'Esta seguro de realizar la distribución', 'success');
+        });
+        $('#btn_pea_contingencia').on('click', () => {
+            if (this.localCursoSelected == null) {
+                utils.showInfo('Por favor, seleccione un Local');
+                return false;
+            }
+            this.getContingenciabyLocalCurso();
+            $('#modal_personal_reserva').modal('show');
+        });
+        $('#a_save_instructor').on('click', () => {
+            if (this.localAmbienteSelected == null || $('#select_instructor').val() == "") {
+                utils.showInfo('Para guardar el instructor, se necesita seleccionar un Aula')
+                return false;
+            } else {
+                utils.alert_confirm(() => this.saveInstructor(), 'Está seguro de guardar el Instructor en esta aula?', 'info');
+            }
+        });
     }
 
     filterLocalesSeleccionados() {
@@ -162,16 +183,29 @@ class DistribucionView {
             this.localAmbientes = localAmbientes;
             let html: string = '';
             this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
-                html += `<tr data-value="${value.id_localambiente}">
+                html += `<tr title="Mostrar personal de aula" style="cursor: pointer; cursor: hand;" data-value="${value.id_localambiente}">
                             <td>${index + 1}</td>
                             <td>${value.id_ambiente.nombre_ambiente}</td>
                             <td>${value.numero}</td>
                             <td>${value.capacidad}</td>
                             <td>${0}</td>
-                            <td>${0}</td>
                          </tr>`
             });
             $('#tabla_detalle_ambientes').find('tbody').html(html);
+            $('#tabla_detalle_ambientes').find('tbody').find('tr').off();
+            $('#tabla_detalle_ambientes').find('tbody').find('tr').on('click', (element: JQueryEventObject) => {
+                let localambiente_id: number = $(element.currentTarget).data('value');
+                this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
+                    if (value.id_localambiente == localambiente_id) {
+                        this.localAmbienteSelected = value;
+                    }
+                });
+                $('#tabla_detalle_ambientes').find('tbody').find('tr').map((index: number, domElement: Element) => {
+                    $(domElement).removeClass('bg-material-selected');
+                });
+                $(element.currentTarget).addClass('bg-material-selected');
+                this.getPersonalbyAula(localambiente_id);
+            })
         });
     }
 
@@ -197,9 +231,87 @@ class DistribucionView {
         })
     }
 
+    getContingenciabyLocalCurso() {
+        this.distribucionService.getPersonalbylocalCurso(this.localCursoSelected.id, true).done((personalContingencia) => {
+            this.personalContingencia = personalContingencia;
+            let html = '';
+            let table_personal_capacitar = $('#tabla_personal_reserva').DataTable();
+            this.personalContingencia.map((value: IPersonal, index: number) => {
+                html += `<tr>
+                             <td>${index + 1}</td>
+                             <td>${value.ape_paterno}</td>
+                             <td>${value.ape_materno} </td>
+                             <td>${value.nombre}</td>
+                             <td>${value.dni}</td>
+                             <td>${value.zona}</td>
+                             <td>${value.id_cargofuncional.nombre_funcionario}</td>
+                         </tr>`
+            });
+            table_personal_capacitar.destroy();
+            $('#tabla_personal_reserva').find('tbody').html(html);
+            table_personal_capacitar = $('#tabla_personal_reserva').DataTable();
+        });
+    }
+
     distribuirPersonal() {
+        let light_4 = $('#modal_personal_capacitar_no_distribuido');
+        $(light_4).block({
+            message: '<i class="icon-spinner4 spinner"></i><h5>Espere por favor, se esta realizando el proceso de distribución automática</h5>',
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.8,
+                cursor: 'wait'
+            },
+            css: {
+                border: 0,
+                padding: 0,
+                backgroundColor: 'none'
+            }
+        });
         this.distribucionService.distribuirPersonal(this.localCursoSelected.id).done((response) => {
-            console.log(response)
+            $(light_4).unblock();
+            utils.showSwalAlert('El proceso de distribución fue exitoso!', 'Exito', 'success');
+            $('#modal_personal_capacitar_no_distribuido').modal('hide');
+        });
+    }
+
+    getPersonalbyAula(localambiente_id: number) {
+        this.distribucionService.filterPersonalbyAula(localambiente_id).done((personalAula: IPersonalAula[]) => {
+            this.personalAula = personalAula;
+            this.setCabeceraDistribucion(localambiente_id);
+            let html: string = '';
+            this.personalAula.map((personal: IPersonalAula, index: number) => {
+                html += `<tr>
+                            <td>${index + 1}</td>
+                            <td>${personal.id_pea.dni}</td>
+                            <td>${personal.id_pea.ape_paterno}</td>
+                            <td>${personal.id_pea.ape_materno}</td>
+                            <td>${personal.id_pea.nombre}</td>
+                            <td>${personal.id_pea.zona}</td>
+                            <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
+                         </tr>`;
+            });
+            this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor);
+            $('#tabla_pea').find('tbody').html(html);
+        });
+    }
+
+    setCabeceraDistribucion(localambiente: number) {
+        $('#span_nombre_local').text(this.localCursoSelected.local.nombre_local);
+        $('#span_direccion').text(this.localCursoSelected.local.referencia);
+        $('#span_fecha_inicio').text(this.localCursoSelected.local.fecha_inicio);
+        this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
+            if (value.id_localambiente == localambiente) {
+                $('#span_aula').text(`${index + 1}`)
+            }
+        });
+    }
+
+    saveInstructor() {
+        let instructor_id: number = $('#select_instructor').val();
+        this.localService.saveDetalleAmbiente(this.localAmbienteSelected.id_localambiente, {id_instructor: instructor_id}).done((response) => {
+            utils.showSwalAlert('Se guardo el instructor!', 'Exito', 'exito');
+            this.localAmbienteSelected.id_instructor = instructor_id;
         });
     }
 }

@@ -34,7 +34,7 @@ class AmbienteSerializer(serializers.ModelSerializer):
 
 class LocalAmbienteDetalleSerializer(serializers.ModelSerializer):
     id_ambiente = AmbienteSerializer()
-
+    pea = Personal
     class Meta:
         model = LocalAmbiente
         fields = '__all__'

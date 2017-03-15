@@ -18,7 +18,7 @@ export interface ILocal {
     telefono_local_celular: string;
     fecha_inicio: string;
     fecha_fin: string;
-    turno_uso_local: string;
+    turno_uso_local: number;
     capacidad_local_total: string;
     capacidad_local_usar: string;
     funcionario_nombre: string;
@@ -80,7 +80,8 @@ export interface ILocalAmbienteDetail {
     n_piso: number,
     capacidad: number,
     localcurso: number,
-    id_ambiente: IAmbiente
+    id_ambiente: IAmbiente,
+    id_instructor: number
 }
 
 export interface IAmbiente {
