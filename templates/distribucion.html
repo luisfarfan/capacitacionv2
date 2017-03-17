@@ -25,9 +25,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" id="btn_pea_capacitar" class="btn btn-primary">PEA SELECCIONADA
+                        <button type="button" id="btn_pea_capacitar" class="btn btn-primary">Personal seleccionado
                         </button>
-                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary">PEA RESERVA
+                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary">Personal de reserva
                         </button>
                     </div>
                 </div>
@@ -111,8 +111,8 @@
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th>Nombres</th>
-                                    <th>Zona</th>
                                     <th>Cargo</th>
+                                    <th>Zona</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -147,13 +147,13 @@
                             <table id="tabla_pea_capacitar" class="table table-responsive table-bordered">
                                 <thead>
                                 <tr class="bg-table-inei1">
-                                    <th>#</th>
+                                    <th>N°</th>
+                                    <th>DNI</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th>Nombre</th>
-                                    <th>DNI</th>
-                                    <th>Zona</th>
                                     <th>Cargo</th>
+                                    <th>Zona</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -183,13 +183,13 @@
                             <table id="tabla_personal_reserva" class="table table-responsive table-bordered">
                                 <thead>
                                 <tr class="bg-table-inei1">
-                                    <th>#</th>
+                                    <th>N°</th>
+                                    <th>Dni</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th>Nombre</th>
-                                    <th>Dni</th>
-                                    <th>Zona</th>
                                     <th>Cargo</th>
+                                    <th>Zona</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -277,22 +277,20 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="col-md-8">
-                                <label>Seleccione zonas por asignar:</label>
+                                <label class="text-bold">Seleccione zonas para asignar:</label>
                                 <select id="select_zonas_por_asignar" multiple="multiple" class="select form-control">
 
                                 </select>
                             </div>
-
                         </div>
                     </div>
+                    <br>
                     <div class="row">
                         <table id="table_localzonas_detalle" class="table table-responsive table-bordered">
                             <thead>
                             <tr class="bg-blue-400">
-                                <th>#</th>
                                 <th>Nombre Local</th>
                                 <th>Zona</th>
-                                <th>Etiqueta Zona</th>
                             </tr>
                             </thead>
                             <tbody>

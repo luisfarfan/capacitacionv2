@@ -184,7 +184,7 @@ define(["require", "exports"], function (require, exports) {
                 html += "<td>" + (value[val] == null ? '-' : value[val]) + "</td>";
             });
             if (options !== null) {
-                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n                            " + (options.checkbox !== '' ? "<li><div class=\"pure-checkbox\">\n                                                            <input id=\"" + options.checkbox + value[pk] + "\" name=\"" + options.checkbox + "\" value=\"" + value[pk] + "\" type=\"checkbox\">\n                                                            <label for=\"" + options.checkbox + value[pk] + "\"></label>\n                                                         </div></li>" : '') + "\n\t\t\t\t\t\t  </ul></td>";
+                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li data-popup=\"tooltip\" title=\"Editar\" name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li style=\"margin-left: 20px;\" data-popup=\"tooltip\" title=\"Eliminar\" name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n                            " + (options.checkbox !== '' ? "<li data-popup=\"tooltip\" title=\"Seleccionar Local\" style=\"margin-left: 20px;\"><div class=\"pure-checkbox\">\n                                                            <input id=\"" + options.checkbox + value[pk] + "\" name=\"" + options.checkbox + "\" value=\"" + value[pk] + "\" type=\"checkbox\">\n                                                            <label class=\"checkbox-inline\" for=\"" + options.checkbox + value[pk] + "\"></label>\n                                                         </div></li>" : '') + "\n\t\t\t\t\t\t  </ul></td>";
             }
             html += "</tr>";
         });
@@ -205,7 +205,8 @@ define(["require", "exports"], function (require, exports) {
         }
     }
     exports.drawTable = drawTable;
-    function setDropdown(data, campos, extra) {
+    function setDropdown(data, campos, extra, bgColor) {
+        if (bgColor === void 0) { bgColor = false; }
         var html = "<option value=\"-1\">Seleccione</option>";
         data.map(function (value, key) {
             var value_concated = '';
@@ -215,7 +216,12 @@ define(["require", "exports"], function (require, exports) {
             html += "<option value=\"" + value[campos.id] + "\">" + value_concated + "</option>";
         });
         $("#" + extra.id_element).html(html);
-        extra.select2 ? $("#" + extra.id_element).select2() : '';
+        var bgcolor = {};
+        bgColor ? bgcolor = {
+            dropdownCssClass: 'border-primary',
+            containerCssClass: 'border-primary text-primary-700'
+        } : '';
+        extra.select2 ? $("#" + extra.id_element).select2(bgcolor) : '';
     }
     exports.setDropdown = setDropdown;
     function formToObject(form) {
@@ -241,5 +247,13 @@ define(["require", "exports"], function (require, exports) {
         swal(message);
     }
     exports.showInfo = showInfo;
+    function upgradeTooltip() {
+        $('[data-popup="tooltip"]').off();
+        $('[data-popup="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+            trigger: 'hover'
+        });
+    }
+    exports.upgradeTooltip = upgradeTooltip;
 });
 //# sourceMappingURL=utils.js.map

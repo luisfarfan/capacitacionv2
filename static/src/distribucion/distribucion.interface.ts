@@ -20,6 +20,9 @@ export interface IPersonal {
     contingencia: string,
     id_cargofuncional: ICargoFuncional,
     ubigeo: string,
+    baja_estado: number,
+    alta_estado: number,
+    id_pea_reemplazo: IPersonal,
 }
 
 export interface ICargoFuncional {

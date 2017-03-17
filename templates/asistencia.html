@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div id="modal_bajas_altas" class="modal fade">
+    <div id="modal_bajas_altas" tabindex="-1" class="modal fade">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
@@ -97,36 +97,80 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group">
-                            <div class="col-md-8">
-                                <label>Locales</label>
-                                <select id="select_locales_seleccionados_asignacion" class="select form-control">
-                                    <option value="">Seleccione local</option>
-                                </select>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Digite el N° DNI del Personal para realizar la baja</label>
+                                <div class="input-group">
+                                    <select id="select_personal_para_baja"
+                                            class="select form-control">
+                                    </select>
+                                    <div class="input-group-btn" style="padding-left: 20px;">
+                                        <button id="btn_dar_baja" type="button"
+                                                class="btn bg-danger btn-raised active legitRipple btn-labeled btn-rounded">
+                                            <b><i class="icon-thumbs-down2"></i></b> Dar de baja
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <br>
                     <div class="row">
-                        <table id="table_localzonas_detalle" class="table table-responsive table-bordered">
-                            <thead>
-                            <tr class="bg-blue-400">
-                                <th>#</th>
-                                <th>Nombre Local</th>
-                                <th>Zona</th>
-                                <th>Etiqueta Zona</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table id="tabla_baja_alta_reporte"
+                                       class="table table-responsive table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>CARGO</th>
+                                        <th>STATUS</th>
+                                        <th>APELLIDO PATERNO</th>
+                                        <th>APELLIDO MATERNO</th>
+                                        <th>NOMBRES</th>
+                                        <th>DNI</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                            </tbody>
-
-
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link legitRipple" data-dismiss="modal">Cerrar</button>
-                    <button type="button" id="btn_asignar_zonas" class="btn btn-primary legitRipple">Asignar</button>
+            </div>
+        </div>
+    </div>
+    <div id="modal_darAlta" tabindex="-1" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h6 class="modal-title">Bajas y altas</h6>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Digite el N° DNI del Personal para realizar dar Alta</label>
+                                <div class="input-group">
+                                    <select id="select_personal_para_alta"
+                                            class="select form-control">
+                                    </select>
+                                    <div class="input-group-btn" style="padding-left: 20px;">
+                                        <button id="btn_dar_alta" type="button"
+                                                class="btn bg-success btn-raised active legitRipple btn-labeled btn-rounded">
+                                            <b><i class="icon-thumbs-up2"></i></b> Dar de Alta
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                 </div>
             </div>
         </div>

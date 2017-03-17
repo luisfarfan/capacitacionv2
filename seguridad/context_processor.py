@@ -12,9 +12,12 @@ def recursive_menu(request):
         menu = request.session['user_session']['modulos']['CPV']['menu']
     else:
         menu = None
+    modulo_id = 1
+    if 'modulo_id' in request.session:
+        modulo_id = request.session['modulo_id']
 
     context = {
-        "menu": drawSidebar(menu, base_url, 1),
+        "menu": drawSidebar(menu, base_url, modulo_id),
     }
 
     return {'CLIENT_MENU': context}

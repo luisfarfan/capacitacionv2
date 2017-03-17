@@ -17,7 +17,7 @@ class Etapa(models.Model):
 class Curso(models.Model):
     id_curso = models.AutoField(primary_key=True)
     cod_curso = models.CharField(max_length=3, blank=True, null=True)
-    nombre_curso = models.CharField(max_length=100, blank=True, null=True)
+    nombre_curso = models.CharField(max_length=255, blank=True, null=True)
     etapa = models.ForeignKey(Etapa)
     locales = models.ManyToManyField('Local', through='LocalCurso')
     directoriolocales = models.ManyToManyField('DirectorioLocal', through='DirectorioLocalCurso')
@@ -278,6 +278,7 @@ class Personal(models.Model):
     contingencia = models.IntegerField(blank=True, null=True)
     baja_estado = models.IntegerField(null=True, blank=True, default=0)
     alta_estado = models.IntegerField(null=True, blank=True, default=0)
+    id_pea_reemplazo = models.ForeignKey('Personal', null=True, blank=True)
 
     class Meta:
         managed = True
@@ -305,3 +306,13 @@ class PersonalAulaAsistencia(models.Model):
     class Meta:
         managed = True
         db_table = 'PersonalAulaAsistencia'
+
+
+class PersonalCursoCriterio(models.Model):
+    peaaula = models.ForeignKey(PersonalAula, related_name='personalaula_notas')
+    cursocriterio = models.ForeignKey(CursoCriterio, null=True, blank=True)
+    nota = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PeaCursoCriterio'

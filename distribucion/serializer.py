@@ -29,9 +29,32 @@ class CargoFuncionalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PersonalSerializer(serializers.ModelSerializer):
+class _PersonalSerializer(serializers.ModelSerializer):
     id_cargofuncional = CargoFuncionalSerializer()
 
+    class Meta:
+        model = Personal
+        fields = '__all__'
+
+
+class PersonalSerializer(serializers.ModelSerializer):
+    id_cargofuncional = CargoFuncionalSerializer()
+    id_pea_reemplazo = _PersonalSerializer()
+
+    class Meta:
+        model = Personal
+        fields = '__all__'
+
+
+class DetallePersonalSerializer(serializers.ModelSerializer):
+    id_pea_reemplazo = PersonalSerializer()
+
+    class Meta:
+        model = Personal
+        fields = '__all__'
+
+
+class CrudPersonalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personal
         fields = '__all__'

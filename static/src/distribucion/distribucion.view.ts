@@ -133,7 +133,7 @@ class DistribucionView {
                 id_element: 'select_zonas_por_asignar',
                 bootstrap_multiselect: false,
                 select2: true
-            });
+            }, true);
         })
     }
 
@@ -158,10 +158,8 @@ class DistribucionView {
                 let html: String = '';
                 this.localZonas.map((value: ILocalZona, index: number) => {
                     html += `<tr>
-                            <td>${index + 1}</td>
                             <td>${this.localCursoSelected.local.nombre_local}</td>
                             <td>${value.zona.ZONA}</td>
-                            <td>${value.zona.ETIQ_ZONA}</td>    
                          </tr>`
                 });
                 $('#table_localzonas_detalle').find('tbody').html(html);
@@ -217,12 +215,12 @@ class DistribucionView {
             this.personal.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
+                             <td>${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
-                             <td>${value.dni}</td>
-                             <td>${value.zona}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
+                             <td>${value.zona}</td>
                          </tr>`
             });
             table_personal_capacitar.destroy();
@@ -239,12 +237,12 @@ class DistribucionView {
             this.personalContingencia.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
+                             <td>${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
-                             <td>${value.dni}</td>
-                             <td>${value.zona}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
+                             <td>${value.zona}</td>
                          </tr>`
             });
             table_personal_capacitar.destroy();
@@ -287,8 +285,8 @@ class DistribucionView {
                             <td>${personal.id_pea.ape_paterno}</td>
                             <td>${personal.id_pea.ape_materno}</td>
                             <td>${personal.id_pea.nombre}</td>
-                            <td>${personal.id_pea.zona}</td>
                             <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
+                            <td>${personal.id_pea.zona}</td>
                          </tr>`;
             });
             this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor);

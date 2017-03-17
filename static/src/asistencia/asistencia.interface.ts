@@ -21,7 +21,8 @@ export interface IPersonalAsistenciaDetalle {
     id_peaaula: number,
     personalaula: IPersonalAula[],
     id_pea: IPersonal,
-    id_localambiente: number
+    id_localambiente: number,
+    personalaula_notas: IPersonalNotas[]
 }
 export interface IPersonalAula {
     fecha: string,
@@ -29,4 +30,15 @@ export interface IPersonalAula {
     peaaula: number,
     turno_manana: number,
     turno_tarde: number,
+}
+export interface IPersonalNotas {
+    cursocriterio: ICursoCriterio
+    id: number,
+    nota: number,
+    peaaula: number,
+}
+export interface ICursoCriterio {
+    curso: number,
+    criterio: number,
+    ponderacion: number,
 }

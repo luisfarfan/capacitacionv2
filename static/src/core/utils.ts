@@ -171,7 +171,6 @@ export function validateForm(rules: Object) {
             },
         }
     };
-
     setOptions.rules = rules
     return setOptions;
 }
@@ -207,11 +206,11 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
         })
         if (options !== null) {
             html += `<td><ul class="icons-list">
-                            ${options.edit_name !== '' ? `<li name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
-                            ${options.delete_name !== '' ? `<li name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
-                            ${options.checkbox !== '' ? `<li><div class="pure-checkbox">
+                            ${options.edit_name !== '' ? `<li data-popup="tooltip" title="Editar" name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
+                            ${options.delete_name !== '' ? `<li style="margin-left: 20px;" data-popup="tooltip" title="Eliminar" name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
+                            ${options.checkbox !== '' ? `<li data-popup="tooltip" title="Seleccionar Local" style="margin-left: 20px;"><div class="pure-checkbox">
                                                             <input id="${options.checkbox}${value[pk]}" name="${options.checkbox}" value="${value[pk]}" type="checkbox">
-                                                            <label for="${options.checkbox}${value[pk]}"></label>
+                                                            <label class="checkbox-inline" for="${options.checkbox}${value[pk]}"></label>
                                                          </div></li>` : ''}
 						  </ul></td>`;
         }
@@ -243,7 +242,7 @@ interface ExtraOptionsDrowdown {
     bootstrap_multiselect: boolean,
     select2: boolean,
 }
-export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: ExtraOptionsDrowdown) {
+export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: ExtraOptionsDrowdown, bgColor: boolean = false) {
     let html = `<option value="-1">Seleccione</option>`;
     data.map((value: any, key: number) => {
         let value_concated: string = '';
@@ -253,7 +252,12 @@ export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: Ex
         html += `<option value="${value[campos.id]}">${value_concated}</option>`
     });
     $(`#${extra.id_element}`).html(html);
-    extra.select2 ? $(`#${extra.id_element}`).select2() : '';
+    let bgcolor = {}
+    bgColor ? bgcolor = {
+            dropdownCssClass: 'border-primary',
+            containerCssClass: 'border-primary text-primary-700'
+        } : ''
+    extra.select2 ? $(`#${extra.id_element}`).select2(bgcolor) : '';
 }
 
 export function formToObject(form: Array<Object>) {
@@ -276,4 +280,11 @@ export function objectToForm(data: any) {
 }
 export function showInfo(message: String) {
     swal(message);
+}
+export function upgradeTooltip() {
+    $('[data-popup="tooltip"]').off();
+    $('[data-popup="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger: 'hover'
+    });
 }

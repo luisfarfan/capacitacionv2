@@ -19,8 +19,9 @@ def recursiveMenu(menu, base_url, module_id):
                 else:
                     css_class = ''
 
-                html += """<li {}><a href="#"><i class="{}"></i><span>{}</span></a><ul> """.format(css_class, i['icon'],
-                                                                                                   i['descripcion'])
+                html += """<li {}><a href="#"><i class="{}"></i><span>{}</span></a><ul> """.format(css_class,
+                                                                                                         i['icon'],
+                                                                                                         i['descripcion'])
                 for child in i['modulos_hijos']:
                     if 'id' in child:
                         if module_id == child['id']:

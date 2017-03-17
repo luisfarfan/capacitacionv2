@@ -5,6 +5,8 @@ from rest_framework import routers
 routerAsistencia = routers.DefaultRouter()
 routerAsistencia.register(r'localcurso', LocalCursoDetallebyLocalAmbienteViewSet)
 routerAsistencia.register(r'personalauladetalle', PersonalAulaDetalleViewSet)
+routerAsistencia.register(r'personal', PersonalViewSet)
+routerAsistencia.register(r'personaldetalle', DetallePersonalViewSet)
 # routerAsistencia.register(r'crudpersonalaula', PersonalAulaViewSet)
 
 urlpatterns = [
@@ -14,5 +16,6 @@ urlpatterns = [
     url(r'personalaula_bylocalambiente/(?P<id_localambiente>[0-9]+)/$',
         FilterPersonalAulaDetalleViewSet.as_view()),
     url(r'saveAsistencia/$', saveAsistencia),
+    url(r'darAlta/$', darAlta),
 
 ]

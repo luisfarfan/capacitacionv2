@@ -14,6 +14,8 @@
     <link href="{% static "assets/css/core.css" %}" rel="stylesheet" type="text/css">
     <link href="{% static "assets/css/components.css" %}" rel="stylesheet" type="text/css">
     <link href="{% static "assets/css/colors.css" %}" rel="stylesheet" type="text/css">
+
+    <link href="{% static "assets/css/bootstrap-modal.css" %}" rel="stylesheet" type="text/css">
     <!-- /global stylesheets -->
 
     <!-- own styles -->
@@ -54,7 +56,19 @@
     <!-- /page content -->
 </div>
 <!-- /page container -->
-
+<!--Start of Tawk.to Script-->
+{#<script type="text/javascript">#}
+{#    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();#}
+{#    (function () {#}
+{#        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];#}
+{#        s1.async = true;#}
+{#        s1.src = 'https://embed.tawk.to/58caa3d355c2fd09f890cff2/default';#}
+{#        s1.charset = 'UTF-8';#}
+{#        s1.setAttribute('crossorigin', '*');#}
+{#        s0.parentNode.insertBefore(s1, s0);#}
+{#    })();#}
+{#</script>#}
+<!--End of Tawk.to Script-->
 </body>
 <!-- Core JS files -->
 <script type="text/javascript" src="{% static "assets/js/core/libraries/jquery.min.js" %}"></script>
@@ -84,6 +98,8 @@
 <script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/loaders/blockui.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/bootstrap-modal.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/bootstrap-modalmanager.js" %}"></script>
 <!-- /core JS files -->
 {% block js %}
 {% endblock %}

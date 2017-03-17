@@ -1,11 +1,13 @@
 /**
  * Created by Administrador on 13/03/2017.
  */
-import {AsistenciaService} from 'asistencia.service';
+import {AsistenciaService, PersonalService} from 'asistencia.service';
+import {DistribucionService} from '../distribucion/distribucion.service'
 import {CursoInyection} from '../comun.utils';
 import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from './asistencia.interface';
 
 import * as utils from '../core/utils';
+import {IPersonal} from "../distribucion/distribucion.interface";
 
 declare var IDUSUARIO: number;
 declare var $: any;
@@ -16,19 +18,29 @@ interface ModelDivAsistencia {
     turno_manana: number,
     turno_tarde: number,
     fecha: string,
+    baja: number,
+    alta: number
 }
 
 class AsistenciaView {
     private asistenciaService: AsistenciaService;
+    private personalService: PersonalService;
+    private distribucionService: DistribucionService;
     private cursoInyection: CursoInyection;
     private localesAmbientes: ILocalAmbienteAsignados[] = [];
     private localAmbienteSelected: ILocalAmbienteAsignados = null;
     private rangoFechas: Array<string> = [];
     private personalAsistencia: IPersonalAsistenciaDetalle[];
+    private personalparaBaja: IPersonal[] = [];
+    private personaldadadeBaja: IPersonal[] = [];
+    private personalContingencia: IPersonal[] = [];
+    private pea_id: number = null;
 
     constructor() {
         this.asistenciaService = new AsistenciaService();
+        this.personalService = new PersonalService();
         this.cursoInyection = new CursoInyection();
+        this.distribucionService = new DistribucionService();
         $('#cursos').on('change', (element: JQueryEventObject) => {
             let curso_id = $(element.currentTarget).val();
             $('#p_curso_actual').text($('#cursos :selected').text());
@@ -49,7 +61,9 @@ class AsistenciaView {
                     this.drawHeaderFechas();
                     this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personalAsistencia) => {
                         this.personalAsistencia = personalAsistencia;
+                        this.setPersonalParaBaja(true);
                         this.drawPersonal();
+                        this.getContingencia();
                     });
                 });
             }
@@ -57,11 +71,98 @@ class AsistenciaView {
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
             this.saveAsistencia();
-        })
+        });
 
         $('#btn_bajas_altas').on('click', () => {
             $('#modal_bajas_altas').modal('show');
         });
+        $('#btn_dar_baja').on('click', () => {
+            this.darBaja();
+        });
+        $('#btn_dar_alta').on('click', (element: JQueryEventObject) => {
+            this.darAlta(this.pea_id);
+        });
+    }
+
+    setPersonalParaBaja(draw: boolean = false) {
+        this.personalparaBaja = [];
+        this.personaldadadeBaja = [];
+        this.personalAsistencia.map((value: IPersonalAsistenciaDetalle, index: number) => {
+            if (value.id_pea.baja_estado == 0) {
+                this.personalparaBaja.push(value.id_pea)
+            }
+            if (value.id_pea.baja_estado == 1) {
+                this.personaldadadeBaja.push(value.id_pea);
+            }
+        });
+        if (draw) {
+            utils.setDropdown(this.personalparaBaja, {
+                id: 'id_pea',
+                text: ['dni', 'ape_paterno', 'ape_materno', 'nombre']
+            }, {id_element: 'select_personal_para_baja', bootstrap_multiselect: false, select2: true});
+            let html: string = '';
+            this.personaldadadeBaja.map((value: IPersonal, index: number) => {
+                let alta: string = `<td>-</td><td>-</td><td>-</td><td>-</td><td>
+                                    <button type="button" data-popup="tooltip" title="Dar de alta" name="btn_dar_alta"
+                                    data-value="${value.id_pea}"
+                                    class="btn btn-primary active btn-icon btn-rounded legitRipple"><i class="icon-thumbs-up2"></i></button>
+                                    </td>`;
+                if (value.id_pea_reemplazo) {
+                    alta = `<td>${value.id_pea_reemplazo.ape_paterno}</td>
+                            <td>${value.id_pea_reemplazo.ape_materno}</td>
+                            <td>${value.id_pea_reemplazo.nombre}</td>
+                            <td>${value.id_pea_reemplazo.dni}</td>
+                            <td></td>`;
+                }
+                html += `<tr>
+                           <td rowspan="2">${index + 1}</td>
+                           <td rowspan="2">${value.id_cargofuncional.nombre_funcionario}</td>
+                           <td style="background-color:#ffc1c1">BAJA</td>
+                           <td>${value.ape_paterno}</td>
+                           <td>${value.ape_materno}</td>
+                           <td>${value.nombre}</td>
+                           <td>${value.dni}</td>
+                           <td></td>
+                         </tr>
+                         <tr>
+                            <td style="background-color:#96e638">ALTA</td>
+                             ${alta}
+                         </tr>`
+            });
+            $('#tabla_baja_alta_reporte').find('tbody').html(html);
+            utils.upgradeTooltip();
+            $('[name="btn_dar_alta"]').on('click', (element: JQueryEventObject) => {
+                this.pea_id = $(element.currentTarget).data('value');
+                $('#modal_darAlta').modal('show')
+            });
+        }
+    }
+
+    getContingencia() {
+        this.distribucionService.getPersonalbylocalCurso(this.localAmbienteSelected.localcurso.id, true).done((personalContingencia) => {
+            this.personalContingencia = personalContingencia;
+            utils.setDropdown(this.personalContingencia, {
+                id: 'id_pea',
+                text: ['dni', 'ape_paterno', 'ape_materno', 'nombre']
+            }, {id_element: 'select_personal_para_alta', bootstrap_multiselect: false, select2: true});
+        });
+    }
+
+    darAlta(id_pea: number) {
+        let peaAltaSelected: number = $('#select_personal_para_alta').val();
+        if (peaAltaSelected == -1) {
+            utils.showInfo('Para dar de alta, tiene que seleccionar a alguna persona!');
+            return false;
+        }
+        utils.alert_confirm(() => this._darAlta(id_pea, peaAltaSelected), 'Esta seguro de dar de alta a esta persona? Una vez dado de Alta, no podra rehacer el cambio.', 'warning');
+    }
+
+    _darAlta(id_pea: number, id_pea_reemplazo: number) {
+        this.asistenciaService.darAlta(this.localAmbienteSelected.id_localambiente, id_pea, id_pea_reemplazo).done(() => {
+            utils.showSwalAlert('La persona ha sido dado de alta!', 'Éxito', 'success')
+            $('#select_aulas_asignadas').trigger('change');
+            $('#modal_darAlta').modal('hide');
+        })
     }
 
     drawHeaderFechas() {
@@ -79,16 +180,25 @@ class AsistenciaView {
     drawPersonal() {
         let tbody: string = '';
         this.personalAsistencia.map((value: IPersonalAsistenciaDetalle, index: number) => {
-            tbody += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
-                        <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>`
-            this.rangoFechas.map((fecha: string, index: number) => {
+            if (value.id_pea.baja_estado == 1) {
+                tbody += `<tr style="background-color: #ffc1c1">`;
+            }
+            else if (value.id_pea.alta_estado == 1) {
+                tbody += `<tr style="background-color: #cdf7cd">`;
+            } else {
+                tbody += `<tr>`;
+            }
+            tbody += `<td>${index + 1}</td>
+                      <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
+                      <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>`
+            this.rangoFechas.map((fecha: string, ind: number) => {
                 let divParams: ModelDivAsistencia = {
                     fecha: fecha,
                     id_personalaula: value.id_peaaula,
                     turno_manana: null,
-                    turno_tarde: null
+                    turno_tarde: null,
+                    baja: value.id_pea.baja_estado,
+                    alta: value.id_pea.alta_estado
                 };
                 value.personalaula.map((personalaula: IPersonalAula, index: number) => {
                     if (personalaula.fecha == fecha) {
@@ -96,13 +206,19 @@ class AsistenciaView {
                         divParams.turno_tarde = personalaula.turno_tarde
                     }
                 });
-                tbody += this.drawDivAsistencia(divParams);
+                if (value.id_pea.baja_estado == 1) {
+                    tbody += `<td></td><td></td>`;
+                } else {
+                    tbody += this.drawDivAsistencia(divParams);
+                }
+
             });
             tbody += `</tr>`
         });
         $('#tabla_asistencia').find('tbody').html(tbody);
         let tablaasistenciaDT = $('#tabla_asistencia').DataTable();
         tablaasistenciaDT.destroy();
+        $('#tabla_asistencia').find('tbody').html(tbody);
         $('#tabla_asistencia').DataTable({
             "bPaginate": false,
         });
@@ -213,7 +329,7 @@ class AsistenciaView {
             });
         }, 'Esta seguro de guardar la asistencia?', 'success');
     }
-    
+
     getAulas(curso_id: number) {
         this.asistenciaService.getAulasbyInstructor(IDUSUARIO, curso_id).done((aulas: ILocalAmbienteAsignados[]) => {
             this.localesAmbientes = aulas;
@@ -225,5 +341,23 @@ class AsistenciaView {
             $('#select_aulas_asignadas').html(html);
         })
     }
+
+    darBaja() {
+        let peaBajaSelected: number = $('#select_personal_para_baja').val();
+        if (peaBajaSelected == -1) {
+            utils.showInfo('Para dar de baja, tiene que seleccionar a alguna persona!');
+            return false;
+        }
+        utils.alert_confirm(() => this._darBaja(peaBajaSelected), 'Esta seguro de dar de baja a esta persona? Una vez dado de baja, no podra rehacer el cambio.', 'warning');
+    }
+
+    _darBaja(pk: number) {
+        this.personalService.patch(pk, {baja_estado: 1}).done(() => {
+            utils.showSwalAlert('La persona se ha dado de baja!', 'Éxito', 'success');
+            $('#select_aulas_asignadas').trigger('change');
+        });
+    }
 }
 new AsistenciaView();
+
+//color para dar de baja #ffc1c1

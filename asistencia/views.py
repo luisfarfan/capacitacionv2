@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, FloatField, Sum
 from .utils import *
 import json
+from distribucion.serializer import CrudPersonalSerializer, DetallePersonalSerializer
 
 
 class LocalAmbientebyInstructorViewSet(generics.ListAPIView):
@@ -68,3 +69,34 @@ def saveAsistencia(request):
         personalAsistencia.save()
 
     return JsonResponse({'msg': 'Guardado correcto'})
+
+
+class PersonalViewSet(viewsets.ModelViewSet):
+    serializer_class = CrudPersonalSerializer
+    queryset = Personal.objects.all()
+
+
+class DetallePersonalViewSet(viewsets.ModelViewSet):
+    serializer_class = DetallePersonalSerializer
+    queryset = Personal.objects.all()
+
+
+@csrf_exempt
+def darAlta(request):
+    id_localambiente = request.POST['id_localambiente']
+    id_pea = request.POST['id_pea']
+    id_pea_reemplazo = request.POST['id_pea_reemplazo']
+
+    peareemplazo = Personal.objects.get(pk=id_pea_reemplazo)
+    peareemplazo.contingencia = 0
+    peareemplazo.alta_estado = 1
+    peareemplazo.save()
+
+    pea = Personal.objects.get(pk=id_pea)
+    pea.id_pea_reemplazo_id = id_pea_reemplazo
+    pea.save()
+
+    peaaula = PersonalAula(id_localambiente_id=id_localambiente, id_pea_id=id_pea_reemplazo)
+    peaaula.save()
+
+    return JsonResponse({'msg': True})

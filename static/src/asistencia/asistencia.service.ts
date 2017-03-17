@@ -41,6 +41,8 @@ export class AsistenciaService {
     private url_getrangofechas: string = `${BASEURL}/asistencia/getrangofechas/`;
     private url_personalaula: string = `${BASEURL}/asistencia/personalaula_bylocalambiente/`;
     private url_saveAsistencia: string = `${BASEURL}/asistencia/saveAsistencia/`;
+    private url_darAlta: string = `${BASEURL}/asistencia/darAlta/`;
+
 
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
         return $.ajax({
@@ -74,5 +76,44 @@ export class AsistenciaService {
             type: 'POST',
             data: {fecha_inicio: fechainicio, fecha_fin: fechafin}
         });
+    }
+
+    darAlta(id_localambiente: number, id_pea: number, id_pea_reemplazo: number) {
+        return $.ajax({
+            url: this.url_darAlta,
+            type: 'POST',
+            data: {id_localambiente: id_localambiente, id_pea: id_pea, id_pea_reemplazo: id_pea_reemplazo}
+        });
+    }
+}
+
+export class PersonalService extends ModelService {
+    private urlPersonal: string = `${BASEURL}/asistencia/personal/`;
+    private urlPersonalDetalle: string = `${BASEURL}/asistencia/personaldetalle/`;
+
+    get(pk: number = null): JQueryXHR {
+        return $.ajax({})
+    }
+
+    post(object: Object): JQueryXHR {
+        return $.ajax({
+            type: 'POST',
+            data: object
+        })
+    }
+
+    put(pk: number, object: Object): JQueryXHR {
+        return $.ajax({
+            type: 'PUT',
+            data: object
+        })
+    }
+
+    patch(pk: number, object: Object): JQueryXHR {
+        return $.ajax({
+            url: `${this.urlPersonal}${pk}/`,
+            type: 'PATCH',
+            data: object
+        })
     }
 }

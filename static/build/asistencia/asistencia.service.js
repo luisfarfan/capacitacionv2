@@ -47,6 +47,7 @@ define(["require", "exports", "../abstractService"], function (require, exports,
             this.url_getrangofechas = BASEURL + "/asistencia/getrangofechas/";
             this.url_personalaula = BASEURL + "/asistencia/personalaula_bylocalambiente/";
             this.url_saveAsistencia = BASEURL + "/asistencia/saveAsistencia/";
+            this.url_darAlta = BASEURL + "/asistencia/darAlta/";
         }
         AsistenciaService.prototype.getAulasbyInstructor = function (id_instructor, curso) {
             return $.ajax({
@@ -77,8 +78,49 @@ define(["require", "exports", "../abstractService"], function (require, exports,
                 data: { fecha_inicio: fechainicio, fecha_fin: fechafin }
             });
         };
+        AsistenciaService.prototype.darAlta = function (id_localambiente, id_pea, id_pea_reemplazo) {
+            return $.ajax({
+                url: this.url_darAlta,
+                type: 'POST',
+                data: { id_localambiente: id_localambiente, id_pea: id_pea, id_pea_reemplazo: id_pea_reemplazo }
+            });
+        };
         return AsistenciaService;
     }());
     exports.AsistenciaService = AsistenciaService;
+    var PersonalService = (function (_super) {
+        __extends(PersonalService, _super);
+        function PersonalService() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.urlPersonal = BASEURL + "/asistencia/personal/";
+            _this.urlPersonalDetalle = BASEURL + "/asistencia/personaldetalle/";
+            return _this;
+        }
+        PersonalService.prototype.get = function (pk) {
+            if (pk === void 0) { pk = null; }
+            return $.ajax({});
+        };
+        PersonalService.prototype.post = function (object) {
+            return $.ajax({
+                type: 'POST',
+                data: object
+            });
+        };
+        PersonalService.prototype.put = function (pk, object) {
+            return $.ajax({
+                type: 'PUT',
+                data: object
+            });
+        };
+        PersonalService.prototype.patch = function (pk, object) {
+            return $.ajax({
+                url: "" + this.urlPersonal + pk + "/",
+                type: 'PATCH',
+                data: object
+            });
+        };
+        return PersonalService;
+    }(abstractService_1.ModelService));
+    exports.PersonalService = PersonalService;
 });
 //# sourceMappingURL=asistencia.service.js.map

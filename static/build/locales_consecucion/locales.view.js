@@ -104,9 +104,19 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 ccdi: ubigeo.ccdi,
                 zona: ubigeo.zona
             });
+            this.inputs = $('input[type="text"]');
         }
         LocalController.prototype.setEvents = function () {
             var _this = this;
+            $('input[type="text"]').on('keyup', function (ev) {
+                var texto = ("" + $(ev.target).val()).toUpperCase();
+                $(ev.target).val(texto);
+                if (ev.keyCode == 13) {
+                    var indexInput = _this.inputs.index($(ev.target));
+                    var nextInput = $(_this.inputs)[indexInput + 1];
+                    $(nextInput).focus();
+                }
+            });
             $('#reset').on('click', function () {
                 _this.resetForm();
                 $('#modal_localesmarco').modal('hide');
@@ -154,6 +164,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 //"minDate": fecha_hoy,
                 "minDate": "19/01/2017",
                 "maxDate": "31/10/2017",
+                autoUpdateInput: false,
                 singleDatePicker: true,
                 locale: {
                     format: 'DD/MM/YYYY'
@@ -316,7 +327,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 _this.localesCurso = localcurso;
                 _this.locales = [];
                 _this.localesCurso.map(function (value, index) { return _this.locales.push(value.local); });
-                utils.drawTable(_this.locales, ['nombre_local', 'nombre_via', 'referencia', 'zona_ubicacion_local'], 'id_local', {
+                utils.drawTable(_this.locales, ['nombre_local', 'zona_ubicacion_local', 'nombre_via', 'n_direccion', 'referencia'], 'id_local', {
                     edit_name: 'local_edit',
                     delete_name: 'local_delete',
                     enumerar: false,

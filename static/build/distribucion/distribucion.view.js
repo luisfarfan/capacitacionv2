@@ -112,7 +112,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                     id_element: 'select_zonas_por_asignar',
                     bootstrap_multiselect: false,
                     select2: true
-                });
+                }, true);
             });
         };
         DistribucionView.prototype.asignarZonas = function () {
@@ -136,7 +136,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                     _this.localZonas = localzonas;
                     var html = '';
                     _this.localZonas.map(function (value, index) {
-                        html += "<tr>\n                            <td>" + (index + 1) + "</td>\n                            <td>" + _this.localCursoSelected.local.nombre_local + "</td>\n                            <td>" + value.zona.ZONA + "</td>\n                            <td>" + value.zona.ETIQ_ZONA + "</td>    \n                         </tr>";
+                        html += "<tr>\n                            <td>" + _this.localCursoSelected.local.nombre_local + "</td>\n                            <td>" + value.zona.ZONA + "</td>\n                         </tr>";
                     });
                     $('#table_localzonas_detalle').find('tbody').html(html);
                 });
@@ -184,7 +184,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                 var html = '';
                 var table_personal_capacitar = $('#tabla_pea_capacitar').DataTable();
                 _this.personal.map(function (value, index) {
-                    html += "<tr>\n                             <td>" + (index + 1) + "</td>\n                             <td>" + value.ape_paterno + "</td>\n                             <td>" + value.ape_materno + " </td>\n                             <td>" + value.nombre + "</td>\n                             <td>" + value.dni + "</td>\n                             <td>" + value.zona + "</td>\n                             <td>" + value.id_cargofuncional.nombre_funcionario + "</td>\n                         </tr>";
+                    html += "<tr>\n                             <td>" + (index + 1) + "</td>\n                             <td>" + value.dni + "</td>\n                             <td>" + value.ape_paterno + "</td>\n                             <td>" + value.ape_materno + " </td>\n                             <td>" + value.nombre + "</td>\n                             <td>" + value.id_cargofuncional.nombre_funcionario + "</td>\n                             <td>" + value.zona + "</td>\n                         </tr>";
                 });
                 table_personal_capacitar.destroy();
                 $('#tabla_pea_capacitar').find('tbody').html(html);
@@ -198,7 +198,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                 var html = '';
                 var table_personal_capacitar = $('#tabla_personal_reserva').DataTable();
                 _this.personalContingencia.map(function (value, index) {
-                    html += "<tr>\n                             <td>" + (index + 1) + "</td>\n                             <td>" + value.ape_paterno + "</td>\n                             <td>" + value.ape_materno + " </td>\n                             <td>" + value.nombre + "</td>\n                             <td>" + value.dni + "</td>\n                             <td>" + value.zona + "</td>\n                             <td>" + value.id_cargofuncional.nombre_funcionario + "</td>\n                         </tr>";
+                    html += "<tr>\n                             <td>" + (index + 1) + "</td>\n                             <td>" + value.dni + "</td>\n                             <td>" + value.ape_paterno + "</td>\n                             <td>" + value.ape_materno + " </td>\n                             <td>" + value.nombre + "</td>\n                             <td>" + value.id_cargofuncional.nombre_funcionario + "</td>\n                             <td>" + value.zona + "</td>\n                         </tr>";
                 });
                 table_personal_capacitar.destroy();
                 $('#tabla_personal_reserva').find('tbody').html(html);
@@ -233,7 +233,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                 _this.setCabeceraDistribucion(localambiente_id);
                 var html = '';
                 _this.personalAula.map(function (personal, index) {
-                    html += "<tr>\n                            <td>" + (index + 1) + "</td>\n                            <td>" + personal.id_pea.dni + "</td>\n                            <td>" + personal.id_pea.ape_paterno + "</td>\n                            <td>" + personal.id_pea.ape_materno + "</td>\n                            <td>" + personal.id_pea.nombre + "</td>\n                            <td>" + personal.id_pea.zona + "</td>\n                            <td>" + personal.id_pea.id_cargofuncional.nombre_funcionario + "</td>\n                         </tr>";
+                    html += "<tr>\n                            <td>" + (index + 1) + "</td>\n                            <td>" + personal.id_pea.dni + "</td>\n                            <td>" + personal.id_pea.ape_paterno + "</td>\n                            <td>" + personal.id_pea.ape_materno + "</td>\n                            <td>" + personal.id_pea.nombre + "</td>\n                            <td>" + personal.id_pea.id_cargofuncional.nombre_funcionario + "</td>\n                            <td>" + personal.id_pea.zona + "</td>\n                         </tr>";
                 });
                 _this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('') : $('#select_instructor').val(_this.localAmbienteSelected.id_instructor);
                 $('#tabla_pea').find('tbody').html(html);

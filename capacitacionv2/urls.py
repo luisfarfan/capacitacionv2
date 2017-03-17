@@ -19,6 +19,7 @@ from django.views.generic import TemplateView
 from locales_consecucion.urls import *
 from distribucion.urls import routerDistribucion
 from asistencia.urls import routerAsistencia
+from evaluacion.urls import routerEvaluacion
 from seguridad.views import *
 
 urlpatterns = [
@@ -30,6 +31,8 @@ urlpatterns = [
     url(r'^distribucion/', include('distribucion.urls')),
     url(r'^asistencia/', include(routerAsistencia.urls)),
     url(r'^asistencia/', include('asistencia.urls')),
+    url(r'^evaluacion/', include(routerEvaluacion.urls)),
+    url(r'^evaluacion/', include('evaluacion.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
     url('^setSession/$', setSession)
 ]

@@ -77,7 +77,7 @@ def distribuir_byLocalCurso(request, localcurso_id):
     localzona = LocalZonas.objects.filter(localcurso_id=localcurso_id)
     zonas = localzona.values_list('zona__ZONA', flat=True)
     ubigeo = localzona.values_list('zona__UBIGEO', flat=True)
-    localAmbientes = LocalAmbiente.objects.filter(localcurso_id=localcurso_id).order_by('capacidad')
+    localAmbientes = LocalAmbiente.objects.filter(localcurso_id=localcurso_id).order_by('-capacidad')
     # localAmbientesCapacidadTotal = localAmbientes.aggregate(capacidadTotal=Sum('capacidad'))
 
     # pea_distribuir_cantidad = pea_distribuir.count()
@@ -90,9 +90,8 @@ def distribuir_byLocalCurso(request, localcurso_id):
                 ubigeo_id=ubigeo[0], zona__in=zonas,
                 id_cargofuncional_id__in=cargosporCurso, contingencia=0,
                 baja_estado=0)
-            pea_distribuir = _pea_distribuir.order_by('ubigeo', 'zona', 'ape_paterno', 'ape_materno',
+            pea_distribuir = _pea_distribuir.order_by('zona', 'ape_paterno', 'ape_materno',
                                                       'nombre')[:capacidadDistribuir]
-            print(pea_distribuir.count(), _pea_distribuir.count())
             if _pea_distribuir.count():
                 for pea in pea_distribuir:
                     bulk.append(PersonalAula(id_pea_id=pea.id_pea, id_localambiente_id=localAmbiente.id_localambiente))
@@ -107,7 +106,7 @@ class LocalAmbienteDetalleViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
-        return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente')
+        return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente', '-capacidad')
 
 
 class PersonalAulaViewSet(viewsets.ModelViewSet):
@@ -130,4 +129,5 @@ class PersonalAulaDetalleViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         localambiente = self.kwargs['id_localambiente']
-        return PersonalAula.objects.filter(id_localambiente_id=localambiente)
+        return PersonalAula.objects.filter(id_localambiente_id=localambiente, id_pea__baja_estado=0,
+                                           id_pea__contingencia=0)
