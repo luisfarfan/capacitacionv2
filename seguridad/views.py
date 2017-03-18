@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView
 # URL_USERDATASESSION = 'http://cpv.inei.gob.pe:8080/seguridad/getUserData/?key={}'
 
 
-URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 
 
 def setSession(request):
