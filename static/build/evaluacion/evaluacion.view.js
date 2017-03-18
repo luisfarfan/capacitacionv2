@@ -165,6 +165,7 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                         }
                     });
                     var nota = null;
+                    criterio.id_criterio == 2 ? nota = 18 : nota = null;
                     persona.personalaula_notas.filter(function (val) {
                         if (val.cursocriterio.criterio == criterio.id_criterio) {
                             criterio.id_criterio == 2 ? nota = 18 : nota = val.nota;

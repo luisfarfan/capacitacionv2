@@ -202,6 +202,7 @@ class EvaluacionView {
                     }
                 });
                 let nota: number = null;
+                criterio.id_criterio == 2 ? nota = 18 : nota = null;
                 persona.personalaula_notas.filter((val: IPersonalNotas) => {
                     if (val.cursocriterio.criterio == criterio.id_criterio) {
                         criterio.id_criterio == 2 ? nota = 18 : nota = val.nota;
