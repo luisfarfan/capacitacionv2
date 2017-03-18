@@ -186,7 +186,6 @@ class DistribucionView {
                             <td>${value.id_ambiente.nombre_ambiente}</td>
                             <td>${value.numero}</td>
                             <td>${value.capacidad}</td>
-                            <td>${0}</td>
                          </tr>`
             });
             $('#tabla_detalle_ambientes').find('tbody').html(html);

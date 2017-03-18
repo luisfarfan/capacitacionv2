@@ -106,9 +106,6 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                 }
             });
         };
-        // setEstadoNotaFinal() {
-        //     switch
-        // }
         EvaluacionView.prototype.getCargosFuncionales = function (id_curso) {
             var _this = this;
             this.evaluacionService.cargosCurso(id_curso).done(function (cargosFuncionales) {
@@ -170,7 +167,7 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                     var nota = null;
                     persona.personalaula_notas.filter(function (val) {
                         if (val.cursocriterio.criterio == criterio.id_criterio) {
-                            nota = val.nota;
+                            criterio.id_criterio == 2 ? nota = 18 : nota = val.nota;
                             _this.detalleCriterios.map(function (criteriodetalle) {
                                 if (val.cursocriterio.criterio == criteriodetalle.criterio) {
                                     nota_final = nota_final + (nota * (criteriodetalle.ponderacion / 100));

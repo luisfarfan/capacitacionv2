@@ -142,10 +142,6 @@ class EvaluacionView {
         });
     }
 
-    // setEstadoNotaFinal() {
-    //     switch
-    // }
-
     getCargosFuncionales(id_curso: number) {
         this.evaluacionService.cargosCurso(id_curso).done((cargosFuncionales) => {
             this.cargosFuncionales = cargosFuncionales;
@@ -208,7 +204,7 @@ class EvaluacionView {
                 let nota: number = null;
                 persona.personalaula_notas.filter((val: IPersonalNotas) => {
                     if (val.cursocriterio.criterio == criterio.id_criterio) {
-                        nota = val.nota;
+                        criterio.id_criterio == 2 ? nota = 18 : nota = val.nota;
                         this.detalleCriterios.map((criteriodetalle: IDetalleCriterio) => {
                             if (val.cursocriterio.criterio == criteriodetalle.criterio) {
                                 nota_final = nota_final + (nota * (criteriodetalle.ponderacion / 100));

@@ -152,48 +152,8 @@ define(["require", "exports"], function (require, exports) {
     function validateForm(rules) {
         var setOptions = {
             rules: {},
-            onfocusout: false,
-            onkeyup: false,
-            onclick: false,
-            ignore: 'input[type=hidden], .select2-search__field',
-            errorClass: 'validation-error-label',
-            successClass: 'validation-valid-label',
-            highlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            },
-            unhighlight: function (element, errorClass) {
-                $(element).removeClass(errorClass);
-            },
-            // Different components require proper error label placement
             errorPlacement: function (error, element) {
-                // Styled checkboxes, radios, bootstrap switch
-                if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container')) {
-                    if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
-                        error.appendTo(element.parent().parent().parent().parent());
-                    }
-                    else {
-                        error.appendTo(element.parent().parent().parent().parent().parent());
-                    }
-                }
-                else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
-                    error.appendTo(element.parent().parent().parent());
-                }
-                else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
-                    error.appendTo(element.parent());
-                }
-                else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
-                    error.appendTo(element.parent().parent());
-                }
-                else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
-                    error.appendTo(element.parent().parent());
-                }
-                else {
-                    error.insertAfter(element);
-                }
-            },
-            validClass: "validation-valid-label",
-            success: function (label) {
-                label.addClass("validation-valid-label").text("Correcto!");
+                return true;
             }
         };
         setOptions.rules = rules;
@@ -231,7 +191,9 @@ define(["require", "exports"], function (require, exports) {
             if ($.fn.DataTable.isDataTable("#" + options.table_id)) {
                 table.destroy();
                 $("#" + options.table_id).find('tbody').html(html);
-                table = $("#" + options.table_id).DataTable();
+                table = $("#" + options.table_id).DataTable({
+                    bPaginate: false
+                });
                 $('.dataTables_length select').select2({
                     minimumResultsForSearch: Infinity,
                     width: 'auto'

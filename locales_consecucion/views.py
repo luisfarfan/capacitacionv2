@@ -216,3 +216,12 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
             ambientes.save()
 
     return JsonResponse({'msg': True}, safe=False)
+
+
+def addLocalesCurso():
+    cursos = Curso.objects.all()
+    directorio = DirectorioLocal.objects.all()
+
+    for curso in cursos:
+        for dir in directorio:
+            localcurso = DirectorioLocalCurso(curso_id=curso.id_curso,local_id=dir.id_local)

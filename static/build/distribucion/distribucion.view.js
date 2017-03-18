@@ -158,7 +158,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
                 _this.localAmbientes = localAmbientes;
                 var html = '';
                 _this.localAmbientes.map(function (value, index) {
-                    html += "<tr title=\"Mostrar personal de aula\" style=\"cursor: pointer; cursor: hand;\" data-value=\"" + value.id_localambiente + "\">\n                            <td>" + (index + 1) + "</td>\n                            <td>" + value.id_ambiente.nombre_ambiente + "</td>\n                            <td>" + value.numero + "</td>\n                            <td>" + value.capacidad + "</td>\n                            <td>" + 0 + "</td>\n                         </tr>";
+                    html += "<tr title=\"Mostrar personal de aula\" style=\"cursor: pointer; cursor: hand;\" data-value=\"" + value.id_localambiente + "\">\n                            <td>" + (index + 1) + "</td>\n                            <td>" + value.id_ambiente.nombre_ambiente + "</td>\n                            <td>" + value.numero + "</td>\n                            <td>" + value.capacidad + "</td>\n                         </tr>";
                 });
                 $('#tabla_detalle_ambientes').find('tbody').html(html);
                 $('#tabla_detalle_ambientes').find('tbody').find('tr').off();

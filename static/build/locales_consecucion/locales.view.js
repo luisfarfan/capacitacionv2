@@ -302,7 +302,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             var object = {};
             if (this.directorioLocal) {
                 object = {
-                    'local': this.directoriolocalCurso.local,
+                    'local': this.directoriolocalCurso.local.id_local,
                     'curso': this.directoriolocalCurso.curso,
                     'cantidad_usar_aulas': this.directorioLocal.cantidad_usar_aulas,
                     'cantidad_usar_auditorios': this.directorioLocal.cantidad_usar_auditorios,
