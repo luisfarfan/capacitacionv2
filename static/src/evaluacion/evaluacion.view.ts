@@ -321,11 +321,11 @@ class EvaluacionView {
             if (nota_final > 10) {
                 $(tr).find('span').removeClass('label-danger');
                 $(tr).find('span').addClass('label-success');
-                $(tr).find('span').text('Aprobado');
+                $(tr).find('span').text('Apto');
             } else {
                 $(tr).find('span').removeClass('label-success');
                 $(tr).find('span').addClass('label-danger');
-                $(tr).find('span').text('No aprobado');
+                $(tr).find('span').text('No apto');
             }
         });
     }
