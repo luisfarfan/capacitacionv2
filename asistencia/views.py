@@ -87,14 +87,15 @@ def darAlta(request):
     id_pea = request.POST['id_pea']
     id_pea_reemplazo = request.POST['id_pea_reemplazo']
 
-    peareemplazo = Personal.objects.get(pk=id_pea_reemplazo)
-    peareemplazo.contingencia = 0
-    peareemplazo.alta_estado = 1
-    peareemplazo.save()
-
     pea = Personal.objects.get(pk=id_pea)
     pea.id_pea_reemplazo_id = id_pea_reemplazo
     pea.save()
+
+    peareemplazo = Personal.objects.get(pk=id_pea_reemplazo)
+    peareemplazo.contingencia = 0
+    peareemplazo.alta_estado = 1
+    peareemplazo.zona = pea.zona
+    peareemplazo.save()
 
     peaaula = PersonalAula(id_localambiente_id=id_localambiente, id_pea_id=id_pea_reemplazo)
     peaaula.save()

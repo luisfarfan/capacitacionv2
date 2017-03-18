@@ -32,6 +32,6 @@ class ZonasList(APIView):
     def get(self, request, ubigeo):
         zonas = list(
             Zona.objects.filter(UBIGEO=ubigeo).values('ID', 'UBIGEO', 'ZONA', 'ETIQ_ZONA').annotate(
-                dcount=Count('UBIGEO', 'ZONA')))
+                dcount=Count('UBIGEO', 'ZONA')).order_by('ZONA'))
         response = JsonResponse(zonas, safe=False)
         return response

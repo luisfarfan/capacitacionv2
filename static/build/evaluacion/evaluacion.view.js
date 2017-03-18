@@ -1,12 +1,17 @@
-define(["require", "exports", "../core/utils", "evaluacion.service", "../asistencia/asistencia.service", "../comun.utils"], function (require, exports, utils, evaluacion_service_1, asistencia_service_1, comun_utils_1) {
+define(["require", "exports", "../core/utils", "evaluacion.service", "../asistencia/asistencia.service", "../ubigeo/ubigeo.service", "../comun.utils"], function (require, exports, utils, evaluacion_service_1, asistencia_service_1, ubigeo_service_1, comun_utils_1) {
     "use strict";
     var EvaluacionView = (function () {
         function EvaluacionView() {
             this.detalleCriterios = [];
             this.localesAmbientes = [];
+            this.zonasRankeo = [];
+            this.cargosFuncionales = [];
+            this.personalNotaFinal = [];
             this.cursoInyection = new comun_utils_1.CursoInyection();
             this.evaluacionService = new evaluacion_service_1.EvaluacionService();
             this.asistenciaService = new asistencia_service_1.AsistenciaService();
+            this.ubigeoService = new ubigeo_service_1["default"]();
+            this.getZonas();
             this.setEvents();
         }
         EvaluacionView.prototype.setEvents = function () {
@@ -16,6 +21,7 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                 $('#p_curso_actual').text($('#cursos :selected').text());
                 _this.getAulas(curso_id);
                 _this.getCriterios(curso_id);
+                _this.getCargosFuncionales(curso_id);
             });
             $('#select_aulas_asignadas').on('change', function (element) {
                 var selected = $(element.currentTarget).val();
@@ -37,6 +43,12 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
             $('#btn_save_asistencia').on('click', function () {
                 _this.saveNotas();
             });
+            $('#btn_ver_personal').on('click', function () {
+                _this.getPersonalNotaFinal();
+            });
+            $('#btn_rankeo_temporal').on('click', function () {
+                _this.rankear();
+            });
         };
         EvaluacionView.prototype.getCriterios = function (id_curso) {
             var _this = this;
@@ -45,6 +57,78 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
             });
             this.evaluacionService.criteriosDetalleCurso(id_curso).done(function (detalleCriterio) {
                 _this.detalleCriterios = detalleCriterio;
+            });
+        };
+        EvaluacionView.prototype.getPersonalNotaFinal = function () {
+            var _this = this;
+            var zona = $('#select_zonas').val();
+            var cargo = $('#select_cargos_funcionales').val();
+            this.evaluacionService.filterPersonalNotaFinal("" + ubigeo.ccdd + ubigeo.ccpp + ubigeo.ccdi, zona, cargo).done(function (personalNotaFinal) {
+                _this.personalNotaFinal = personalNotaFinal;
+                _this.drawPersonalNotaFinal();
+            });
+        };
+        EvaluacionView.prototype.drawPersonalNotaFinal = function () {
+            var html = '';
+            this.personalNotaFinal.map(function (pea, index) {
+                if (pea.personalaula_notafinal.length) {
+                    html += "<tr data-value=\"" + pea.id_peaaula + "\">\n                        <td>" + (index + 1) + "</td>\n                        <td>" + pea.id_pea.ape_paterno + " " + pea.id_pea.ape_materno + " " + pea.id_pea.nombre + "</td>\n                        <td>" + pea.id_pea.dni + "</td>\n                        <td><input value=\"" + pea.personalaula_notafinal[0].nota_final + "\" type=\"number\"></td>\n                        <td><span class=\"label\"></span></td>\n                     </tr>";
+                }
+            });
+            $('#table_personalnotafinal').find('tbody').html(html);
+        };
+        EvaluacionView.prototype.rankear = function () {
+            var meta = 6;
+            var inputsTable = $('#table_personalnotafinal').find('input[type="number"]');
+            var count = 0;
+            inputsTable.map(function (index, input) {
+                count++;
+                var span = $(input).parent().parent().find('span');
+                if (meta >= count) {
+                    if ($(input).val() >= 11) {
+                        span.addClass('label-success');
+                        span.text('Titular');
+                    }
+                    else {
+                        span.addClass('label-danger');
+                        span.text('No seleccionado');
+                    }
+                }
+                else {
+                    if ($(input).val() >= 11) {
+                        span.addClass('label-primary');
+                        span.text('reserva');
+                    }
+                    else {
+                        span.addClass('label-danger');
+                        span.text('No seleccionado');
+                    }
+                }
+            });
+        };
+        // setEstadoNotaFinal() {
+        //     switch
+        // }
+        EvaluacionView.prototype.getCargosFuncionales = function (id_curso) {
+            var _this = this;
+            this.evaluacionService.cargosCurso(id_curso).done(function (cargosFuncionales) {
+                _this.cargosFuncionales = cargosFuncionales;
+                var html = "<option value=\"\">Seleccione cargo</option>";
+                _this.cargosFuncionales.map(function (value) {
+                    html += "<option value=\"" + value.id_cargofuncional.id_cargofuncional + "\">" + value.id_cargofuncional.nombre_funcionario + "</option>";
+                });
+                $('#select_cargos_funcionales').html(html);
+            });
+        };
+        EvaluacionView.prototype.getZonas = function () {
+            var _this = this;
+            this.ubigeoService.getZonas("" + ubigeo.ccdd + ubigeo.ccpp + ubigeo.ccdi).done(function (zonas) {
+                _this.zonasRankeo = zonas;
+                var html = "<option value=\"\">Seleccione zona</option>";
+                _this.zonasRankeo.map(function (value) {
+                    html += "<option value=\"" + value.ZONA + "\">" + value.ZONA + "</option>";
+                });
+                $('#select_zonas').html(html);
             });
         };
         EvaluacionView.prototype.drawHeader = function () {
@@ -99,10 +183,10 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                 nota_final = Math.round(nota_final * 100) / 100;
                 var span = '';
                 if (nota_final > 10) {
-                    span = "<span name=\"span_state\" class=\"label label-success\">Aprobado</span>";
+                    span = "<span name=\"span_state\" class=\"label label-success\">Apto</span>";
                 }
                 else {
-                    span = "<span name=\"span_state\" class=\"label label-danger\">Desaprobado</span>";
+                    span = "<span name=\"span_state\" class=\"label label-danger\">No apto</span>";
                 }
                 tbody += "<td><input disabled min=\"0\" max=\"20\" value=\"" + nota_final + "\" name=\"nota_final\" type=\"number\"></td>\n            <td>" + span + "</td></tr>";
             });
@@ -145,8 +229,22 @@ define(["require", "exports", "../core/utils", "evaluacion.service", "../asisten
                 _this.evaluacionService.saveNotas(request).done(function (response) {
                     $('#select_aulas_asignadas').trigger('change');
                     utils.showSwalAlert('Se ha guardado las notas!', 'Exito!', 'success');
+                    _this.saveNotaFinal();
                 });
-            }, 'Esta seguro de guardar la asistencia de estas personas?');
+            }, 'Esta seguro de guardar las notas de estas personas?');
+        };
+        EvaluacionView.prototype.saveNotaFinal = function () {
+            var inputsNotafinal = $('input[name="nota_final"]');
+            var request = [];
+            inputsNotafinal.each(function (index, element) {
+                var trpeaaula;
+                if ($(element).val() != '') {
+                    trpeaaula = $(element).parent().parent().data('value');
+                    request.push({ peaaula: trpeaaula, nota_final: $(element).val() });
+                }
+            });
+            this.evaluacionService.saveNotasFinal(request).done(function (response) {
+            });
         };
         EvaluacionView.prototype.getAulas = function (curso_id) {
             var _this = this;

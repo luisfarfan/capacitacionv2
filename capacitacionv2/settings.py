@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+ENV = 'DESARROLLO'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -80,23 +81,39 @@ WSGI_APPLICATION = 'capacitacionv2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # },
-    'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'CPV_CAPACITACION_PRUEBA',
-        'USER': 'us_capacitacion_web',
-        'PASSWORD': 'cap5wegU$re',
-        'HOST': '172.18.1.41',
-        'OPTIONS': {
-            'driver': 'SQL Server',
-            'unicode_results': True
+"""
+Variables de entorno
+"""
+_DATABASECONF = {}
+if ENV == 'LOCAL':
+    _DATABASECONF = {
+        'default': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_CAPACITACION_PRUEBA',
+            'USER': 'us_capacitacion_web',
+            'PASSWORD': 'cap5wegU$re',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
         },
-    },
-}
+    }
+elif ENV == 'DESARROLLO':
+    _DATABASECONF = {
+        'default': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_CAPACITACION_PRUEBA',
+            'USER': 'us_capacitacion_web',
+            'PASSWORD': 'cap5wegU$re',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        },
+    }
+DATABASES = _DATABASECONF
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

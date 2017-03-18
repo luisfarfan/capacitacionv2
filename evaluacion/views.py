@@ -35,6 +35,26 @@ class LocalCursoDetallebyLocalAmbienteViewSet(viewsets.ModelViewSet):
     serializer_class = LocalCursoDetalleSerializer
 
 
+class CargosCursoViewSet(generics.ListAPIView):
+    serializer_class = CargosCursoSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        return CursoCargoFuncional.objects.filter(id_curso_id=curso)
+
+
+class PersonalAulaDetalleNotaFinalViewSet(generics.ListAPIView):
+    serializer_class = PersonalAulaDetalleNotaFinalSerializer
+
+    def get_queryset(self):
+        ubigeo = self.kwargs['ubigeo']
+        zona = self.kwargs['zona']
+        id_cargofuncional = self.kwargs['id_cargofuncional']
+        return PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__zona=zona,
+                                           id_pea__id_cargofuncional_id=id_cargofuncional).order_by(
+            '-personalaula_notafinal__nota_final')
+
+
 @csrf_exempt
 def saveNotas(request):
     postdata = request.POST['personalnotas']
@@ -56,20 +76,18 @@ def saveNotas(request):
         notapea.save()
     return JsonResponse({'msg': 'Guardado correcto'})
 
-# def saveNotas(request):
-#     data = request.POST['personalnotas']
-#
-#     evaluacion = PersonalCursoCriterio.objects.filter(peaaula_id=data['peaaula'],
-#                                                       criterio_id=data['criterio']).count()
-#     if data['nota'] == '':
-#         data['nota'] = None
-#
-#     if evaluacion:
-#         notapea = PersonalCursoCriterio.objects.get(peaaula_id=data['peaaula'], criterio_id=data['criterio'])
-#         notapea.nota = data['nota']
-#     else:
-#         notapea = PersonalCursoCriterio(peaaula_id=data['peaaula'],
-#                                         criterio_id=data['criterio'], nota=data['nota'])
-#     notapea.save()
-#
-#     return JsonResponse({'msg': 'Guardado correcto'})
+
+@csrf_exempt
+def saveNotasFinal(request):
+    postdata = request.POST['personalnotasfinal']
+    dataDict = json.loads(postdata)
+
+    for data in dataDict:
+        nota_final = PersonalAulaNotaFinal.objects.filter(peaaula_id=data['peaaula']).count()
+        if nota_final:
+            notafinalpea = PersonalAulaNotaFinal.objects.get(peaaula_id=data['peaaula'])
+            notafinalpea.nota_final = data['nota_final']
+        else:
+            notafinalpea = PersonalAulaNotaFinal(peaaula_id=data['peaaula'], nota_final=data['nota_final'])
+        notafinalpea.save()
+    return JsonResponse({'msg': 'Guardado correcto'})

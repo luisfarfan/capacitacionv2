@@ -22,3 +22,32 @@ class CriterioCursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CursoCriterio
         fields = '__all__'
+
+
+class PersonalAulaNotaFinalDetalleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalAulaNotaFinal
+        fields = '__all__'
+
+
+class PersonalAulaDetalleNotaFinalSerializer(serializers.ModelSerializer):
+    personalaula_notafinal = PersonalAulaNotaFinalDetalleSerializer(many=True, read_only=True)
+    id_pea = PersonalSerializer()
+
+    class Meta:
+        model = PersonalAula
+        fields = '__all__'
+
+
+class CargoFuncionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CargoFuncional
+        fields = '__all__'
+
+
+class CargosCursoSerializer(serializers.ModelSerializer):
+    id_cargofuncional = CargoFuncionalSerializer()
+
+    class Meta:
+        model = CursoCargoFuncional
+        fields = '__all__'

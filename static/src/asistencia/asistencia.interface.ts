@@ -22,7 +22,7 @@ export interface IPersonalAsistenciaDetalle {
     personalaula: IPersonalAula[],
     id_pea: IPersonal,
     id_localambiente: number,
-    personalaula_notas: IPersonalNotas[]
+    personalaula_notas: IPersonalNotas[],
 }
 export interface IPersonalAula {
     fecha: string,

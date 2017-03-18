@@ -316,3 +316,21 @@ class PersonalCursoCriterio(models.Model):
     class Meta:
         managed = True
         db_table = 'PeaCursoCriterio'
+
+
+class PersonalAulaNotaFinal(models.Model):
+    peaaula = models.ForeignKey(PersonalAula, related_name='personalaula_notafinal')
+    nota_final = models.FloatField()
+    estado = models.ForeignKey('TipoResultadosCapacitacion', null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PersonalAulaNotaFinal'
+
+
+class TipoResultadosCapacitacion(models.Model):
+    nombre = models.CharField(max_length=255)
+
+    class Meta:
+        managed = True
+        db_table = 'TipoResultadoCapacitacion'

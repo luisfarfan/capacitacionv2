@@ -152,10 +152,48 @@ define(["require", "exports"], function (require, exports) {
     function validateForm(rules) {
         var setOptions = {
             rules: {},
-            messages: {
-                custom: {
-                    required: "El campo es requerido"
+            onfocusout: false,
+            onkeyup: false,
+            onclick: false,
+            ignore: 'input[type=hidden], .select2-search__field',
+            errorClass: 'validation-error-label',
+            successClass: 'validation-valid-label',
+            highlight: function (element, errorClass) {
+                $(element).removeClass(errorClass);
+            },
+            unhighlight: function (element, errorClass) {
+                $(element).removeClass(errorClass);
+            },
+            // Different components require proper error label placement
+            errorPlacement: function (error, element) {
+                // Styled checkboxes, radios, bootstrap switch
+                if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container')) {
+                    if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                        error.appendTo(element.parent().parent().parent().parent());
+                    }
+                    else {
+                        error.appendTo(element.parent().parent().parent().parent().parent());
+                    }
                 }
+                else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+                    error.appendTo(element.parent().parent().parent());
+                }
+                else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
+                    error.appendTo(element.parent());
+                }
+                else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                    error.appendTo(element.parent().parent());
+                }
+                else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+                    error.appendTo(element.parent().parent());
+                }
+                else {
+                    error.insertAfter(element);
+                }
+            },
+            validClass: "validation-valid-label",
+            success: function (label) {
+                label.addClass("validation-valid-label").text("Correcto!");
             }
         };
         setOptions.rules = rules;
@@ -184,7 +222,7 @@ define(["require", "exports"], function (require, exports) {
                 html += "<td>" + (value[val] == null ? '-' : value[val]) + "</td>";
             });
             if (options !== null) {
-                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li data-popup=\"tooltip\" title=\"Editar\" name=\"" + options.edit_name + "\" data-value=" + value[pk] + " class=\"text-primary-600\"><a><i class=\"icon-pencil7\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li style=\"margin-left: 20px;\" data-popup=\"tooltip\" title=\"Eliminar\" name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n                            " + (options.checkbox !== '' ? "<li data-popup=\"tooltip\" title=\"Seleccionar Local\" style=\"margin-left: 20px;\"><div class=\"pure-checkbox\">\n                                                            <input id=\"" + options.checkbox + value[pk] + "\" name=\"" + options.checkbox + "\" value=\"" + value[pk] + "\" type=\"checkbox\">\n                                                            <label class=\"checkbox-inline\" for=\"" + options.checkbox + value[pk] + "\"></label>\n                                                         </div></li>" : '') + "\n\t\t\t\t\t\t  </ul></td>";
+                html += "<td><ul class=\"icons-list\">\n                            " + (options.edit_name !== '' ? "<li data-popup=\"tooltip\" title=\"Editar\" name=\"" + options.edit_name + "\" data-value=" + value[pk] + " style=\"color: #8bc34a\"><a><i class=\"icon-pencil\"></i></a></li>" : '') + "\n                            " + (options.delete_name !== '' ? "<li style=\"margin-left: 20px;\" data-popup=\"tooltip\" title=\"Eliminar\" name=\"" + options.delete_name + "\" data-value=" + value[pk] + " class=\"text-danger-600\"><a><i class=\"icon-trash\"></i></a></li>" : '') + "\n                            " + (options.checkbox !== '' ? "<li data-popup=\"tooltip\" title=\"Seleccionar Local\" style=\"margin-left: 20px;\"><div class=\"pure-checkbox\">\n                                                            <input id=\"" + options.checkbox + value[pk] + "\" name=\"" + options.checkbox + "\" value=\"" + value[pk] + "\" type=\"checkbox\">\n                                                            <label class=\"checkbox-inline\" for=\"" + options.checkbox + value[pk] + "\"></label>\n                                                         </div></li>" : '') + "\n\t\t\t\t\t\t  </ul></td>";
             }
             html += "</tr>";
         });

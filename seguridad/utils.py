@@ -2,7 +2,7 @@ def drawSidebar(menu, base_url, module_id):
     if menu is None:
         return ''
     html = ''
-    html += """<li class="navigation-header"><span>Censo de Poblacion y Vivienda VIII</span>
+    html += """<li class="navigation-header"><span></span>
                  <i class="icon-menu" title="Main pages"></i></li>"""
     html += recursiveMenu(menu, base_url, module_id)
     return html

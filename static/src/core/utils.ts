@@ -165,11 +165,60 @@ function findChilds(menu: MenuTree, rol_id_array: Array<number>): boolean {
 export function validateForm(rules: Object) {
     let setOptions = {
         rules: {},
-        messages: {
-            custom: {
-                required: "El campo es requerido",
-            },
-        }
+        onfocusout: false,
+        onkeyup: false,
+        onclick: false,
+        ignore: 'input[type=hidden], .select2-search__field', // ignore hidden fields
+        errorClass: 'validation-error-label',
+        successClass: 'validation-valid-label',
+        highlight: function (element: any, errorClass: any) {
+            $(element).removeClass(errorClass);
+        },
+        unhighlight: function (element: any, errorClass: any) {
+            $(element).removeClass(errorClass);
+        },
+
+        // Different components require proper error label placement
+        errorPlacement: function (error: any, element: any) {
+
+            // Styled checkboxes, radios, bootstrap switch
+            if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container')) {
+                if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                    error.appendTo(element.parent().parent().parent().parent());
+                }
+                else {
+                    error.appendTo(element.parent().parent().parent().parent().parent());
+                }
+            }
+
+            // Unstyled checkboxes, radios
+            else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+                error.appendTo(element.parent().parent().parent());
+            }
+
+            // Input with icons and Select2
+            else if (element.parents('div').hasClass('has-feedback') || element.hasClass('select2-hidden-accessible')) {
+                error.appendTo(element.parent());
+            }
+
+            // Inline checkboxes, radios
+            else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo(element.parent().parent());
+            }
+
+            // Input group, styled file input
+            else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+                error.appendTo(element.parent().parent());
+            }
+
+            else {
+                error.insertAfter(element);
+            }
+        },
+        validClass: "validation-valid-label",
+        success: function (label: any) {
+            label.addClass("validation-valid-label").text("Correcto!")
+        },
     };
     setOptions.rules = rules
     return setOptions;
@@ -206,7 +255,7 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
         })
         if (options !== null) {
             html += `<td><ul class="icons-list">
-                            ${options.edit_name !== '' ? `<li data-popup="tooltip" title="Editar" name="${options.edit_name}" data-value=${value[pk]} class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>` : ''}
+                            ${options.edit_name !== '' ? `<li data-popup="tooltip" title="Editar" name="${options.edit_name}" data-value=${value[pk]} style="color: #8bc34a"><a><i class="icon-pencil"></i></a></li>` : ''}
                             ${options.delete_name !== '' ? `<li style="margin-left: 20px;" data-popup="tooltip" title="Eliminar" name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
                             ${options.checkbox !== '' ? `<li data-popup="tooltip" title="Seleccionar Local" style="margin-left: 20px;"><div class="pure-checkbox">
                                                             <input id="${options.checkbox}${value[pk]}" name="${options.checkbox}" value="${value[pk]}" type="checkbox">

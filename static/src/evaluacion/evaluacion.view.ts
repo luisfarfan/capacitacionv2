@@ -4,16 +4,27 @@
 import * as utils from '../core/utils';
 import {EvaluacionService} from 'evaluacion.service';
 import {AsistenciaService} from '../asistencia/asistencia.service';
-import {ICriterio, ICursoCriterios, IDetalleCriterio} from 'evaluacion.interface';
+import UbigeoService from '../ubigeo/ubigeo.service';
+import {
+    ICriterio,
+    ICursoCriterios,
+    IDetalleCriterio,
+    ICargoFuncionalDetalle,
+    IPeaNotaFinal
+} from 'evaluacion.interface';
 import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalNotas} from '../asistencia/asistencia.interface'
 import {CursoInyection} from '../comun.utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
+import {IUbigeo} from "../ubigeo/ubigeo.view";
+import {IZona} from "../ubigeo/ubigeo.interface";
 declare var IDUSUARIO: number;
-declare var ubigeo: any;
+declare var ubigeo: IUbigeo;
 declare var $: any;
+
 
 class EvaluacionView {
     private cursoInyection: CursoInyection;
+    private ubigeoService: UbigeoService;
     private evaluacionService: EvaluacionService;
     private asistenciaService: AsistenciaService;
     private criteriosCurso: ICursoCriterios;
@@ -21,11 +32,16 @@ class EvaluacionView {
     private localesAmbientes: ILocalAmbienteAsignados[] = [];
     private localAmbienteSelected: ILocalAmbienteAsignados;
     private personal: IPersonalAsistenciaDetalle[];
+    private zonasRankeo: IZona[] = [];
+    private cargosFuncionales: ICargoFuncionalDetalle[] = [];
+    private personalNotaFinal: IPeaNotaFinal[] = [];
 
     constructor() {
         this.cursoInyection = new CursoInyection();
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
+        this.ubigeoService = new UbigeoService();
+        this.getZonas();
         this.setEvents();
     }
 
@@ -35,6 +51,7 @@ class EvaluacionView {
             $('#p_curso_actual').text($('#cursos :selected').text());
             this.getAulas(curso_id);
             this.getCriterios(curso_id);
+            this.getCargosFuncionales(curso_id);
         });
 
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
@@ -56,6 +73,12 @@ class EvaluacionView {
         $('#btn_save_asistencia').on('click', () => {
             this.saveNotas();
         });
+        $('#btn_ver_personal').on('click', () => {
+            this.getPersonalNotaFinal();
+        });
+        $('#btn_rankeo_temporal').on('click', () => {
+            this.rankear();
+        })
     }
 
     getCriterios(id_curso: number) {
@@ -64,6 +87,84 @@ class EvaluacionView {
         });
         this.evaluacionService.criteriosDetalleCurso(id_curso).done((detalleCriterio: IDetalleCriterio[]) => {
             this.detalleCriterios = detalleCriterio;
+        });
+    }
+
+    getPersonalNotaFinal() {
+        let zona: string = $('#select_zonas').val()
+        let cargo: number = $('#select_cargos_funcionales').val();
+        this.evaluacionService.filterPersonalNotaFinal(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, zona, cargo).done((personalNotaFinal: IPeaNotaFinal[]) => {
+            this.personalNotaFinal = personalNotaFinal;
+            this.drawPersonalNotaFinal();
+        })
+    }
+
+    drawPersonalNotaFinal() {
+        let html: string = '';
+        this.personalNotaFinal.map((pea: IPeaNotaFinal, index: number) => {
+            if (pea.personalaula_notafinal.length) {
+                html += `<tr data-value="${pea.id_peaaula}">
+                        <td>${index + 1}</td>
+                        <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
+                        <td>${pea.id_pea.dni}</td>
+                        <td><input value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
+                        <td><span class="label"></span></td>
+                     </tr>`;
+            }
+        });
+        $('#table_personalnotafinal').find('tbody').html(html);
+    }
+
+    rankear() {
+        let meta = 6
+        let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
+        let count = 0;
+        inputsTable.map((index: number, input: Element) => {
+            count++;
+            let span: any = $(input).parent().parent().find('span')
+            if (meta >= count) {
+                if ($(input).val() >= 11) {
+                    span.addClass('label-success')
+                    span.text('Titular')
+                } else {
+                    span.addClass('label-danger')
+                    span.text('No seleccionado')
+                }
+            } else {
+                if ($(input).val() >= 11) {
+                    span.addClass('label-primary')
+                    span.text('reserva')
+                } else {
+                    span.addClass('label-danger')
+                    span.text('No seleccionado')
+                }
+            }
+        });
+    }
+
+    // setEstadoNotaFinal() {
+    //     switch
+    // }
+
+    getCargosFuncionales(id_curso: number) {
+        this.evaluacionService.cargosCurso(id_curso).done((cargosFuncionales) => {
+            this.cargosFuncionales = cargosFuncionales;
+            let html: string = `<option value="">Seleccione cargo</option>`;
+            this.cargosFuncionales.map((value: ICargoFuncionalDetalle) => {
+                html += `<option value="${value.id_cargofuncional.id_cargofuncional}">${value.id_cargofuncional.nombre_funcionario}</option>`
+            });
+            $('#select_cargos_funcionales').html(html);
+        })
+    }
+
+    getZonas() {
+        this.ubigeoService.getZonas(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`).done((zonas: IZona[]) => {
+            this.zonasRankeo = zonas;
+            let html: string = `<option value="">Seleccione zona</option>`;
+            this.zonasRankeo.map((value: IZona) => {
+                html += `<option value="${value.ZONA}">${value.ZONA}</option>`
+            });
+            $('#select_zonas').html(html);
         });
     }
 
@@ -120,9 +221,9 @@ class EvaluacionView {
             nota_final = Math.round(nota_final * 100) / 100;
             let span: string = '';
             if (nota_final > 10) {
-                span = `<span name="span_state" class="label label-success">Aprobado</span>`;
+                span = `<span name="span_state" class="label label-success">Apto</span>`;
             } else {
-                span = `<span name="span_state" class="label label-danger">Desaprobado</span>`;
+                span = `<span name="span_state" class="label label-danger">No apto</span>`;
             }
             tbody += `<td><input disabled min="0" max="20" value="${nota_final}" name="nota_final" type="number"></td>
             <td>${span}</td></tr>`
@@ -167,9 +268,23 @@ class EvaluacionView {
             this.evaluacionService.saveNotas(request).done((response) => {
                 $('#select_aulas_asignadas').trigger('change');
                 utils.showSwalAlert('Se ha guardado las notas!', 'Exito!', 'success');
+                this.saveNotaFinal();
             });
-        }, 'Esta seguro de guardar la asistencia de estas personas?')
+        }, 'Esta seguro de guardar las notas de estas personas?')
+    }
 
+    saveNotaFinal() {
+        let inputsNotafinal: any = $('input[name="nota_final"]')
+        let request: Array<Object> = [];
+        inputsNotafinal.each((index: number, element: Element) => {
+            let trpeaaula: number;
+            if ($(element).val() != '') {
+                trpeaaula = $(element).parent().parent().data('value')
+                request.push({peaaula: trpeaaula, nota_final: $(element).val()})
+            }
+        });
+        this.evaluacionService.saveNotasFinal(request).done((response) => {
+        });
     }
 
     getAulas(curso_id: number) {

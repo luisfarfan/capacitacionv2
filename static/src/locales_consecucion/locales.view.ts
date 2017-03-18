@@ -165,7 +165,14 @@ class LocalController {
             }
         });
         $('#btn_generar_ambientes').on('click', () => {
-            this.saveLocales();
+            this.form_local_validate.form()
+            if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
+                utils.showInfo('Por favor, seleccione un curso');
+                return false
+            }
+            if (this.form_local_validate.valid()) {
+                this.saveLocales(true)
+            }
             //this.generarAmbientes();
         });
         $('#buscarlocalmarco').on('click', () => {
@@ -192,7 +199,6 @@ class LocalController {
             //"minDate": fecha_hoy,
             "minDate": "19/01/2017",
             "maxDate": "31/10/2017",
-            autoUpdateInput: false,
             singleDatePicker: true,
             locale: {
                 format: 'DD/MM/YYYY'
@@ -285,8 +291,14 @@ class LocalController {
         })
     }
 
-    saveLocales() {
+    saveLocales(isgenerar: boolean = false) {
+        let texto: string = isgenerar ? 'Se generarón los ambientes a usar!' : '';
+
         this.form_local_serializado = utils.formToObject(utils.serializeForm('form_local'));
+        if (this.form_local_serializado.zona_ubicacion_local == "-1") {
+            utils.showInfo('Por favor seleccione la ubicación del Local');
+            $('#zona_ubicacion_local').select2('open');
+        }
         this.form_local_serializado.ubigeo = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`
         if (this.directorioLocal == null && this.local == null) {
             this.directoriolocalService.add(this.form_local_serializado).done((directoriolocal: ILocal) => {
@@ -296,7 +308,7 @@ class LocalController {
                     curso: $('#cursos').val()
                 }).done((directoriolocalCurso: ILocalCurso) => {
                     this.directoriolocalCurso = directoriolocalCurso;
-                    utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
+                    isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
                     this.form_local_validate.resetForm();
                     this.generarAmbientes();
                 }).fail()
@@ -306,13 +318,13 @@ class LocalController {
         } else if (this.directorioLocal) {
             this.directoriolocalService.update(this.directorioLocal.id_local, this.form_local_serializado).done((directoriolocal: ILocal) => {
                 this.directorioLocal = directoriolocal;
-                utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
                 this.generarAmbientes();
             });
         } else if (this.local) {
             this.localService.update(this.local.id_local, this.form_local_serializado).done((local) => {
                 this.local = local;
-                utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
+                isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success')
                 this.generarAmbientes();
             })
         }

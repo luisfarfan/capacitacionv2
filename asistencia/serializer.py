@@ -24,9 +24,17 @@ class PersonalAulaNotasSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PersonalAulaNotaFinalSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PersonalAulaNotaFinal
+        fields = '__all__'
+
+
 class PersonalAulaDetalleSerializer(serializers.ModelSerializer):
     personalaula = PersonalAulaAsistenciaSerializer(many=True, read_only=True)
     personalaula_notas = PersonalAulaNotasSerializer(many=True, read_only=True)
+    personalaula_notafinal = PersonalAulaNotaFinalSerializer(many=True, read_only=True)
     id_pea = PersonalSerializer()
 
     class Meta:
