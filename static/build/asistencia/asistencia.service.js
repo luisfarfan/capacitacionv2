@@ -3,14 +3,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-define(["require", "exports", "../abstractService"], function (require, exports, abstractService_1) {
+define(["require", "exports", '../abstractService'], function (require, exports, abstractService_1) {
     "use strict";
     var PersonalAsistenciaService = (function (_super) {
         __extends(PersonalAsistenciaService, _super);
         function PersonalAsistenciaService() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.url_personalAsistencia = "";
-            return _this;
+            _super.apply(this, arguments);
+            this.url_personalAsistencia = "";
         }
         PersonalAsistenciaService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }
@@ -91,10 +90,9 @@ define(["require", "exports", "../abstractService"], function (require, exports,
     var PersonalService = (function (_super) {
         __extends(PersonalService, _super);
         function PersonalService() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.urlPersonal = BASEURL + "/asistencia/personal/";
-            _this.urlPersonalDetalle = BASEURL + "/asistencia/personaldetalle/";
-            return _this;
+            _super.apply(this, arguments);
+            this.urlPersonal = BASEURL + "/asistencia/personal/";
+            this.urlPersonalDetalle = BASEURL + "/asistencia/personaldetalle/";
         }
         PersonalService.prototype.get = function (pk) {
             if (pk === void 0) { pk = null; }

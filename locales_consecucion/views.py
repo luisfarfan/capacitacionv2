@@ -1,4 +1,6 @@
 # from rest_framework import generics
+from builtins import filter
+
 from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
@@ -70,14 +72,24 @@ class LocalCursoFilter(generics.ListAPIView):
 
     def get_queryset(self):
         curso = self.kwargs['curso']
-        ubigeo = self.kwargs['ubigeo']
-        if 'zona' in self.kwargs:
-            zona = self.kwargs['zona']
-            query = LocalCurso.objects.filter(curso_id=curso, local__ubigeo_id=ubigeo, local__zona_ubicacion_local=zona)
-        else:
-            query = LocalCurso.objects.filter(curso_id=curso, local__ubigeo_id=ubigeo)
+        filter = {}
+        filter['curso_id'] = curso
+        if 'ccdd' in self.kwargs:
+            filter['local_ubigeo__ccdd'] = self.kwargs['ccdd']
+        elif 'ccpp' in self.kwargs:
+            filter['local_ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local_ubigeo__ccpp'] = self.kwargs['ccpp']
+        elif 'ccdi' in self.kwargs:
+            filter['local_ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local_ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['local_ubigeo__ccdi'] = self.kwargs['ccdi']
+        elif 'zona' in self.kwargs:
+            filter['local_ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local_ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['local_ubigeo__ccdi'] = self.kwargs['ccdi']
+            filter['local__zona_ubicacion_local'] = self.kwargs['zona']
 
-        return query
+        return LocalCurso.objects.filter(**filter)
 
 
 class DirectorioLocalbyUbigeo(generics.ListAPIView):
@@ -85,17 +97,24 @@ class DirectorioLocalbyUbigeo(generics.ListAPIView):
 
     def get_queryset(self):
         curso = self.kwargs['curso']
-        ubigeo = self.kwargs['ubigeo']
+        filter = {}
+        filter['directoriolocalcurso__curso_id'] = curso
+        if 'ccdd' in self.kwargs:
+            filter['ubigeo__ccdd'] = self.kwargs['ccdd']
+        if 'ccpp' in self.kwargs:
+            filter['ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['ubigeo__ccpp'] = self.kwargs['ccpp']
+        if 'ccdi' in self.kwargs:
+            filter['ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['ubigeo__ccdi'] = self.kwargs['ccdi']
         if 'zona' in self.kwargs:
-            zona = self.kwargs['zona']
-            query = DirectorioLocal.objects.filter(directoriolocalcurso__curso_id=curso, ubigeo_id=ubigeo,
-                                                   zona_ubicacion_local=zona)
-        else:
-            query = DirectorioLocal.objects.filter(directoriolocalcurso__curso_id=curso, ubigeo_id=ubigeo)
+            filter['ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['ubigeo__ccdi'] = self.kwargs['ccdi']
+            filter['zona_ubicacion_local'] = self.kwargs['zona']
 
-        return query
-
-        # def get_queryset(self):
+        return DirectorioLocal.objects.filter(**filter)
 
 
 @csrf_exempt
@@ -224,4 +243,4 @@ def addLocalesCurso():
 
     for curso in cursos:
         for dir in directorio:
-            localcurso = DirectorioLocalCurso(curso_id=curso.id_curso,local_id=dir.id_local)
+            localcurso = DirectorioLocalCurso(curso_id=curso.id_curso, local_id=dir.id_local)

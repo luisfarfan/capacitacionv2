@@ -109,7 +109,7 @@ class DistribucionView {
     }
 
     filterLocalesSeleccionados() {
-        this.localService.getbyAmbienteGeografico(this.filterFields.curso, this.filterFields.ubigeo, this.filterFields.zona).done((localesCurso) => {
+        this.localService.getbyAmbienteGeografico(this.filterFields.curso, {}).done((localesCurso: any) => {
             this.localesCurso = localesCurso;
             this.locales = [];
             this.localesCurso.map((value: ILocalCurso, index: number) => {

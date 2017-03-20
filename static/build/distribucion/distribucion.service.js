@@ -52,7 +52,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DistribucionService.prototype["delete"] = function (pk) {
+        DistribucionService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url_localzona + pk + "/",
                 type: 'DELETE'

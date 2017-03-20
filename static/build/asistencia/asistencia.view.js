@@ -1,4 +1,4 @@
-define(["require", "exports", "asistencia.service", "../distribucion/distribucion.service", "../comun.utils", "../core/utils"], function (require, exports, asistencia_service_1, distribucion_service_1, comun_utils_1, utils) {
+define(["require", "exports", 'asistencia.service', '../distribucion/distribucion.service', '../comun.utils', '../core/utils'], function (require, exports, asistencia_service_1, distribucion_service_1, comun_utils_1, utils) {
     "use strict";
     var AsistenciaView = (function () {
         function AsistenciaView() {

@@ -1,4 +1,4 @@
-define(["require", "exports", "../comun.utils", "../distribucion/distribucion.service", "../locales_consecucion/locales.service", "../ubigeo/ubigeo.service", "../core/utils"], function (require, exports, comun_utils_1, distribucion_service_1, locales_service_1, ubigeo_service_1, utils) {
+define(["require", "exports", '../comun.utils', '../distribucion/distribucion.service', '../locales_consecucion/locales.service', '../ubigeo/ubigeo.service', '../core/utils'], function (require, exports, comun_utils_1, distribucion_service_1, locales_service_1, ubigeo_service_1, utils) {
     "use strict";
     var DistribucionView = (function () {
         function DistribucionView() {
@@ -88,7 +88,7 @@ define(["require", "exports", "../comun.utils", "../distribucion/distribucion.se
         }
         DistribucionView.prototype.filterLocalesSeleccionados = function () {
             var _this = this;
-            this.localService.getbyAmbienteGeografico(this.filterFields.curso, this.filterFields.ubigeo, this.filterFields.zona).done(function (localesCurso) {
+            this.localService.getbyAmbienteGeografico(this.filterFields.curso, {}).done(function (localesCurso) {
                 _this.localesCurso = localesCurso;
                 _this.locales = [];
                 _this.localesCurso.map(function (value, index) {

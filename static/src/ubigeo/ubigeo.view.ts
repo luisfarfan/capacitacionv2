@@ -81,7 +81,7 @@ export default class UbigeoView {
             utils.setDropdown(this.provincias, {id: 'ccpp', text: ['provincia']}, {
                 id_element: this.provincia_element_id,
                 bootstrap_multiselect: false,
-                select2: true
+                select2: false
             })
             if (this.setUbigeo.ccpp !== "") {
                 $(`#${this.provincia_element_id}`).val(this.setUbigeo.ccpp).trigger('change');
@@ -101,7 +101,7 @@ export default class UbigeoView {
             utils.setDropdown(this.distritos, {id: 'ccdi', text: ['distrito']}, {
                 id_element: this.distrito_element_id,
                 bootstrap_multiselect: false,
-                select2: true
+                select2: false
             });
             if (this.setUbigeo.ccdi !== "") {
                 $(`#${this.distrito_element_id}`).val(this.setUbigeo.ccdi).trigger('change');
@@ -120,14 +120,14 @@ export default class UbigeoView {
             utils.setDropdown(this.zonas, {id: 'ZONA', text: ['ZONA']}, {
                 id_element: this.zona_element_id,
                 bootstrap_multiselect: false,
-                select2: true
+                select2: false
             });
             utils.setDropdown(this.zonas, {id: 'ZONA', text: ['ZONA']}, {
                 id_element: 'zona_ubicacion_local',
                 bootstrap_multiselect: false,
                 select2: true
             });
-            if (this.setUbigeo.zona !== "") {
+            if (this.setUbigeo.zona !== "") {''
                 $(`#${this.zona_element_id}`).val(this.setUbigeo.zona).trigger('change');
                 $(`#${this.zona_element_id}`).prop('disabled', true)
                 this.zona = this.setUbigeo.zona

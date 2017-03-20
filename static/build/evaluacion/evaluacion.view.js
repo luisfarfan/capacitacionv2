@@ -1,4 +1,4 @@
-define(["require", "exports", "../core/utils", "evaluacion.service", "../asistencia/asistencia.service", "../ubigeo/ubigeo.service", "../comun.utils"], function (require, exports, utils, evaluacion_service_1, asistencia_service_1, ubigeo_service_1, comun_utils_1) {
+define(["require", "exports", '../core/utils', 'evaluacion.service', '../asistencia/asistencia.service', '../ubigeo/ubigeo.service', '../comun.utils'], function (require, exports, utils, evaluacion_service_1, asistencia_service_1, ubigeo_service_1, comun_utils_1) {
     "use strict";
     var EvaluacionView = (function () {
         function EvaluacionView() {

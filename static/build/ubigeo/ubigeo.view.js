@@ -1,10 +1,10 @@
-define(["require", "exports", "./ubigeo.service", "../core/utils"], function (require, exports, ubigeo_service_1, utils) {
+define(["require", "exports", './ubigeo.service', '../core/utils'], function (require, exports, ubigeo_service_1, utils) {
     "use strict";
     var UbigeoView = (function () {
         function UbigeoView(departamento_id, provincia_element_id, distrito_element_id, zona_element_id, setUbigeo) {
+            var _this = this;
             if (zona_element_id === void 0) { zona_element_id = ''; }
             if (setUbigeo === void 0) { setUbigeo = null; }
-            var _this = this;
             this.ubigeoService = new ubigeo_service_1["default"]();
             this.setUbigeo = null;
             this.departamento_element_id = departamento_id;
@@ -55,7 +55,7 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                 utils.setDropdown(_this.provincias, { id: 'ccpp', text: ['provincia'] }, {
                     id_element: _this.provincia_element_id,
                     bootstrap_multiselect: false,
-                    select2: true
+                    select2: false
                 });
                 if (_this.setUbigeo.ccpp !== "") {
                     $("#" + _this.provincia_element_id).val(_this.setUbigeo.ccpp).trigger('change');
@@ -75,7 +75,7 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                 utils.setDropdown(_this.distritos, { id: 'ccdi', text: ['distrito'] }, {
                     id_element: _this.distrito_element_id,
                     bootstrap_multiselect: false,
-                    select2: true
+                    select2: false
                 });
                 if (_this.setUbigeo.ccdi !== "") {
                     $("#" + _this.distrito_element_id).val(_this.setUbigeo.ccdi).trigger('change');
@@ -94,7 +94,7 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                 utils.setDropdown(_this.zonas, { id: 'ZONA', text: ['ZONA'] }, {
                     id_element: _this.zona_element_id,
                     bootstrap_multiselect: false,
-                    select2: true
+                    select2: false
                 });
                 utils.setDropdown(_this.zonas, { id: 'ZONA', text: ['ZONA'] }, {
                     id_element: 'zona_ubicacion_local',
@@ -102,6 +102,7 @@ define(["require", "exports", "./ubigeo.service", "../core/utils"], function (re
                     select2: true
                 });
                 if (_this.setUbigeo.zona !== "") {
+                    '';
                     $("#" + _this.zona_element_id).val(_this.setUbigeo.zona).trigger('change');
                     $("#" + _this.zona_element_id).prop('disabled', true);
                     _this.zona = _this.setUbigeo.zona;

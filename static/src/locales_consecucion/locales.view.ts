@@ -19,6 +19,7 @@ declare var $: any;
 declare var jQuery: any;
 declare var ubigeo: IUbigeo;
 class LocalController {
+    private ubigeo: any = {};
     private localService = new LocalService()
     private cursoService = new CursoService()
     private directoriolocalService = new DirectorioLocalService();
@@ -364,11 +365,30 @@ class LocalController {
         });
     }
 
+    setAmbito() {
+        let ccdd = $('#departamentos').val();
+        let ccpp = $('#provincias').val();
+        let ccdi = $('#distritos').val();
+        let zona = $('#zona').val();
+        if (ccdd != "-1" && ccdd != "") {
+            this.ubigeo['ccdd'] = ccdd;
+        }
+        if (ccpp != "-1" && ccpp != "") {
+            this.ubigeo['ccpp'] = ccpp;
+        }
+        if (ccdi != "-1" && ccdi != "") {
+            this.ubigeo['ccdi'] = ccdi;
+        }
+        if (zona != "-1" && zona != "") {
+            this.ubigeo['zona'] = zona;
+        }
+        console.log(this.ubigeo);
+    }
+
     filterLocal() {
         let curso: number = $('#cursos').val();
-        let ubigeo: string = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`;
-        let zona: string = $('#zona').val() == "-1" ? null : $('#zona').val();
-        this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done((localcurso: ILocalCurso[]) => {
+        this.setAmbito();
+        this.localService.getbyAmbienteGeografico(curso, this.ubigeo).done((localcurso: ILocalCurso[]) => {
             this.localesCurso = localcurso
             this.locales = [];
             this.localesCurso.map((value: ILocalCurso, index: number) => this.locales.push(value.local));
@@ -396,10 +416,9 @@ class LocalController {
 
     filterDirectorioLocal() {
         let curso: number = $('#cursos').val();
-        let ubigeo: string = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`;
-        let zona: string = $('#zona').val() == "-1" ? null : $('#zona').val();
-        this.directoriolocalService.getbyAmbienteGeografico(curso, ubigeo, zona).done((directorioLocales: ILocal[]) => {
-            this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done((localcurso: ILocalCurso[]) => {
+        this.setAmbito();
+        this.directoriolocalService.getbyAmbienteGeografico(curso, this.ubigeo).done((directorioLocales: ILocal[]) => {
+            this.localService.getbyAmbienteGeografico(curso, this.ubigeo).done((localcurso: ILocalCurso[]) => {
                 this.localesCurso = localcurso
                 this.locales = []
                 console.log(this.localesCurso);

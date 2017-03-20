@@ -16,10 +16,23 @@ define(["require", "exports"], function (require, exports) {
                 url: pk === null ? this.url.local : "" + this.url.local + pk + "/"
             });
         };
-        LocalService.prototype.getbyAmbienteGeografico = function (curso, ubigeo, zona) {
-            if (zona === void 0) { zona = null; }
+        LocalService.prototype.getbyAmbienteGeografico = function (curso, ambito) {
+            if (ambito === void 0) { ambito = {}; }
+            var url = "" + this.urlAmbito + curso + "/";
+            if ('ccdd' in ambito) {
+                url += ambito['ccdd'] + "/";
+            }
+            if ('ccpp' in ambito) {
+                url += ambito['ccpp'] + "/";
+            }
+            if ('ccdi' in ambito) {
+                url += ambito['ccdi'] + "/";
+            }
+            if ('zona' in ambito) {
+                url += ambito['zona'] + "/";
+            }
             return $.ajax({
-                url: zona === null ? "" + this.urlAmbito + curso + "/" + ubigeo + "/" : "" + this.urlAmbito + curso + "/" + ubigeo + "/" + zona + "/"
+                url: url
             });
         };
         LocalService.prototype.getAmbientes = function (localcurso) {
@@ -48,7 +61,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalService.prototype["delete"] = function (pk) {
+        LocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -81,7 +94,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalCurso.prototype["delete"] = function (pk) {
+        LocalCurso.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -124,7 +137,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        LocalAmbienteService.prototype["delete"] = function (pk) {
+        LocalAmbienteService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'
@@ -165,10 +178,23 @@ define(["require", "exports"], function (require, exports) {
                 url: "" + this.urldirectorioSeleccionado + directoriolocal_id + "/" + curso_id + "/"
             });
         };
-        DirectorioLocalService.prototype.getbyAmbienteGeografico = function (curso, ubigeo, zona) {
-            if (zona === void 0) { zona = null; }
+        DirectorioLocalService.prototype.getbyAmbienteGeografico = function (curso, ambito) {
+            if (ambito === void 0) { ambito = {}; }
+            var url = "" + this.urlAmbito + curso + "/";
+            if ('ccdd' in ambito) {
+                url += ambito['ccdd'] + "/";
+            }
+            if ('ccpp' in ambito) {
+                url += ambito['ccpp'] + "/";
+            }
+            if ('ccdi' in ambito) {
+                url += ambito['ccdi'] + "/";
+            }
+            if ('zona' in ambito) {
+                url += ambito['zona'] + "/";
+            }
             return $.ajax({
-                url: zona === null ? "" + this.urlAmbito + curso + "/" + ubigeo + "/" : "" + this.urlAmbito + curso + "/" + ubigeo + "/" + zona + "/"
+                url: url
             });
         };
         DirectorioLocalService.prototype.getAmbientes = function (localcurso) {
@@ -190,7 +216,7 @@ define(["require", "exports"], function (require, exports) {
                 data: obj
             });
         };
-        DirectorioLocalService.prototype["delete"] = function (pk) {
+        DirectorioLocalService.prototype.delete = function (pk) {
             return $.ajax({
                 url: "" + this.url.local + pk + "/",
                 type: 'DELETE'

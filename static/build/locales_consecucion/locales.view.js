@@ -1,7 +1,8 @@
-define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../core/utils", "../comun.utils"], function (require, exports, locales_service_1, ubigeo_view_1, utils, comun_utils_1) {
+define(["require", "exports", './locales.service', '../ubigeo/ubigeo.view', '../core/utils', '../comun.utils'], function (require, exports, locales_service_1, ubigeo_view_1, utils, comun_utils_1) {
     "use strict";
     var LocalController = (function () {
         function LocalController() {
+            this.ubigeo = {};
             this.localService = new locales_service_1.LocalService();
             this.cursoService = new locales_service_1.CursoService();
             this.directoriolocalService = new locales_service_1.DirectorioLocalService();
@@ -330,12 +331,30 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
                 _this.setDirectorioLocalAmbientes();
             });
         };
+        LocalController.prototype.setAmbito = function () {
+            var ccdd = $('#departamentos').val();
+            var ccpp = $('#provincias').val();
+            var ccdi = $('#distritos').val();
+            var zona = $('#zona').val();
+            if (ccdd != "-1" && ccdd != "") {
+                this.ubigeo['ccdd'] = ccdd;
+            }
+            if (ccpp != "-1" && ccpp != "") {
+                this.ubigeo['ccpp'] = ccpp;
+            }
+            if (ccdi != "-1" && ccdi != "") {
+                this.ubigeo['ccdi'] = ccdi;
+            }
+            if (zona != "-1" && zona != "") {
+                this.ubigeo['zona'] = zona;
+            }
+            console.log(this.ubigeo);
+        };
         LocalController.prototype.filterLocal = function () {
             var _this = this;
             var curso = $('#cursos').val();
-            var ubigeo = "" + $('#departamentos').val() + $('#provincias').val() + $('#distritos').val();
-            var zona = $('#zona').val() == "-1" ? null : $('#zona').val();
-            this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (localcurso) {
+            this.setAmbito();
+            this.localService.getbyAmbienteGeografico(curso, this.ubigeo).done(function (localcurso) {
                 _this.localesCurso = localcurso;
                 _this.locales = [];
                 _this.localesCurso.map(function (value, index) { return _this.locales.push(value.local); });
@@ -362,10 +381,9 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
         LocalController.prototype.filterDirectorioLocal = function () {
             var _this = this;
             var curso = $('#cursos').val();
-            var ubigeo = "" + $('#departamentos').val() + $('#provincias').val() + $('#distritos').val();
-            var zona = $('#zona').val() == "-1" ? null : $('#zona').val();
-            this.directoriolocalService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (directorioLocales) {
-                _this.localService.getbyAmbienteGeografico(curso, ubigeo, zona).done(function (localcurso) {
+            this.setAmbito();
+            this.directoriolocalService.getbyAmbienteGeografico(curso, this.ubigeo).done(function (directorioLocales) {
+                _this.localService.getbyAmbienteGeografico(curso, _this.ubigeo).done(function (localcurso) {
                     _this.localesCurso = localcurso;
                     _this.locales = [];
                     console.log(_this.localesCurso);
@@ -492,7 +510,7 @@ define(["require", "exports", "./locales.service", "../ubigeo/ubigeo.view", "../
             });
         };
         LocalController.prototype.deleteLocal = function (id_local) {
-            this.localService["delete"](id_local).done(function (deleted) {
+            this.localService.delete(id_local).done(function (deleted) {
                 $('#modal_localesbyubigeo').modal('hide');
             });
         };

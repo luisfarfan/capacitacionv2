@@ -20,10 +20,23 @@ export class LocalService {
         });
     }
 
-    getbyAmbienteGeografico(curso: number, ubigeo: string, zona: string = null): JQueryXHR {
+    getbyAmbienteGeografico(curso: number, ambito: any = {}): JQueryXHR {
+        let url = `${this.urlAmbito}${curso}/`;
+        if ('ccdd' in ambito) {
+            url += `${ambito['ccdd']}/`;
+        }
+        if ('ccpp' in ambito) {
+            url += `${ambito['ccpp']}/`;
+        }
+        if ('ccdi' in ambito) {
+            url += `${ambito['ccdi']}/`;
+        }
+        if ('zona' in ambito) {
+            url += `${ambito['zona']}/`;
+        }
         return $.ajax({
-            url: zona === null ? `${this.urlAmbito}${curso}/${ubigeo}/` : `${this.urlAmbito}${curso}/${ubigeo}/${zona}/`,
-        })
+            url: url
+        });
     }
 
     getAmbientes(localcurso: number): JQueryXHR {
@@ -177,10 +190,23 @@ export class DirectorioLocalService {
         });
     }
 
-    getbyAmbienteGeografico(curso: number, ubigeo: string, zona: string = null): JQueryXHR {
+    getbyAmbienteGeografico(curso: number, ambito: any = {}): JQueryXHR {
+        let url = `${this.urlAmbito}${curso}/`;
+        if ('ccdd' in ambito) {
+            url += `${ambito['ccdd']}/`;
+        }
+        if ('ccpp' in ambito) {
+            url += `${ambito['ccpp']}/`;
+        }
+        if ('ccdi' in ambito) {
+            url += `${ambito['ccdi']}/`;
+        }
+        if ('zona' in ambito) {
+            url += `${ambito['zona']}/`;
+        }
         return $.ajax({
-            url: zona === null ? `${this.urlAmbito}${curso}/${ubigeo}/` : `${this.urlAmbito}${curso}/${ubigeo}/${zona}/`,
-        })
+            url: url
+        });
     }
 
     getAmbientes(localcurso: number): JQueryXHR {

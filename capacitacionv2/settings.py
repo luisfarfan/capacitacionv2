@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ENV = 'LOCAL'
+ENV = 'SQLITE'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -111,6 +111,13 @@ elif ENV == 'DESARROLLO':
                 'driver': 'ODBC Driver 11 for SQL Server',
                 'unicode_results': True
             },
+        },
+    }
+elif ENV == 'SQLITE':
+    _DATABASECONF = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         },
     }
 DATABASES = _DATABASECONF
