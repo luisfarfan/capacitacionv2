@@ -66,8 +66,10 @@ class LocalCurso(models.Model):
 
 class LocalZonas(models.Model):
     localcurso = models.ForeignKey(LocalCurso)
+    ccdd = models.CharField(max_length=2, null=True, blank=True)
+    ccpp = models.CharField(max_length=2, null=True, blank=True)
+    ccdi = models.CharField(max_length=2, null=True, blank=True)
     zona = models.ForeignKey(Zona, null=True)
-    ubigeo = models.CharField(max_length=6, null=True, blank=True)
 
     class Meta:
         managed = True

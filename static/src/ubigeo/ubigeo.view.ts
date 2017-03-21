@@ -60,7 +60,7 @@ export default class UbigeoView {
             utils.setDropdown(this.departamentos, {id: 'ccdd', text: ['departamento']}, {
                 id_element: this.departamento_element_id,
                 bootstrap_multiselect: false,
-                select2: true
+                select2: false
             });
             if (this.setUbigeo !== null) {
                 if (this.setUbigeo.ccdd !== "") {
@@ -127,7 +127,8 @@ export default class UbigeoView {
                 bootstrap_multiselect: false,
                 select2: true
             });
-            if (this.setUbigeo.zona !== "") {''
+            if (this.setUbigeo.zona !== "") {
+                ''
                 $(`#${this.zona_element_id}`).val(this.setUbigeo.zona).trigger('change');
                 $(`#${this.zona_element_id}`).prop('disabled', true)
                 this.zona = this.setUbigeo.zona

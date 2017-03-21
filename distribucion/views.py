@@ -32,6 +32,23 @@ class FilterZonaViewSet(generics.ListAPIView):
             UBIGEO=ubigeo)
 
 
+def ambitoPorLocal(ccdd=None, ccpp=None, ccdi=None, zona=None):
+    filter = {}
+    if ccdd is None:
+        filter['ccdd'] = ccdd
+    if ccdd is not None:
+        filter['ccdd'] = ccdd
+        filter['ccpp'] = ccpp
+    if ccpp is not None:
+        filter['ccdd'] = ccdd
+        filter['ccpp'] = ccpp
+        filter['ccdi'] = ccdi
+    if ccdi is not None:
+        pass
+    if zona is not None:
+        pass
+
+
 @csrf_exempt
 def saveZonasLocal(request):
     localcurso = request.POST['localcurso']
