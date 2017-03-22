@@ -33,6 +33,7 @@
 <div class="page-container">
     <!-- Page content -->
     <div class="page-content">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <!-- Main sidebar -->
         {% include 'layout/sidebar.html' %}
         <!-- /main sidebar -->
@@ -86,14 +87,15 @@
     IDUSUARIO = '{{ request.session.user_session.user_data.id }}';
     ubigeo = {
         ccdd: '{{ request.session.user_session.user_data.ccdd }}',
-        ccpp: '{{ request.session.user_session.user_data.ccpp}}',
-        ccdi: '{{ request.session.user_session.user_data.ccdi }}',
-        zona: '{{ request.session.user_session.user_data.zona }}'
+        ccpp: '{{ request.session.user_session.user_data.ccpp }}' == 'None' ? '' : '{{ request.session.user_session.user_data.ccpp }}',
+        ccdi: '{{ request.session.user_session.user_data.ccdi }}' == 'None' ? '' : '{{ request.session.user_session.user_data.ccdi }}',
+        zona: '{{ request.session.user_session.user_data.zona }}' == 'None' ? '' : '{{ request.session.user_session.user_data.zona }}'
     }
     SESSION_KEY = '{{ session_key }}'
 </script>
 
 <!-- Utils Js files -->
+<script type="text/javascript" src="{% static "build/core/extends.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>

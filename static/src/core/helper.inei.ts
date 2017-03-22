@@ -5,6 +5,8 @@
  * Created by lfarfan on 29/01/2017.
  */
 
+declare var SESSION_KEY: string;
+
 export class ObjectHelper {
     isEmpty(obj: Object): any {
         return Object.keys(obj).length === 0;
@@ -49,4 +51,9 @@ export class ObjectHelper {
         }
         return res;
     }
+}
+
+export class Session {
+    session_key = SESSION_KEY
+
 }

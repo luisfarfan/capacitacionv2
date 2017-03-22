@@ -233,7 +233,7 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
     }
 }
 
-interface CamposSelect {
+export interface CamposSelect {
     id: string,
     text: String[],
 }

@@ -1,3 +1,5 @@
+from rest_framework.views import APIView
+
 from locales_consecucion.models import *
 from .serializer import *
 from rest_framework import generics, viewsets
@@ -5,109 +7,185 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, FloatField, Sum
 from .utils import localAmbienteValid
+from django.db.models import Count, Value
+import json
 
 
-class LocalZonaViewSet(viewsets.ModelViewSet):
-    queryset = LocalZonas.objects.all()
-    serializer_class = LocalZonasSerializer
+# class LocalZonaViewSet(viewsets.ModelViewSet):
+#     queryset = LocalZonas.objects.all()
+#     serializer_class = LocalZonasSerializer
+#
+#
+class LocalZonaDetalleViewSet(APIView):
+    def get(self, request, localcurso):
+        ambitosLocalDetalle = []
+        ambitosLocal = LocalAmbito.objects.filter(localcurso_id=localcurso)
+        for ambito in ambitosLocal:
+            ambitosLocalDetalle.append(
+                {'ccdd': ambito.ccdd, 'ccpp': ambito.ccpp, 'ccdi': ambito.ccdi, 'zona': ambito.zona,
+                 'departamento': Ubigeo.objects.filter(ccdd=ambito.ccdd)[
+                     0].departamento if ambito.ccdd is not None else None,
+                 'provincia': Ubigeo.objects.filter(ccdd=ambito.ccdd, ccpp=ambito.ccpp)[
+                     0].provincia if ambito.ccpp is not None else None,
+                 'distrito': Ubigeo.objects.filter(ccdd=ambito.ccdd, ccpp=ambito.ccpp, ccdi=ambito.ccdi)[
+                     0].distrito if ambito.ccdi is not None else None,
+                 'localcurso': ambito.localcurso_id, 'nombre_local': ambito.localcurso.local.nombre_local,
+                 'localambito_id': ambito.id})
+        return JsonResponse(list(ambitosLocalDetalle), safe=False)
 
 
-class LocalZonaDetalleViewSet(generics.ListAPIView):
-    serializer_class = LocalZonasDetalleSerializer
-
-    def get_queryset(self):
-        localcurso = self.kwargs['localcurso']
-        return LocalZonas.objects.filter(localcurso_id=localcurso)
+class LocalAmbitoViewSet(viewsets.ModelViewSet):
+    serializer_class = LocalAmbitosDetalleSerializer
+    queryset = LocalAmbito.objects.all()
 
 
-class FilterZonaViewSet(generics.ListAPIView):
+# class FilterZonaViewSet(generics.ListAPIView):
+#     serializer_class = ZonaSerializer
+#
+#     def get_queryset(self):
+#         curso = self.kwargs['curso']
+#         # localcurso = self.kwargs['localcurso']
+#         ubigeo = self.kwargs['ubigeo']
+#         return Zona.objects.exclude(
+#             ID__in=LocalZonas.objects.filter(localcurso__curso_id=curso).values('zona_id')).filter(
+#             UBIGEO=ubigeo)
+class UbigeosLibresViewSet(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+        return JsonResponse(list(ambitoPorLocal(curso, ccdd, ccpp, ccdi)), safe=False)
+
+
+class ZonasLibresViewSet(generics.ListAPIView):
     serializer_class = ZonaSerializer
 
     def get_queryset(self):
         curso = self.kwargs['curso']
-        # localcurso = self.kwargs['localcurso']
-        ubigeo = self.kwargs['ubigeo']
-        return Zona.objects.exclude(
-            ID__in=LocalZonas.objects.filter(localcurso__curso_id=curso).values('zona_id')).filter(
-            UBIGEO=ubigeo)
+        ccdd = self.kwargs['ccdd']
+        ccpp = self.kwargs['ccpp']
+        ccdi = self.kwargs['ccdi']
+
+        return ambitoPorLocal(curso, ccdd, ccpp, ccdi)
 
 
-def ambitoPorLocal(ccdd=None, ccpp=None, ccdi=None, zona=None):
+def ambitoPorLocal(curso, ccdd=None, ccpp=None, ccdi=None):
     filter = {}
+    zonaFilter = {}
+    query = Ubigeo.objects.exclude(ubigeo__in=excludeambitoPorLocal(curso, ccdd, ccpp, ccdi))
     if ccdd is None:
-        filter['ccdd'] = ccdd
+        queryFinal = query.values('ccdd', 'departamento').annotate(dcount=Count('ccdd', 'departamento'))
     if ccdd is not None:
         filter['ccdd'] = ccdd
-        filter['ccpp'] = ccpp
+        queryFinal = query.filter(**filter).values('ccdd', 'ccpp', 'provincia', 'departamento').annotate(
+            dcount=Count('ccpp', 'provincia'))
     if ccpp is not None:
         filter['ccdd'] = ccdd
         filter['ccpp'] = ccpp
-        filter['ccdi'] = ccdi
+        queryFinal = query.filter(**filter).values('ccdd', 'ccpp', 'ccdi', 'distrito', 'departamento',
+                                                   'provincia').annotate(dcount=Count('ccdi', 'distrito'))
     if ccdi is not None:
-        pass
-    if zona is not None:
-        pass
+        zonaFilter['UBIGEO'] = ccdd + ccpp + ccdi
+        return Zona.objects.exclude(ZONA__in=excludeambitoPorLocal(curso, ccdd, ccpp, ccdi)).filter(**zonaFilter)
+
+    return queryFinal
 
 
-@csrf_exempt
+def excludeambitoPorLocal(curso, ccdd=None, ccpp=None, ccdi=None):
+    filter = {}
+    filter['localcurso__curso_id'] = curso
+    if ccdd is None:
+        # ambitos usados
+        localambito = LocalAmbito.objects.filter(**filter).values_list('ccdd', flat=True)
+        query = Ubigeo.objects.filter(ccdd__in=localambito).values_list('ubigeo', flat=True)
+    if ccdd is not None:
+        filter['ccdd'] = ccdd
+        localambito = LocalAmbito.objects.filter(**filter)
+        deps = localambito.values_list('ccdd', flat=True)
+        provs = localambito.values_list('ccpp', flat=True)
+        query = Ubigeo.objects.filter(ccdd__in=deps, ccpp__in=provs).values_list('ubigeo', flat=True)
+    if ccpp is not None:
+        filter['ccdd'] = ccdd
+        filter['ccpp'] = ccpp
+        localambito = LocalAmbito.objects.filter(**filter)
+        deps = localambito.values_list('ccdd', flat=True)
+        provs = localambito.values_list('ccpp', flat=True)
+        dist = localambito.values_list('ccdi', flat=True)
+        query = Ubigeo.objects.filter(ccdd__in=deps, ccpp__in=provs, ccdi__in=dist).values_list('ubigeo', flat=True)
+    if ccdi is not None:
+        filter['ccdd'] = ccdd
+        filter['ccpp'] = ccpp
+        filter['ccdi'] = ccdi
+        query = LocalAmbito.objects.filter(**filter).values_list('zona', flat=True)
+
+    return query
+
+
+# localcurso, ccdd,ccpp,ccdi,zona
 def saveZonasLocal(request):
-    localcurso = request.POST['localcurso']
-    zonas = request.POST.getlist('zonas[]')
+    postdata = request.POST['localambitos']
+    localambitos = json.loads(postdata)
+    # Agregando ambito o ambitos al localcurso
+    for localambito in localambitos:
+        local_Ambito = LocalAmbito()
+        local_Ambito.localcurso_id = localambito['localcurso']
+        local_Ambito.ccdd = localambito['ccdd'] if localambito['ccdd'] != '' else None
+        local_Ambito.ccpp = localambito['ccpp'] if localambito['ccpp'] != '' else None
+        local_Ambito.ccdi = localambito['ccdi'] if localambito['ccdi'] != '' else None
+        local_Ambito.zona = localambito['zona'] if localambito['zona'] != '' else None
+        local_Ambito.save()
 
-    for zona in zonas:
-        localzona = LocalZonas(localcurso_id=localcurso, zona_id=zona)
-        localzona.save()
-
-    response = list(LocalZonas.objects.filter(localcurso_id=localcurso).values())
-    return JsonResponse(response, safe=False)
+    return JsonResponse({'msg': 'Ambitos agregados!'}, safe=False)
 
 
-class PersonalCapacitarbyCursoViewSet(generics.ListAPIView):
+class PersonalLibreporCursoViewSet(generics.ListAPIView):
     serializer_class = PersonalSerializer
 
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
-        curso_id = LocalCurso.objects.get(pk=localcurso).curso_id
-        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso_id).values_list('id_cargofuncional', flat=True)
-        zonas = LocalZonas.objects.filter(localcurso_id=localcurso).values_list('zona__ZONA', flat=True)
-        ubigeos = LocalZonas.objects.filter(localcurso_id=localcurso).values_list('zona__UBIGEO', flat=True).distinct()
-        peaDistribuida = PersonalAula.objects.filter(id_pea__ubigeo_id__in=ubigeos, id_pea__zona__in=zonas,
-                                                     id_pea__id_cargofuncional_id__in=cargos).values_list('id_pea',
-                                                                                                          flat=True)
-        if 'contingencia' in self.kwargs:
-            query = Personal.objects.exclude(id_pea__in=peaDistribuida).filter(ubigeo_id__in=ubigeos, zona__in=zonas,
-                                                                               id_cargofuncional_id__in=cargos,
-                                                                               contingencia=1)
+        contingencia = True if 'contingencia' in self.kwargs else False
+        if contingencia:
+            return personasLibres(localcurso).filter(contingencia=1)
         else:
-            query = Personal.objects.exclude(id_pea__in=peaDistribuida).filter(ubigeo_id__in=ubigeos, zona__in=zonas,
-                                                                               id_cargofuncional_id__in=cargos,
-                                                                               contingencia=0, baja_estado=0)
-        return query
+            return personasLibres(localcurso)
 
 
-@csrf_exempt
+def personasLibres(localcurso, exclude=[]):
+    curso = LocalCurso.objects.get(pk=localcurso).curso_id
+    cargosfuncionales = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional',
+                                                                                          flat=True)
+    localambitos = LocalAmbito.objects.filter(localcurso_id=localcurso)
+    deps = localambitos.values_list('ccdd', flat=True)
+    provs = localambitos.values_list('ccpp', flat=True)
+    dist = localambitos.values_list('ccdi', flat=True)
+    zonas = localambitos.values_list('zona', flat=True)
+    filter = {'contingencia': 0, 'baja_estado': 0}
+    if localambitos[0].zona is not None:
+        return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
+                                                                   ubigeo__ccdd__in=deps,
+                                                                   ubigeo__ccpp__in=provs, ubigeo__ccdi__in=dist,
+                                                                   zona__in=zonas, **filter)
+    elif localambitos[0].ccdi is not None and localambitos[0].zona is None:
+        return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
+                                                                   ubigeo__ccdd__in=deps,
+                                                                   ubigeo__ccpp__in=provs, ubigeo__ccdi__in=dist,
+                                                                   **filter)
+    elif localambitos[0].ccpp is not None and localambitos[0].ccdi is None:
+        return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
+                                                                   ubigeo__ccdd__in=deps,
+                                                                   ubigeo__ccpp__in=provs, **filter)
+    elif localambitos[0].ccdd is not None and localambitos[0].ccpp is None:
+        return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
+                                                                   ubigeo__ccdd__in=deps, **filter)
+
+
 def distribuir_byLocalCurso(request, localcurso_id):
-    localCurso = LocalCurso.objects.get(pk=localcurso_id)
-
-    cargosporCurso = CursoCargoFuncional.objects.filter(id_curso_id=localCurso.curso_id).values_list(
-        'id_cargofuncional', flat=True)
-    localzona = LocalZonas.objects.filter(localcurso_id=localcurso_id)
-    zonas = localzona.values_list('zona__ZONA', flat=True)
-    ubigeo = localzona.values_list('zona__UBIGEO', flat=True)
     localAmbientes = LocalAmbiente.objects.filter(localcurso_id=localcurso_id).order_by('-capacidad')
-    # localAmbientesCapacidadTotal = localAmbientes.aggregate(capacidadTotal=Sum('capacidad'))
-
-    # pea_distribuir_cantidad = pea_distribuir.count()
     for localAmbiente in localAmbientes:
         bulk = []
         capacidadDistribuir = localAmbienteValid(localAmbiente.id_localambiente)
         peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True)
         if capacidadDistribuir > 0:
-            _pea_distribuir = Personal.objects.exclude(id_pea__in=peaDistribuida).filter(
-                ubigeo_id=ubigeo[0], zona__in=zonas,
-                id_cargofuncional_id__in=cargosporCurso, contingencia=0,
-                baja_estado=0)
-            pea_distribuir = _pea_distribuir.order_by('zona', 'ape_paterno', 'ape_materno',
+            _pea_distribuir = personasLibres(localcurso_id, peaDistribuida)
+            pea_distribuir = _pea_distribuir.order_by('ubigeo__ccdd', 'ubigeo__ccpp', 'ubigeo__ccdi', 'zona',
+                                                      'ape_paterno', 'ape_materno',
                                                       'nombre')[:capacidadDistribuir]
             if _pea_distribuir.count():
                 for pea in pea_distribuir:
@@ -138,7 +216,8 @@ def setInstructor(request):
 
     PersonalAula.objects.filter(id_localambiente_id=localambiente_id).update(id_instructor=instructor_id)
 
-    return JsonResponse(list(PersonalAula.objects.filter(id_localambiente_id=localambiente_id).values()), safe=False)
+    return JsonResponse(list(PersonalAula.objects.filter(id_localambiente_id=localambiente_id).values()),
+                        safe=False)
 
 
 class PersonalAulaDetalleViewSet(generics.ListAPIView):

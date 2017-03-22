@@ -21,10 +21,11 @@ from distribucion.urls import routerDistribucion
 from asistencia.urls import routerAsistencia
 from evaluacion.urls import routerEvaluacion
 from seguridad.views import *
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'modulos/(?P<slug>.+)/$', RenderTemplate.as_view()),
+    url(r'modulos/(?P<slug>.+)/$', ensure_csrf_cookie(RenderTemplate.as_view())),
     url(r'^locales/', include(router.urls)),
     url(r'^locales/', include('locales_consecucion.urls')),
     url(r'^distribucion/', include(routerDistribucion.urls)),

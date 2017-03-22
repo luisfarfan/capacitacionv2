@@ -419,9 +419,8 @@ class LocalController {
         this.setAmbito();
         this.directoriolocalService.getbyAmbienteGeografico(curso, this.ubigeo).done((directorioLocales: ILocal[]) => {
             this.localService.getbyAmbienteGeografico(curso, this.ubigeo).done((localcurso: ILocalCurso[]) => {
-                this.localesCurso = localcurso
-                this.locales = []
-                console.log(this.localesCurso);
+                this.localesCurso = localcurso;
+                this.locales = [];
                 this.localesCurso.map((value: ILocalCurso, index: number) => this.locales.push(value.local))
                 this.filterLocal();
                 this.directorioLocales = directorioLocales;

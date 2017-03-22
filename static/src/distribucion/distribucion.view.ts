@@ -5,32 +5,25 @@ import {CursoInyection} from '../comun.utils';
 import {DistribucionService} from '../distribucion/distribucion.service';
 import {LocalService} from '../locales_consecucion/locales.service';
 import {ILocalCurso, ILocal, ILocalAmbienteDetail, ILocalAmbiente} from '../locales_consecucion/local.interface';
-import {ILocalZona, IPersonal, IPersonalAula} from 'distribucion.interface';
+import {ILocalZona, IPersonal, IPersonalAula, FilterFields, IUbigeo} from 'distribucion.interface';
 import UbigeoService from '../ubigeo/ubigeo.service';
 import {IZona} from '../ubigeo/ubigeo.interface';
 import * as utils from '../core/utils';
+import {upgradeTooltip} from "../core/utils";
 
 declare var ubigeo: any;
 declare var $: any;
-interface FilterFields {
-    ccdd: string,
-    ccpp: string,
-    ccdi: string,
-    zona: string,
-    ubigeo: string,
-    curso: number
-}
+
 class DistribucionView {
     private curso: CursoInyection;
     private localService: LocalService = new LocalService();
     private ubigeoService: UbigeoService = new UbigeoService();
     private distribucionService: DistribucionService = new DistribucionService();
     private filterFields: FilterFields = {
-        ccdd: ubigeo.ccdd,
-        ccpp: ubigeo.ccpp,
-        ccdi: ubigeo.ccdi,
+        ccdd: ubigeo.ccdd != '' ? ubigeo.ccdd : null,
+        ccpp: ubigeo.ccpp != '' ? ubigeo.ccpp : null,
+        ccdi: ubigeo.ccdi != '' ? ubigeo.ccdi : null,
         zona: ubigeo.zona == '' ? null : ubigeo.zona,
-        ubigeo: `${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`,
         curso: null
     };
     private zonas: IZona[] = [];
@@ -43,6 +36,7 @@ class DistribucionView {
     private personalContingencia: IPersonal[] = [];
     private localAmbienteSelected: ILocalAmbienteDetail = null;
     private personalAula: IPersonalAula[] = [];
+    private ambitosLibres: IUbigeo[] = [];
 
     constructor() {
         this.curso = new CursoInyection();
@@ -127,24 +121,55 @@ class DistribucionView {
     }
 
     getZonasDistrito() {
-        this.distribucionService.getZonasLibres(this.filterFields.curso, this.filterFields.ubigeo).done((zonas: IZona[]) => {
-            this.zonas = zonas;
-            utils.setDropdown(this.zonas, {id: 'ID', text: ['ZONA']}, {
+        this.distribucionService.getZonasLibres(this.filterFields).done((ambitos) => {
+            this.ambitosLibres = ambitos;
+            let by: any;
+            if (this.filterFields.ccdd != null && this.filterFields.ccpp == null) {
+                by = {id: 'ccpp', text: ['provincia']}
+            } else if (this.filterFields.ccpp != null && this.filterFields.ccdi == null) {
+                by = {id: 'ccdi', text: ['distrito']}
+            } else if (this.filterFields.ccpp != null && this.filterFields.ccdi != null) {
+                by = {id: 'ZONA', text: ['zona']}
+            }
+            utils.setDropdown(this.ambitosLibres, by, {
                 id_element: 'select_zonas_por_asignar',
                 bootstrap_multiselect: false,
                 select2: true
             }, true);
-        })
+        });
     }
 
     asignarZonas() {
         let local_selected: any = $('#select_locales_seleccionados_asignacion').val();
-        let zonasAsignar: Array<string> = $('#select_zonas_por_asignar').val();
-        this.setLocalCurso(local_selected);
-        this.distribucionService.asignarZonas({
-            localcurso: this.localCursoSelected.id,
-            zonas: zonasAsignar
-        }).done((response) => {
+        let ambitosAsignar: Array<string> = $('#select_zonas_por_asignar').val();
+        let data: any;
+        let request: Array<any> = [];
+        ambitosAsignar.map((value: string) => {
+            if (this.filterFields.ccdd == null) {
+                data = {ccdd: value, ccpp: null, ccdi: null, zona: null, localcurso: local_selected}
+            }
+            else if (this.filterFields.ccdd != null && this.filterFields.ccpp == null) {
+                data = {ccdd: this.filterFields.ccdd, ccpp: value, ccdi: '', zona: '', localcurso: local_selected}
+            } else if (this.filterFields.ccpp != null && this.filterFields.ccdi == null) {
+                data = {
+                    ccdd: this.filterFields.ccdd,
+                    ccpp: this.filterFields.ccpp,
+                    ccdi: value,
+                    zona: '',
+                    localcurso: local_selected
+                }
+            } else if (this.filterFields.ccdi != null && this.filterFields.zona == null) {
+                data = {
+                    ccdd: this.filterFields.ccdd,
+                    ccpp: this.filterFields.ccpp,
+                    ccdi: this.filterFields.ccdi,
+                    zona: value,
+                    localcurso: local_selected
+                }
+            }
+            request.push(data);
+        });
+        this.distribucionService.asignarZonas(request).done((response) => {
             this.getZonasDistrito();
             this.getLocalZonas(local_selected);
         });
@@ -153,16 +178,27 @@ class DistribucionView {
     getLocalZonas(localselected: any) {
         this.setLocalCurso(localselected);
         if (this.localCursoSelected) {
-            this.distribucionService.filterLocalZona(this.localCursoSelected.id).done((localzonas: ILocalZona[]) => {
-                this.localZonas = localzonas;
-                let html: String = '';
-                this.localZonas.map((value: ILocalZona, index: number) => {
-                    html += `<tr>
-                            <td>${this.localCursoSelected.local.nombre_local}</td>
-                            <td>${value.zona.ZONA}</td>
-                         </tr>`
+            this.distribucionService.filterLocalZona(this.localCursoSelected.id).done((localzonas: IUbigeo[]) => {
+                utils.drawTable(localzonas, ['nombre_local', 'departamento', 'provincia', 'distrito', 'zona'], 'localambito_id', {
+                    enumerar: true,
+                    checkbox: '',
+                    checked: false,
+                    datatable: false,
+                    edit_name: '',
+                    delete_name: 'delete_localambito',
+                    table_id: 'table_localzonas_detalle'
                 });
-                $('#table_localzonas_detalle').find('tbody').html(html);
+                $('[name="delete_localambito"]').off()
+                $('[name="delete_localambito"]').on('click', (element: JQueryEventObject) => {
+                    utils.alert_confirm(() => {
+                        let value: number = $(element.currentTarget).data('value');
+                        this.distribucionService.deleteLocalAmbito(value).done(() => {
+                            this.getZonasDistrito();
+                            $('#select_locales_seleccionados_asignacion').trigger('change');
+                        });
+                    }, 'Esta seguro de eliminar este Ambiente del Local?', 'error');
+
+                });
             });
         } else {
             $('#table_localzonas_detalle').find('tbody').html('');

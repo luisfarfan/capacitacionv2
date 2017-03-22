@@ -3,23 +3,27 @@ from locales_consecucion.serializer import LocalSerializer, LocalAmbienteDetalle
 from rest_framework import routers, serializers, viewsets
 
 
+class UbigeoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ubigeo
+        fields = '__all__'
+
+
 class ZonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Zona
         fields = '__all__'
 
 
-class LocalZonasSerializer(serializers.ModelSerializer):
+# class LocalZonasSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = LocalZonas
+#         fields = '__all__'
+#
+#
+class LocalAmbitosDetalleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LocalZonas
-        fields = '__all__'
-
-
-class LocalZonasDetalleSerializer(serializers.ModelSerializer):
-    zona = ZonaSerializer()
-
-    class Meta:
-        model = LocalZonas
+        model = LocalAmbito
         fields = '__all__'
 
 

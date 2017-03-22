@@ -1,12 +1,16 @@
+import {FilterFields} from "./distribucion.interface";
 /**
  * Created by lfarfan on 12/03/2017.
  */
 declare var BASEURL: string;
+
 export class DistribucionService {
     private url_localzona: string = `${BASEURL}/distribucion/localzona/`;
+    private url_localambito: string = `${BASEURL}/distribucion/localambito/`;
     private url_localzonaDetalle: string = `${BASEURL}/distribucion/localzona_detalle/`;
     private url_asignarZonas: string = `${BASEURL}/distribucion/asignarZonas/`;
     private url_zonas_libres: string = `${BASEURL}/distribucion/zonas_libres_por_asignar/`;
+    private url_ambitoslibres: string = `${BASEURL}/distribucion/ambitoslibres/`;
     private url_localambientes_detalle: string = `${BASEURL}/distribucion/localambiente_detalle/`;
     private url_personal_bylocalcurso: string = `${BASEURL}/distribucion/personalcapacitar_bylocalcurso/`;
     private url_distribuir: string = `${BASEURL}/distribucion/distribuir/`;
@@ -67,17 +71,29 @@ export class DistribucionService {
         });
     }
 
-    asignarZonas(object: Object): JQueryXHR {
+    asignarZonas(data: Array<Object>): JQueryXHR {
         return $.ajax({
             url: `${this.url_asignarZonas}`,
             type: 'POST',
-            data: object,
+            data: {localambitos: JSON.stringify(data)},
         });
     }
 
-    getZonasLibres(curso: number, ubigeo: string): JQueryXHR {
+    getZonasLibres(ambito: FilterFields): JQueryXHR {
+        let url = `${this.url_ambitoslibres}${ambito.curso}/`;
+        ambito.ccdd != null ? url += `${ambito.ccdd}/` : '';
+        ambito.ccpp != null ? url += `${ambito.ccpp}/` : '';
+        ambito.ccdi != null ? url += `${ambito.ccdi}/` : '';
+
         return $.ajax({
-            url: `${this.url_zonas_libres}${curso}/${ubigeo}/`,
+            url: url
+        });
+    }
+
+    deleteLocalAmbito(localambiente: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_localambito}${localambiente}/`,
+            type: 'DELETE',
         });
     }
 

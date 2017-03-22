@@ -36,3 +36,31 @@ export interface IPersonalAula {
     id_pea: IPersonal,
     id_peaaula: number,
 }
+
+
+export interface IUbigeo {
+    ubigeo: string,
+    ccdd: string,
+    ccpp: string,
+    ccdi: string,
+    departamento: string,
+    provincia: string,
+    distrito: string,
+}
+
+export interface IZona {
+    ID: string,
+    UBIGEO: string,
+    CODCCPP: string,
+    ZONA: string
+    LLAVE_CCPP: string
+    LLAVE_ZONA: string
+    ETIQ_ZONA: string
+}
+export interface FilterFields {
+    ccdd: string,
+    ccpp: string,
+    ccdi: string,
+    zona: string,
+    curso: number
+}

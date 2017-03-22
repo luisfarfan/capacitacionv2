@@ -56,7 +56,6 @@ class LocalCurso(models.Model):
     local = models.ForeignKey('Local', on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso)
     ambientes = models.ManyToManyField('Ambiente', through='LocalAmbiente')
-    zonas = models.ManyToManyField(Zona, through='LocalZonas')
 
     class Meta:
         managed = True
@@ -64,17 +63,16 @@ class LocalCurso(models.Model):
         db_table = 'LOCAL_CURSO'
 
 
-class LocalZonas(models.Model):
-    localcurso = models.ForeignKey(LocalCurso)
+class LocalAmbito(models.Model):
+    localcurso = models.ForeignKey(LocalCurso, related_name='localescurso')
     ccdd = models.CharField(max_length=2, null=True, blank=True)
     ccpp = models.CharField(max_length=2, null=True, blank=True)
     ccdi = models.CharField(max_length=2, null=True, blank=True)
-    zona = models.ForeignKey(Zona, null=True)
+    zona = models.CharField(max_length=5, null=True, blank=True)
 
     class Meta:
         managed = True
-        unique_together = ('localcurso', 'zona',)
-        db_table = 'LOCALZONAS'
+        db_table = 'LocalAmbito'
 
 
 class DirectorioLocalCurso(models.Model):
