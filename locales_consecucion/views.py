@@ -8,6 +8,20 @@ from .utils import restar
 from django.views.decorators.csrf import csrf_exempt
 
 
+def agregarDirectorioCurso(request):
+    directorios = DirectorioLocal.objects.all()
+    cursos = Curso.objects.all()
+
+    for directorio in directorios:
+        for curso in cursos:
+            directoriocurso = DirectorioLocalCurso()
+            directoriocurso.local_id = directorio.id_local
+            directoriocurso.curso_id = curso.id_curso
+            directoriocurso.save()
+
+    return JsonResponse(list(DirectorioLocalCurso.objects.all().values()), safe=False)
+
+
 class LocalViewSet(viewsets.ModelViewSet):
     queryset = Local.objects.all()
     serializer_class = LocalSerializer
