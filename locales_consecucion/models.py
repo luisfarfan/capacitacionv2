@@ -272,7 +272,7 @@ class Personal(models.Model):
     ape_paterno = models.CharField(max_length=100, blank=True, null=True)
     ape_materno = models.CharField(max_length=100, blank=True, null=True)
     nombre = models.CharField(max_length=100, blank=True, null=True)
-    id_cargofuncional = models.ForeignKey(CargoFuncional)
+    id_cargofuncional = models.ForeignKey(CargoFuncional, null=True, blank=True)
     id_convocatoriacargo = models.CharField(max_length=4, blank=True, null=True)
     zona = models.CharField(max_length=5, blank=True, null=True)
     ubigeo = models.ForeignKey(Ubigeo)

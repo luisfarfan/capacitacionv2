@@ -64,3 +64,35 @@ export interface FilterFields {
     zona: string,
     curso: number
 }
+export interface IRol {
+    id: number;
+    modulo_rol: Array<any>;
+    nombre: string;
+    descripcion: string;
+    codigo: string,
+    rol: number,
+}
+
+export interface IUsuario {
+    id: number,
+    dni: number,
+    ape_pat: string,
+    ape_mat: string,
+    nombre: string,
+    fecha_contrato_inicio: string,
+    fecha_contrato_extended: string,
+    fecha_contrato_fin: string,
+    fecha_nacimiento: string,
+    email_inst: string,
+    email_personal: string,
+    usuario: string,
+    clave: string,
+    tipousuario: ITipoUsuario,
+    activo: number,
+    rol: IRol
+}
+export interface ITipoUsuario {
+    id: number,
+    nombre: string,
+    descripcion: string,
+}

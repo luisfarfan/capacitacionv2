@@ -3,7 +3,7 @@ import {FilterFields} from "./distribucion.interface";
  * Created by lfarfan on 12/03/2017.
  */
 declare var BASEURL: string;
-
+declare var SEGURIDADBASEURL: string;
 export class DistribucionService {
     private url_localzona: string = `${BASEURL}/distribucion/localzona/`;
     private url_localambito: string = `${BASEURL}/distribucion/localambito/`;
@@ -16,7 +16,12 @@ export class DistribucionService {
     private url_distribuir: string = `${BASEURL}/distribucion/distribuir/`;
     private url_personalaula: string = `${BASEURL}/distribucion/personalaula/`;
     private url_crudpersonalaula: string = `${BASEURL}/distribucion/crudpersonalaula/`;
+    private url_instructores: string = `${SEGURIDADBASEURL}seguridad/proyectosistema_user/CPV/capa/`
 
+
+    getInstructoresSeguridad(): JQueryXHR {
+        return $.getJSON(this.url_instructores)
+    }
 
     filterLocalZona(pk: number): JQueryXHR {
         return $.ajax({

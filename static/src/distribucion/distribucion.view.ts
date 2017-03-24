@@ -5,7 +5,7 @@ import {CursoInyection} from '../comun.utils';
 import {DistribucionService} from '../distribucion/distribucion.service';
 import {LocalService} from '../locales_consecucion/locales.service';
 import {ILocalCurso, ILocal, ILocalAmbienteDetail, ILocalAmbiente} from '../locales_consecucion/local.interface';
-import {ILocalZona, IPersonal, IPersonalAula, FilterFields, IUbigeo} from 'distribucion.interface';
+import {ILocalZona, IPersonal, IPersonalAula, FilterFields, IUbigeo, IUsuario} from 'distribucion.interface';
 import UbigeoService from '../ubigeo/ubigeo.service';
 import {IZona} from '../ubigeo/ubigeo.interface';
 import * as utils from '../core/utils';
@@ -37,6 +37,7 @@ class DistribucionView {
     private localAmbienteSelected: ILocalAmbienteDetail = null;
     private personalAula: IPersonalAula[] = [];
     private ambitosLibres: IUbigeo[] = [];
+    private instructores: IUsuario[] = [];
 
     constructor() {
         this.curso = new CursoInyection();
@@ -100,6 +101,18 @@ class DistribucionView {
                 utils.alert_confirm(() => this.saveInstructor(), 'Está seguro de guardar el Instructor en esta aula?', 'info');
             }
         });
+        this.getInstructores();
+    }
+
+    getInstructores() {
+        this.distribucionService.getInstructoresSeguridad().done((instructores) => {
+            this.instructores = instructores;
+            let html = '<option value="">Seleccione Instructor</option>';
+            this.instructores.map((instructor: IUsuario) => {
+                html += `<option value="${instructor.id}">${instructor.rol.nombre} ${instructor.dni} - ${instructor.ape_pat} ${instructor.ape_mat} ${instructor.nombre}</option>`
+            });
+            $('#select_instructor').html(html);
+        });
     }
 
     filterLocalesSeleccionados() {
@@ -124,7 +137,10 @@ class DistribucionView {
         this.distribucionService.getZonasLibres(this.filterFields).done((ambitos) => {
             this.ambitosLibres = ambitos;
             let by: any;
-            if (this.filterFields.ccdd != null && this.filterFields.ccpp == null) {
+            if (this.filterFields.ccdd == null) {
+                by = {id: 'ccdd', text: ['departamento']}
+            }
+            else if (this.filterFields.ccdd != null && this.filterFields.ccpp == null) {
                 by = {id: 'ccpp', text: ['provincia']}
             } else if (this.filterFields.ccpp != null && this.filterFields.ccdi == null) {
                 by = {id: 'ccdi', text: ['distrito']}
