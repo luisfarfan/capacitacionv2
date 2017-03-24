@@ -78,7 +78,10 @@ class EvaluacionView {
         });
         $('#btn_rankeo_temporal').on('click', () => {
             this.rankear();
-        })
+        });
+        $('#btn_exportar').on('click', () => {
+            this.exportar();
+        });
     }
 
     getCriterios(id_curso: number) {
@@ -88,6 +91,23 @@ class EvaluacionView {
         this.evaluacionService.criteriosDetalleCurso(id_curso).done((detalleCriterio: IDetalleCriterio[]) => {
             this.detalleCriterios = detalleCriterio;
         });
+    }
+
+    exportar() {
+        $('#clone').html($('#tabla_evaluacion').clone());
+        let select_instructor = $('#tabla_evaluacion').find('select :selected').text();
+        $('#clone').find('#a_save_instructor').remove()
+        let inputs = $('#clone').find('input[type="number"]')
+        inputs.map((index: number, element: Element) => {
+            let val = $(element).val();
+            $(element).replaceWith(`<span>${val}</span>`);
+        });
+        var uri = $("#clone").battatech_excelexport({
+            containerid: "clone",
+            datatype: 'table',
+            returnUri: true
+        });
+        $('#btn_exportar').attr('download', 'reporte_personal_por_aula.xls').attr('href', uri).attr('target', '_blank');
     }
 
     getPersonalNotaFinal() {

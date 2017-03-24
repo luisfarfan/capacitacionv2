@@ -2,15 +2,26 @@ import urllib.request, json
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView
 
-URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
+# URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 
 
-#URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=u6ktjnvihep4nf1sqf5es77mlmvpm313'
 
 
 def setSession(request):
     key = request.GET['key']
     response = urllib.request.urlopen(URL_USERDATASESSION.format(key))
+    data = json.loads(response.read().decode('utf-8'))
+    request.session['user_session'] = data['data']
+    if not request.session.session_key:
+        request.session.save()
+
+    return redirect('/modulos/registro-local/')
+
+
+def setSessionPrueba(request):
+    response = urllib.request.urlopen(URL_USERDATASESSION_PRUEBA)
     data = json.loads(response.read().decode('utf-8'))
     request.session['user_session'] = data['data']
     if not request.session.session_key:

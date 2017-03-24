@@ -335,3 +335,8 @@ class TipoResultadosCapacitacion(models.Model):
     class Meta:
         managed = True
         db_table = 'TipoResultadoCapacitacion'
+
+
+class UbigeoCursoMeta(models.Model):
+    ubigeo = models.ForeignKey(Ubigeo)
+    meta = models.IntegerField()

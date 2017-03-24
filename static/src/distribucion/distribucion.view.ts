@@ -101,7 +101,23 @@ class DistribucionView {
                 utils.alert_confirm(() => this.saveInstructor(), 'Está seguro de guardar el Instructor en esta aula?', 'info');
             }
         });
+        $('#btn_exportar').on('click', () => {
+            this.exportar();
+        });
         this.getInstructores();
+    }
+
+    exportar() {
+        $('#clone').html($('#tabla_pea').clone());
+        let select_instructor = $('#tabla_pea').find('select :selected').text();
+        $('#clone').find('#a_save_instructor').remove()
+        $('#clone').find('select').replaceWith(`<span>${select_instructor}</span>`);
+        var uri = $("#clone").battatech_excelexport({
+            containerid: "clone",
+            datatype: 'table',
+            returnUri: true
+        });
+        $('#btn_exportar').attr('download', 'reporte_personal_por_aula.xls').attr('href', uri).attr('target', '_blank');
     }
 
     getInstructores() {
@@ -363,5 +379,6 @@ class DistribucionView {
             this.localAmbienteSelected.id_instructor = instructor_id;
         });
     }
+
 }
 new DistribucionView();

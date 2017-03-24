@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'^evaluacion/', include(routerEvaluacion.urls)),
     url(r'^evaluacion/', include('evaluacion.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
-    url('^setSession/$', setSession)
+    url('^setSession/$', setSession),
+    url('^setSessionPrueba/$', setSessionPrueba)
 ]
