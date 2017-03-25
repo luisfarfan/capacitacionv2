@@ -161,7 +161,7 @@ class DistribucionView {
             } else if (this.filterFields.ccpp != null && this.filterFields.ccdi == null) {
                 by = {id: 'ccdi', text: ['distrito']}
             } else if (this.filterFields.ccpp != null && this.filterFields.ccdi != null) {
-                by = {id: 'ZONA', text: ['zona']}
+                by = {id: 'ZONA', text: ['ZONA']}
             }
             utils.setDropdown(this.ambitosLibres, by, {
                 id_element: 'select_zonas_por_asignar',
