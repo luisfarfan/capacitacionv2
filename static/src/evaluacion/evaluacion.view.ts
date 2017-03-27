@@ -12,7 +12,10 @@ import {
     ICargoFuncionalDetalle,
     IPeaNotaFinal
 } from 'evaluacion.interface';
-import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalNotas} from '../asistencia/asistencia.interface'
+import {
+    ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalNotas,
+    IPersonalAula
+} from '../asistencia/asistencia.interface'
 import {CursoInyection} from '../comun.utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
 import {IUbigeo} from "../ubigeo/ubigeo.view";
@@ -195,6 +198,20 @@ class EvaluacionView {
         return thead;
     }
 
+    calcularAsistencia(peaaula: IPersonalAula[]) {
+        let asistencia: number = 18;
+        peaaula.map((value: IPersonalAula, index: number) => {
+            if (value.turno_manana == 1) {
+                asistencia = asistencia - 0.5;
+            }
+            if (value.turno_manana == 2) {
+                asistencia = asistencia - 1;
+            }
+        })
+        console.log(asistencia);
+        return asistencia
+    }
+
     drawTbody() {
         let tbody = ``;
         this.personal.map((persona: IPersonalAsistenciaDetalle, index: number) => {
@@ -222,10 +239,10 @@ class EvaluacionView {
                     }
                 });
                 let nota: number = null;
-                criterio.id_criterio == 2 ? nota = 18 : nota = null;
+                criterio.id_criterio == 2 ? nota = this.calcularAsistencia(persona.personalaula) : nota = null;
                 persona.personalaula_notas.filter((val: IPersonalNotas) => {
                     if (val.cursocriterio.criterio == criterio.id_criterio) {
-                        criterio.id_criterio == 2 ? nota = 18 : nota = val.nota;
+                        criterio.id_criterio == 2 ? nota = this.calcularAsistencia(persona.personalaula) : nota = val.nota;
                         this.detalleCriterios.map((criteriodetalle: IDetalleCriterio) => {
                             if (val.cursocriterio.criterio == criteriodetalle.criterio) {
                                 nota_final = nota_final + (nota * (criteriodetalle.ponderacion / 100));
