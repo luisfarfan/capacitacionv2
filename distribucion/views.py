@@ -141,10 +141,12 @@ class PersonalLibreporCursoViewSet(generics.ListAPIView):
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
         contingencia = True if 'contingencia' in self.kwargs else False
+
+        peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True)
         if contingencia:
             return personasLibres(localcurso).filter(contingencia=1)
         else:
-            return personasLibres(localcurso)
+            return personasLibres(localcurso, peaDistribuida)
 
 
 def personasLibres(localcurso, exclude=[]):

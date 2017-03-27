@@ -19,7 +19,7 @@ class DistribucionView {
     private localService: LocalService = new LocalService();
     private ubigeoService: UbigeoService = new UbigeoService();
     private distribucionService: DistribucionService = new DistribucionService();
-    private filterFields: FilterFields = {
+    private filterFields: any = {
         ccdd: ubigeo.ccdd != '' ? ubigeo.ccdd : null,
         ccpp: ubigeo.ccpp != '' ? ubigeo.ccpp : null,
         ccdi: ubigeo.ccdi != '' ? ubigeo.ccdi : null,
@@ -131,8 +131,26 @@ class DistribucionView {
         });
     }
 
+    setUbigeoparaFiltro() {
+        let ubigeo: any = {}
+        if (this.filterFields.ccdd != null) {
+            ubigeo['ccdd'] = this.filterFields.ccdd;
+        }
+        if (this.filterFields.ccpp != null) {
+            ubigeo['ccpp'] = this.filterFields.ccpp;
+        }
+        if (this.filterFields.ccdi != null) {
+            ubigeo['ccdi'] = this.filterFields.ccdi;
+        }
+        if (this.filterFields.zona != null) {
+            ubigeo['zona'] = this.filterFields.zona;
+        }
+        console.log(this.filterFields, ubigeo)
+        return ubigeo
+    }
+
     filterLocalesSeleccionados() {
-        this.localService.getbyAmbienteGeografico(this.filterFields.curso, {}).done((localesCurso: any) => {
+        this.localService.getbyAmbienteGeografico(this.filterFields.curso, this.setUbigeoparaFiltro()).done((localesCurso: any) => {
             this.localesCurso = localesCurso;
             this.locales = [];
             this.localesCurso.map((value: ILocalCurso, index: number) => {
