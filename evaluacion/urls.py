@@ -15,4 +15,10 @@ urlpatterns = [
         PersonalAulaDetalleNotaFinalViewSet.as_view()),
     url(r'cargos_curso/(?P<curso>[0-9]+)/$',
         CargosCursoViewSet.as_view()),
+    url(r'ambitosRankeo/(?P<ccdd>[0-9]+)/$',
+        UbigeosRankeoViewSet.as_view()),
+    url(r'ambitosRankeo/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        UbigeosRankeoViewSet.as_view()),
+    url(r'ambitosRankeo/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        UbigeosRankeoViewSet.as_view()),
 ]

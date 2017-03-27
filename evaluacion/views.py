@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, FloatField, Sum
 import json
+from django.db.models import Count, Value
+from rest_framework.views import APIView
 
 
 # class LocalAmbientebyInstructorViewSet(generics.ListAPIView):
@@ -91,3 +93,30 @@ def saveNotasFinal(request):
             notafinalpea = PersonalAulaNotaFinal(peaaula_id=data['peaaula'], nota_final=data['nota_final'])
         notafinalpea.save()
     return JsonResponse({'msg': 'Guardado correcto'})
+
+
+class UbigeosRankeoViewSet(APIView):
+    def get(self, request, ccdd=None, ccpp=None, ccdi=None):
+        return JsonResponse(list(ambitosRankeo(ccdd, ccpp, ccdi)), safe=False)
+
+
+def ambitosRankeo(ccdd=None, ccpp=None, ccdi=None):
+    filter = {}
+    zonaFilter = {}
+    query = Ubigeo.objects
+    if ccdd is None:
+        queryFinal = query.values('ccdd', 'departamento').annotate(dcount=Count('ccdd', 'departamento'))
+    if ccdd is not None:
+        filter['ccdd'] = ccdd
+        queryFinal = query.filter(**filter).values('ccdd', 'ccpp', 'provincia', 'departamento').annotate(
+            dcount=Count('ccpp', 'provincia'))
+    if ccpp is not None:
+        filter['ccdd'] = ccdd
+        filter['ccpp'] = ccpp
+        queryFinal = query.filter(**filter).values('ccdd', 'ccpp', 'ccdi', 'distrito', 'departamento',
+                                                   'provincia').annotate(dcount=Count('ccdi', 'distrito'))
+    if ccdi is not None:
+        zonaFilter['UBIGEO'] = ccdd + ccpp + ccdi
+        return Zona.objects.filter(**zonaFilter).values()
+
+    return queryFinal

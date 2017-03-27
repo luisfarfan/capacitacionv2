@@ -38,6 +38,7 @@ class EvaluacionView {
     private zonasRankeo: IZona[] = [];
     private cargosFuncionales: ICargoFuncionalDetalle[] = [];
     private personalNotaFinal: IPeaNotaFinal[] = [];
+    private ambitos: any = {};
 
     constructor() {
         this.cursoInyection = new CursoInyection();
@@ -46,6 +47,7 @@ class EvaluacionView {
         this.ubigeoService = new UbigeoService();
         this.getZonas();
         this.setEvents();
+        this.getAmbitos();
     }
 
     setEvents() {
@@ -364,6 +366,31 @@ class EvaluacionView {
                 $(tr).find('span').addClass('label-danger');
                 $(tr).find('span').text('No apto');
             }
+        });
+    }
+
+    setUbigeo() {
+        let ambito: any = {};
+        ubigeo.ccdd !== '' ? this.ambitos['ccdd'] = ubigeo.ccdd : this.ambitos['ccdd'] = null;
+        ubigeo.ccpp !== '' ? this.ambitos['ccpp'] = ubigeo.ccpp : this.ambitos['ccpp'] = null;
+        ubigeo.ccdi !== '' ? this.ambitos['ccdi'] = ubigeo.ccdi : this.ambitos['ccdi'] = null;
+    }
+
+    getAmbitos() {
+        this.setUbigeo();
+        let by: any;
+        this.evaluacionService.ambitos(this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi).done((ambitos) => {
+            if (this.ambitos.ccdd == null) {
+                by = {id: 'ccdd', text: ['departamento']}
+            }
+            else if (this.ambitos.ccdd != null && this.ambitos.ccpp == null) {
+                by = {id: 'ccpp', text: ['provincia']}
+            } else if (this.ambitos.ccpp != null && this.ambitos.ccdi == null) {
+                by = {id: 'ccdi', text: ['distrito']}
+            } else if (this.ambitos.ccpp != null && this.ambitos.ccdi != null) {
+                by = {id: 'ZONA', text: ['ZONA']}
+            }
+
         });
     }
 }

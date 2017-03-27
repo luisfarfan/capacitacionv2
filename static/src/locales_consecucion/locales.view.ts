@@ -333,7 +333,6 @@ class LocalController {
 
     generarAmbientes() {
         let object: Object = {}
-
         if (this.directorioLocal) {
             object = {
                 'local': this.directoriolocalCurso.local.id_local,

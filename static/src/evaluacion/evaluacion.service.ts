@@ -12,10 +12,28 @@ export class EvaluacionService {
     private url_saveNotasFinal: string = `${BASEURL}/evaluacion/saveNotasFinal/`;
     private url_cargos_curso: string = `${BASEURL}/evaluacion/cargos_curso/`;
     private url_personalaula_notafinal: string = `${BASEURL}/evaluacion/personalaula_notafinal/`;
+    private url_ambitosRankeo: string = `${BASEURL}/evaluacion/ambitosRankeo/`;
+
 
     criteriosCurso(id_curso: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_criterioscurso}${id_curso}/`
+        });
+    }
+
+    ambitos(ccdd: string = null, ccpp: string = null, ccdi: string = null): JQueryXHR {
+        let url = `${this.url_ambitosRankeo}`;
+        if (ccdd != null) {
+            url += `${ccdd}/`
+        }
+        if (ccpp != null) {
+            url += `${ccpp}/`
+        }
+        if (ccdi != null) {
+            url += `${ccdi}/`
+        }
+        return $.ajax({
+            url: url
         });
     }
 
