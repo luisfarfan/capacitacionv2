@@ -1,16 +1,19 @@
 from django.db import models
+
+
 # from locales_consecucion.models import Curso, Ubigeo, Zona, LocalAmbiente
 
 
 # Create your models here.
-# class CargoFuncional(models.Model):
-#     id_cargofuncional = models.IntegerField(primary_key=True, max_length=3)
-#     nombre_funcionario = models.CharField(max_length=100, blank=True, null=True)
-#     id_curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'CARGO_FUNCIONAL'
+class EnvioSMS(models.Model):
+    nombre = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=20)
+    mensaje = models.CharField(max_length=60)
+
+    class Meta:
+        managed = True
+        db_table = 'xxxxxxxx'
+
 #
 #
 # class CursoCargoFuncional(models.Model):

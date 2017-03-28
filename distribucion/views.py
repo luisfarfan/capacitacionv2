@@ -146,7 +146,7 @@ class PersonalLibreporCursoViewSet(generics.ListAPIView):
         if contingencia:
             return personasLibres(localcurso).filter(contingencia=1)
         else:
-            return personasLibres(localcurso, peaDistribuida)
+            return personasLibres(localcurso, peaDistribuida).filter(contingencia=0)
 
 
 def personasLibres(localcurso, exclude=[]):
@@ -154,16 +154,17 @@ def personasLibres(localcurso, exclude=[]):
     cargosfuncionales = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional',
                                                                                           flat=True)
     localambitos = LocalAmbito.objects.filter(localcurso_id=localcurso)
-    deps = localambitos.values_list('ccdd', flat=True)
-    provs = localambitos.values_list('ccpp', flat=True)
-    dist = localambitos.values_list('ccdi', flat=True)
+    deps = localambitos.values_list('ccdd', flat=True).distinct()
+    provs = localambitos.values_list('ccpp', flat=True).distinct()
+    dist = localambitos.values_list('ccdi', flat=True).distinct()
     zonas = localambitos.values_list('zona', flat=True)
-    filter = {'contingencia': 0, 'baja_estado': 0}
+    filter = {'baja_estado': 0}
     if localambitos[0].zona is not None:
         return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
-                                                                   ubigeo__ccdd__in=deps,
-                                                                   ubigeo__ccpp__in=provs, ubigeo__ccdi__in=dist,
+                                                                   ubigeo__ccdd__in=deps, ubigeo__ccpp__in=provs,
+                                                                   ubigeo__ccdi__in=dist,
                                                                    zona__in=zonas, **filter)
+
     elif localambitos[0].ccdi is not None and localambitos[0].zona is None:
         return Personal.objects.exclude(id_pea__in=exclude).filter(id_cargofuncional__in=cargosfuncionales,
                                                                    ubigeo__ccdd__in=deps,

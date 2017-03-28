@@ -99,6 +99,17 @@ if ENV == 'LOCAL':
                 'unicode_results': True
             },
         },
+        'SMS': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION',
+            'USER': 'rvila',
+            'PASSWORD': 'inei1202',
+            'HOST': '192.168.200.250',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        }
     }
 elif ENV == 'DESARROLLO':
     _DATABASECONF = {

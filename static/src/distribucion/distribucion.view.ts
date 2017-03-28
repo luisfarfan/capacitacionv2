@@ -381,8 +381,9 @@ class DistribucionView {
 
     setCabeceraDistribucion(localambiente: number) {
         $('#span_nombre_local').text(this.localCursoSelected.local.nombre_local);
-        $('#span_direccion').text(this.localCursoSelected.local.referencia);
+        $('#span_direccion').text(this.localCursoSelected.local.nombre_via);
         $('#span_fecha_inicio').text(this.localCursoSelected.local.fecha_inicio);
+        $('#span_aula').text(this.localAmbienteSelected.numero);
         this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
             if (value.id_localambiente == localambiente) {
                 $('#span_aula').text(`${index + 1}`)
