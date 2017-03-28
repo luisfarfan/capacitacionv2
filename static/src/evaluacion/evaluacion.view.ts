@@ -39,13 +39,14 @@ class EvaluacionView {
     private cargosFuncionales: ICargoFuncionalDetalle[] = [];
     private personalNotaFinal: IPeaNotaFinal[] = [];
     private ambitos: any = {};
+    private ambitoDetalle: any = {};
 
     constructor() {
         this.cursoInyection = new CursoInyection();
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
         this.ubigeoService = new UbigeoService();
-        this.getZonas();
+        //this.getZonas();
         this.setEvents();
         this.getAmbitos();
     }
@@ -116,9 +117,19 @@ class EvaluacionView {
     }
 
     getPersonalNotaFinal() {
-        let zona: string = $('#select_zonas').val()
         let cargo: number = $('#select_cargos_funcionales').val();
-        this.evaluacionService.filterPersonalNotaFinal(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, zona, cargo).done((personalNotaFinal: IPeaNotaFinal[]) => {
+        let ambito_selected = $('#select_zonas').val();
+        let ubigeo: any = {};
+        this.setUbigeo();
+        if (this.ambitos.ccdd == null) {
+            this.ambitos.ccdd = ambito_selected
+        } else if (this.ambitos.ccdd != null && this.ambitos.ccpp == null) {
+            this.ambitos.ccpp = ambito_selected
+        } else if (this.ambitos.ccpp != null && this.ambitos.ccdi == null) {
+            this.ambitos.ccdi = ambito_selected
+        }
+
+        this.evaluacionService.filterPersonalNotaFinal(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
         })
@@ -141,7 +152,7 @@ class EvaluacionView {
     }
 
     rankear() {
-        let meta = 6
+        let meta = 50
         let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
         let count = 0;
         inputsTable.map((index: number, input: Element) => {
@@ -390,7 +401,13 @@ class EvaluacionView {
             } else if (this.ambitos.ccpp != null && this.ambitos.ccdi != null) {
                 by = {id: 'ZONA', text: ['ZONA']}
             }
+            this.ambitoDetalle = ambitos;
 
+            utils.setDropdown(this.ambitoDetalle, by, {
+                id_element: 'select_zonas',
+                bootstrap_multiselect: true,
+                select2: false
+            });
         });
     }
 }

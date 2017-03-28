@@ -43,9 +43,19 @@ export class EvaluacionService {
         });
     }
 
-    filterPersonalNotaFinal(ubigeo: string, zona: string, cargo: number): JQueryXHR {
+    filterPersonalNotaFinal(id_cargofuncional: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
+        let url = `${this.url_personalaula_notafinal}${id_cargofuncional}/`;
+        if (ccdd != null) {
+            url += `${ccdd}/`
+        }
+        if (ccpp != null) {
+            url += `${ccpp}/`
+        }
+        if (ccdi != null) {
+            url += `${ccdi}/`
+        }
         return $.ajax({
-            url: `${this.url_personalaula_notafinal}${ubigeo}/${zona}/${cargo}/`
+            url: url
         });
     }
 

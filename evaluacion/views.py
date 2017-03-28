@@ -49,11 +49,22 @@ class PersonalAulaDetalleNotaFinalViewSet(generics.ListAPIView):
     serializer_class = PersonalAulaDetalleNotaFinalSerializer
 
     def get_queryset(self):
-        ubigeo = self.kwargs['ubigeo']
-        zona = self.kwargs['zona']
         id_cargofuncional = self.kwargs['id_cargofuncional']
-        return PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__zona=zona,
-                                           id_pea__id_cargofuncional_id=id_cargofuncional).order_by(
+        filter = {}
+        filter['id_pea__id_cargofuncional_id'] = id_cargofuncional
+        if 'ccdd' in self.kwargs:
+            filter['id_pea__ubigeo__ccdd'] = self.kwargs['ccdd']
+
+        if 'ccpp' in self.kwargs:
+            filter['id_pea__ubigeo__ccpp'] = self.kwargs['ccpp']
+
+        if 'ccdi' in self.kwargs:
+            filter['id_pea__ubigeo__ccdi'] = self.kwargs['ccdi']
+
+        if 'zona' in self.kwargs:
+            filter['id_pea__zona'] = self.kwargs['zona']
+
+        return PersonalAula.objects.filter(**filter).order_by(
             '-personalaula_notafinal__nota_final')
 
 

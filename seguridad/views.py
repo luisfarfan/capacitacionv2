@@ -4,7 +4,8 @@ from django.views.generic import TemplateView, ListView
 
 URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 
-# URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
+
+#URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
 URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
 
 

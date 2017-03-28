@@ -11,7 +11,15 @@ urlpatterns = [
     url(r'saveNotasFinal/$', saveNotasFinal),
     url(r'criteriosdetalle_curso/(?P<curso>[0-9]+)/$',
         CriterioCursoFilterViewSet.as_view()),
-    url(r'personalaula_notafinal/(?P<ubigeo>[0-9]+)/(?P<zona>[0-9]+)/(?P<id_cargofuncional>[0-9]+)/$',
+
+    url(r'personalaula_notafinal/(?P<id_cargofuncional>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+        PersonalAulaDetalleNotaFinalViewSet.as_view()),
+    url(r'personalaula_notafinal/(?P<id_cargofuncional>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        PersonalAulaDetalleNotaFinalViewSet.as_view()),
+    url(r'personalaula_notafinal/(?P<id_cargofuncional>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        PersonalAulaDetalleNotaFinalViewSet.as_view()),
+    url(
+        r'personalaula_notafinal/(?P<id_cargofuncional>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         PersonalAulaDetalleNotaFinalViewSet.as_view()),
     url(r'cargos_curso/(?P<curso>[0-9]+)/$',
         CargosCursoViewSet.as_view()),
