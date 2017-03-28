@@ -335,7 +335,7 @@ class LocalController {
         let object: Object = {}
         if (this.directorioLocal) {
             object = {
-                'local': this.directoriolocalCurso.local.id_local,
+                'local': this.directorioLocal.id_local,
                 'curso': this.directoriolocalCurso.curso,
                 'cantidad_usar_aulas': this.directorioLocal.cantidad_usar_aulas,
                 'cantidad_usar_auditorios': this.directorioLocal.cantidad_usar_auditorios,
