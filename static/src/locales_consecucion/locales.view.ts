@@ -119,6 +119,7 @@ class LocalController {
     private inputs: any;
 
     private cursoInyection: CursoInyection;
+    private ambito: any = {};
 
     constructor() {
         this.cursoInyection = new CursoInyection();
@@ -156,7 +157,7 @@ class LocalController {
             this.getCursos();
         });
         $('#btn_save_local').on('click', () => {
-            this.form_local_validate.form()
+            this.form_local_validate.form();
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
                 utils.showInfo('Por favor, seleccione un curso');
                 return false
@@ -298,7 +299,8 @@ class LocalController {
         this.form_local_serializado = utils.formToObject(utils.serializeForm('form_local'));
         if (this.form_local_serializado.zona_ubicacion_local == "-1") {
             utils.showInfo('Por favor seleccione la ubicación del Local');
-            $('#zona_ubicacion_local').select2('open');
+            //$('#zona_ubicacion_local').select2('open');
+            return false;
         }
         this.form_local_serializado.ubigeo = `${$('#departamentos').val()}${$('#provincias').val()}${$('#distritos').val()}`
         if (this.directorioLocal == null && this.local == null) {
@@ -308,7 +310,7 @@ class LocalController {
                     local: this.directorioLocal.id_local,
                     curso: $('#cursos').val()
                 }).done((directoriolocalCurso: ILocalCurso) => {
-                    this.directoriolocalCurso = directoriolocalCurso;
+                    this.directoriolocalCurso = directoriolocalCurso
                     isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
                     this.form_local_validate.resetForm();
                     this.generarAmbientes();
@@ -331,8 +333,19 @@ class LocalController {
         }
     }
 
+    getPartUbigeo(ubigeo: string) {
+        this.ambito.ccdd = ubigeo.substring(0, 2)
+        this.ambito.ccpp = ubigeo.substring(2, 4)
+        this.ambito.ccdi = ubigeo.substring(4, 6)
+
+        $('#departamentos').val(this.ambito.ccdd).trigger('change');
+        $('#provincias').val(this.ambito.ccpp).trigger('change');
+        $('#distritos').val(this.ambito.ccdi).trigger('change');
+    }
+
     generarAmbientes() {
         let object: Object = {}
+        debugger
         if (this.directorioLocal) {
             object = {
                 'local': this.directorioLocal.id_local,
@@ -381,7 +394,6 @@ class LocalController {
         if (zona != "-1" && zona != "") {
             this.ubigeo['zona'] = zona;
         }
-        console.log(this.ubigeo);
     }
 
     filterLocal() {
@@ -461,8 +473,8 @@ class LocalController {
         let curso: number = $('#cursos').val();
         if (is_directorio) {
             this.directoriolocalService.setDirectorioLocal(curso, local_id).done((directoriolocal: ILocalCurso[]) => {
-                console.log(this.directoriolocalCurso);
                 this.directoriolocalCurso = directoriolocal[0];
+                this.getPartUbigeo(this.directoriolocalCurso.local.ubigeo);
                 this.directorioLocal = this.directoriolocalCurso.local;
                 this.setForm(this.directorioLocal);
             });
@@ -471,11 +483,11 @@ class LocalController {
                 if (value.local.id_local == local_id) {
                     this.local = value.local
                     this.localCurso = value;
+                    this.getPartUbigeo(this.local.ubigeo);
+                    this.setForm(this.local);
                 }
             });
-            this.setForm(this.local);
         }
-
     }
 
     setForm(obj: ILocal) {

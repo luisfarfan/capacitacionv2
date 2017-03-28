@@ -19,24 +19,28 @@ export default class UbigeoService {
 
     getDepartamentos(): JQueryXHR {
         return $.ajax({
+            async:false,
             url: this.url.departamentos,
         });
     }
 
     getProvincias(ccdd: string): JQueryXHR {
         return $.ajax({
+            async:false,
             url: `${this.url.provincias}${ccdd}/`,
         });
     }
 
     getDistritos(ccdd: string, ccpp: string): JQueryXHR {
         return $.ajax({
+            async:false,
             url: `${this.url.distritos}${ccdd}/${ccpp}/`,
         });
     }
 
     getZonas(ubigeo: string): JQueryXHR {
         return $.ajax({
+            async:false,
             url: `${this.url.zonas}${ubigeo}/`,
         });
     }

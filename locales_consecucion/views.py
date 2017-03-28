@@ -90,14 +90,14 @@ class LocalCursoFilter(generics.ListAPIView):
         filter['curso_id'] = curso
         if 'ccdd' in self.kwargs:
             filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
-        elif 'ccpp' in self.kwargs:
+        if 'ccpp' in self.kwargs:
             filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
             filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
-        elif 'ccdi' in self.kwargs:
+        if 'ccdi' in self.kwargs:
             filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
             filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
             filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
-        elif 'zona' in self.kwargs:
+        if 'zona' in self.kwargs:
             filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
             filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
             filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
