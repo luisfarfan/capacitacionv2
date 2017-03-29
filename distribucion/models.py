@@ -12,7 +12,7 @@ class EnvioSMS(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'xxxxxxxx'
+        db_table = 'datos_prueba_sms'
 
 #
 #

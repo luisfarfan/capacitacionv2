@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'personalaula/(?P<id_localambiente>[0-9]+)/$', PersonalAulaDetalleViewSet.as_view()),
     # Url para setear instructor
     url(r'setInstructor/$', setInstructor),
+    url(r'sendSMS/$', sendSMS),
+
 ]

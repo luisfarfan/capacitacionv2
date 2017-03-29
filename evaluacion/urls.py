@@ -29,4 +29,6 @@ urlpatterns = [
         UbigeosRankeoViewSet.as_view()),
     url(r'ambitosRankeo/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
         UbigeosRankeoViewSet.as_view()),
+    url(r'meta/(?P<ubigeo>[0-9]+)/(?P<cargofuncional>[0-9]+)/$',
+        Meta.as_view()),
 ]

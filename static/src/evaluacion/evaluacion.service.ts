@@ -13,7 +13,14 @@ export class EvaluacionService {
     private url_cargos_curso: string = `${BASEURL}/evaluacion/cargos_curso/`;
     private url_personalaula_notafinal: string = `${BASEURL}/evaluacion/personalaula_notafinal/`;
     private url_ambitosRankeo: string = `${BASEURL}/evaluacion/ambitosRankeo/`;
+    private url_meta: string = `${BASEURL}/evaluacion/meta/`;
 
+
+    getMeta(ubigeo: string, cargofuncional: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_meta}${ubigeo}/${cargofuncional}/`
+        });
+    }
 
     criteriosCurso(id_curso: number): JQueryXHR {
         return $.ajax({
@@ -53,6 +60,9 @@ export class EvaluacionService {
         }
         if (ccdi != null) {
             url += `${ccdi}/`
+        }
+        if (zona != null) {
+            url += `${zona}/`
         }
         return $.ajax({
             url: url

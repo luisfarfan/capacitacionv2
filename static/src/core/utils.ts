@@ -242,8 +242,8 @@ interface ExtraOptionsDrowdown {
     bootstrap_multiselect: boolean,
     select2: boolean,
 }
-export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: ExtraOptionsDrowdown, bgColor: boolean = false) {
-    let html = `<option value="-1">Seleccione</option>`;
+export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: ExtraOptionsDrowdown, bgColor: boolean = false, first: string = 'Seleccione') {
+    let html = `<option value="-1">${first}</option>`;
     data.map((value: any, key: number) => {
         let value_concated: string = '';
         campos.text.map((v: string, k: number) => {

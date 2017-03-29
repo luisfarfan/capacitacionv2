@@ -5,6 +5,8 @@ from .models import Reportes
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.db.models import Count, Value, F, Sum
+from asistencia.serializer import PersonalAulaDetalleSerializer
+from rest_framework import generics, viewsets
 
 
 def getReportes(request):
@@ -13,7 +15,7 @@ def getReportes(request):
 
 
 class directoriolocalesNumeroAmbientes(APIView):
-    def get(self, request, ccdd=None, ccpp=None, ccdi=None, zona=None):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
         filter = {}
         if ccdd is not None:
             filter['ubigeo__ccdd'] = ccdd
@@ -24,12 +26,12 @@ class directoriolocalesNumeroAmbientes(APIView):
         if zona is not None:
             filter['zona_ubicacion_local'] = zona
 
-        query = DirectorioLocal.objects.filter(**filter).values()
+        query = DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso).values()
         return JsonResponse(list(query), safe=False)
 
 
 class localseleccionadoNumeroAmbientes(APIView):
-    def get(self, request, ccdd=None, ccpp=None, ccdi=None, zona=None):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
         filter = {}
         if ccdd is not None:
             filter['ubigeo__ccdd'] = ccdd
@@ -40,5 +42,15 @@ class localseleccionadoNumeroAmbientes(APIView):
         if zona is not None:
             filter['zona_ubicacion_local'] = zona
 
-        query = Local.objects.filter(**filter).values()
+        query = Local.objects.filter(**filter, localcurso__curso_id=curso).values()
         return JsonResponse(list(query), safe=False)
+
+
+class asistenciaporCurso(generics.ListAPIView):
+    serializer_class = PersonalAulaDetalleSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+
+        ambientes = LocalAmbiente.objects.filter(localcurso__curso_id=curso).values_list('id_localambiente', flat=True)
+        return PersonalAula.objects.filter(id_localambiente_id__in=ambientes)

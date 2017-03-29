@@ -168,9 +168,11 @@ class AsistenciaView {
     drawHeaderFechas() {
         let header: string = '';
         let subHeader: string = '<tr>';
-        header += `<tr><th rowspan="2">N°</th><th rowspan="2">Nombre Completo</th><th rowspan="2">Cargo</th>`
+        header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>`
         this.rangoFechas.map((fecha: string, index: number) => {
-            header += `<th colspan="2">${fecha}</th>`
+            header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="2">${fecha}</th>`
             subHeader += `<th>MAÑANA</th><th>TARDE</th>`
         });
         header += `</tr>`;
@@ -216,12 +218,16 @@ class AsistenciaView {
             tbody += `</tr>`
         });
         $('#tabla_asistencia').find('tbody').html(tbody);
-        let tablaasistenciaDT = $('#tabla_asistencia').DataTable();
-        tablaasistenciaDT.destroy();
+        // let tablaasistenciaDT = $('#tabla_asistencia').DataTable();
+        // tablaasistenciaDT.destroy();
         $('#tabla_asistencia').find('tbody').html(tbody);
-        $('#tabla_asistencia').DataTable({
-            "bPaginate": false,
-        });
+        // $('#tabla_asistencia').DataTable({
+        //     "bPaginate": false,
+        // });
+        $('#btn_exportar').off();
+        $('#btn_exportar').on('click', () => {
+            this.exportar();
+        })
     }
 
     drawDivAsistencia(divParams: ModelDivAsistencia) {
@@ -356,6 +362,50 @@ class AsistenciaView {
             utils.showSwalAlert('La persona se ha dado de baja!', 'Éxito', 'success');
             $('#select_aulas_asignadas').trigger('change');
         });
+    }
+
+    exportar() {
+        $('#asistenciaclone').html($('#div_tabla_asistencia').html())
+        let divsManana: any = $('#asistenciaclone').find('[name="divTurnosManana"]')
+        let divsTarde: any = $('#asistenciaclone').find('[name="divTurnosTarde"]')
+        divsManana.map((index: number, domElement: Element) => {
+            let name = $(domElement).find('input[type="radio"]').attr('name')
+            let selected = $(`[name="${name}"]:checked`);
+            if (selected.length) {
+                let letra = $(selected).val()
+                if (letra == 0) {
+                    $(domElement).replaceWith(`<span>P</span>`)
+                } else if (letra == 1) {
+                    $(domElement).replaceWith(`<span>T</span>`)
+                } else if (letra == 2) {
+                    $(domElement).replaceWith(`<span>F</span>`)
+                }
+            } else {
+                $(domElement).replaceWith(`<span></span>`)
+            }
+        })
+        divsTarde.map((index: number, domElement: Element) => {
+            let name = $(domElement).find('input[type="radio"]').attr('name')
+            let selected = $(`[name="${name}"]:checked`);
+            if (selected.length) {
+                let letra = $(selected).val()
+                if (letra == 0) {
+                    $(domElement).replaceWith(`<span>P</span>`)
+                } else if (letra == 1) {
+                    $(domElement).replaceWith(`<span>T</span>`)
+                } else if (letra == 2) {
+                    $(domElement).replaceWith(`<span>F</span>`)
+                }
+            } else {
+                $(domElement).replaceWith(`<span></span>`)
+            }
+        });
+        var uri = $("#asistenciaclone").battatech_excelexport({
+            containerid: "asistenciaclone",
+            datatype: 'table',
+            returnUri: true
+        });
+        $('#btn_exportar').attr('download', 'reporte_asistencia.xls').attr('href', uri).attr('target', '_blank');
     }
 }
 new AsistenciaView();

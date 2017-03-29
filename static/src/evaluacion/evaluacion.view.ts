@@ -51,6 +51,15 @@ class EvaluacionView {
         this.getAmbitos();
     }
 
+    getMeta() {
+        let cargofuncional = $('#select_cargos_funcionales').val();
+        this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional).done((meta: any) => {
+            $('#meta').text(meta[0].meta)
+        }).fail(() => {
+            $('#meta').text('')
+        });
+    }
+
     setEvents() {
         $('#cursos').on('change', (element: JQueryEventObject) => {
             let curso_id = $(element.currentTarget).val();
@@ -88,6 +97,10 @@ class EvaluacionView {
         $('#btn_exportar').on('click', () => {
             this.exportar();
         });
+
+        $('#select_cargos_funcionales').on('change', () => {
+            this.getMeta();
+        })
     }
 
     getCriterios(id_curso: number) {
@@ -127,9 +140,14 @@ class EvaluacionView {
             this.ambitos.ccpp = ambito_selected
         } else if (this.ambitos.ccpp != null && this.ambitos.ccdi == null) {
             this.ambitos.ccdi = ambito_selected
+        } else if (this.ambitos.ccdi != null && this.ambitos.zona == null) {
+            this.ambitos.zona = ambito_selected
         }
 
-        this.evaluacionService.filterPersonalNotaFinal(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi).done((personalNotaFinal: IPeaNotaFinal[]) => {
+        if (ambito_selected == "-1") {
+            this.ambitos.zona = null
+        }
+        this.evaluacionService.filterPersonalNotaFinal(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi, this.ambitos.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
         })
@@ -152,7 +170,7 @@ class EvaluacionView {
     }
 
     rankear() {
-        let meta = 50
+        let meta: number = $('#meta').text()
         let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
         let count = 0;
         inputsTable.map((index: number, input: Element) => {
@@ -385,6 +403,7 @@ class EvaluacionView {
         ubigeo.ccdd !== '' ? this.ambitos['ccdd'] = ubigeo.ccdd : this.ambitos['ccdd'] = null;
         ubigeo.ccpp !== '' ? this.ambitos['ccpp'] = ubigeo.ccpp : this.ambitos['ccpp'] = null;
         ubigeo.ccdi !== '' ? this.ambitos['ccdi'] = ubigeo.ccdi : this.ambitos['ccdi'] = null;
+        ubigeo.zona !== '' ? this.ambitos['zona'] = ubigeo.zona : this.ambitos['zona'] = null;
     }
 
     getAmbitos() {
@@ -407,7 +426,7 @@ class EvaluacionView {
                 id_element: 'select_zonas',
                 bootstrap_multiselect: true,
                 select2: false
-            });
+            }, false, 'Todos');
         });
     }
 }

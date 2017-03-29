@@ -4,7 +4,7 @@ from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import F, FloatField, Sum
+from .models import MetaSeleccion
 import json
 from django.db.models import Count, Value
 from rest_framework.views import APIView
@@ -131,3 +131,10 @@ def ambitosRankeo(ccdd=None, ccpp=None, ccdi=None):
         return Zona.objects.filter(**zonaFilter).values()
 
     return queryFinal
+
+
+class Meta(APIView):
+    def get(self, request, ubigeo, cargofuncional):
+        query = MetaSeleccion.objects.using('consecucion').filter(ubigeo=ubigeo,
+                                                                  id_cargofuncional=cargofuncional).values()
+        return JsonResponse(list(query), safe=False)

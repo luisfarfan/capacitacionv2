@@ -99,6 +99,17 @@ if ENV == 'LOCAL':
                 'unicode_results': True
             },
         },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
+            'USER': 'us_inei_bdrrhh_consecucion',
+            'PASSWORD': 'nU6&beTRi',
+            'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        },
         'SMS': {
             'ENGINE': 'sql_server.pyodbc',
             'NAME': 'INEI_BDRRHH_CONSECUCION',
@@ -121,6 +132,17 @@ elif ENV == 'DESARROLLO':
             'HOST': '172.18.1.41',
             'OPTIONS': {
                 'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
+            'USER': 'us_inei_bdrrhh_consecucion',
+            'PASSWORD': 'nU6&beTRi',
+            'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'SQL Server',
                 'unicode_results': True
             },
         },
@@ -173,3 +195,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'CACHE_TABLE',
+    }
+}

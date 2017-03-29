@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 
 from locales_consecucion.models import *
+from .models import EnvioSMS
 from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
@@ -186,7 +187,7 @@ def distribuir_byLocalCurso(request, localcurso_id):
         capacidadDistribuir = localAmbienteValid(localAmbiente.id_localambiente)
         peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True)
         if capacidadDistribuir > 0:
-            _pea_distribuir = personasLibres(localcurso_id, peaDistribuida)
+            _pea_distribuir = personasLibres(localcurso_id, peaDistribuida).filter(contingencia=0)
             pea_distribuir = _pea_distribuir.order_by('ubigeo__ccdd', 'ubigeo__ccpp', 'ubigeo__ccdi', 'zona',
                                                       'ape_paterno', 'ape_materno',
                                                       'nombre')[:capacidadDistribuir]
@@ -230,3 +231,40 @@ class PersonalAulaDetalleViewSet(generics.ListAPIView):
         localambiente = self.kwargs['id_localambiente']
         return PersonalAula.objects.filter(id_localambiente_id=localambiente, id_pea__baja_estado=0,
                                            id_pea__contingencia=0)
+
+
+"""
+leoncio prado 49
+"""
+
+
+def sendSMS(request):
+    personalAulaLeoncio = PersonalAula.objects.all().filter(id_localambiente__localcurso_id=49)
+    personalAulaDiego = PersonalAula.objects.all().filter(id_localambiente__localcurso_id=46)
+    resultado = [{'mensaje': '', 'numeros': ''}, {'mensaje': '', 'numeros': ''}]
+    mensaje1 = """
+    Ha sido seleccionado para asistir al curso dirigido a jefes de sección urbano, a realizarse el día 29/03 a las 07:30 am en la I.E. 2670 Leoncio Prado_INEI
+    """
+    mensaje2 = """
+    Ha sido seleccionado para asistir al curso dirigido a jefes de sección urbano, a realizarse el día 29/03 a las 03:30 pm en la I.E. Diego Ferre_INEI
+    """
+    resultado[0]['mensaje'] = mensaje1
+    for data in personalAulaLeoncio:
+        if validarCelular(data.id_pea.celular):
+            resultado[0]['numeros'] = resultado[0]['numeros'] + data.id_pea.celular + ','
+
+    resultado[1]['mensaje'] = mensaje2
+    for data in personalAulaDiego:
+        if validarCelular(data.id_pea.celular):
+            resultado[1]['numeros'] = resultado[1]['numeros'] + data.id_pea.celular + ','
+
+    return JsonResponse(resultado, safe=False)
+
+
+def validarCelular(numero):
+    numerook = str(numero).replace(" ", "").strip()
+    print(numerook)
+    if len(numerook) == 9:
+        return True
+    else:
+        return False
