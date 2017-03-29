@@ -142,7 +142,7 @@ elif ENV == 'DESARROLLO':
             'PASSWORD': 'nU6&beTRi',
             'HOST': '192.168.203.160',
             'OPTIONS': {
-                'driver': 'SQL Server',
+                'driver': 'ODBC Driver 11 for SQL Server',
                 'unicode_results': True
             },
         },
