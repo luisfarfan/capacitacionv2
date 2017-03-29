@@ -134,7 +134,11 @@ def ambitosRankeo(ccdd=None, ccpp=None, ccdi=None):
 
 
 class Meta(APIView):
-    def get(self, request, ubigeo, cargofuncional):
-        query = MetaSeleccion.objects.using('consecucion').filter(ubigeo=ubigeo,
-                                                                  id_cargofuncional=cargofuncional).values()
+    def get(self, request, ubigeo, cargofuncional, zona=None):
+        filter = {'ubigeo': ubigeo, 'id_cargofuncional': cargofuncional}
+        if zona is not None:
+            filter['zona'] = zona
+        else:
+            filter['zona__isnull'] = True
+        query = MetaSeleccion.objects.filter(**filter).values()
         return JsonResponse(list(query), safe=False)

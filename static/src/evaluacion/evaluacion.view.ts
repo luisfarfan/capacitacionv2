@@ -53,7 +53,9 @@ class EvaluacionView {
 
     getMeta() {
         let cargofuncional = $('#select_cargos_funcionales').val();
-        this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional).done((meta: any) => {
+        let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
+
+        this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional, zona).done((meta: any) => {
             $('#meta').text(meta[0].meta)
         }).fail(() => {
             $('#meta').text('')
@@ -98,9 +100,12 @@ class EvaluacionView {
             this.exportar();
         });
 
+        $('#select_zonas').on('change', () => {
+            this.getMeta();
+        });
         $('#select_cargos_funcionales').on('change', () => {
             this.getMeta();
-        })
+        });
     }
 
     getCriterios(id_curso: number) {

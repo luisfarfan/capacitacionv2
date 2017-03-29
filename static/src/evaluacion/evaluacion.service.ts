@@ -16,9 +16,11 @@ export class EvaluacionService {
     private url_meta: string = `${BASEURL}/evaluacion/meta/`;
 
 
-    getMeta(ubigeo: string, cargofuncional: number): JQueryXHR {
+    getMeta(ubigeo: string, cargofuncional: number, zona: string = null): JQueryXHR {
+        let url = `${this.url_meta}${ubigeo}/${cargofuncional}/`
+        zona ? url = url + zona + '/' : '';
         return $.ajax({
-            url: `${this.url_meta}${ubigeo}/${cargofuncional}/`
+            url: url
         });
     }
 
