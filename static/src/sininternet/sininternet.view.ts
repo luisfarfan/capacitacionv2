@@ -5,38 +5,33 @@ import {EvaluacionService} from '../evaluacion/evaluacion.service'
 import {CursoInyection} from '../comun.utils';
 
 import * as utils from '../core/utils';
-import {AsistenciaService} from '../asistencia/asistencia.service';
-import UbigeoService from '../ubigeo/ubigeo.service';
 import {
-    ICriterio,
-    ICursoCriterios,
-    IDetalleCriterio,
     ICargoFuncionalDetalle,
-    IPeaNotaFinal
+    IPeaNotaFinal, IPeaNotaFinalSinInternet
 } from "../evaluacion/evaluacion.interface";
-import {
-    ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalNotas,
-    IPersonalAula
-} from '../asistencia/asistencia.interface'
-import {IUbigeo} from "../ubigeo/ubigeo.view";
-import {IZona} from "../ubigeo/ubigeo.interface";
+import {SinInternetService} from 'sininternet.service';
+import {IPersonal} from "../distribucion/distribucion.interface";
 
 declare var ubigeo: any;
 class SinInternetView {
     private evaluacionService: EvaluacionService = new EvaluacionService();
     private cursoInyection: CursoInyection = new CursoInyection();
     private ambitos: any = {};
-    private personalNoInternet: IPeaNotaFinal[] = [];
-    private personalNotaFinal: IPeaNotaFinal[] = [];
+    private personalNoInternet: IPeaNotaFinalSinInternet[] = [];
+    private personalRankeoNotaFinal: IPeaNotaFinalSinInternet[] = [];
     private ambitoDetalle: any = {};
     private cargosFuncionales: ICargoFuncionalDetalle[] = [];
+    private sininternetService: SinInternetService = new SinInternetService();
 
     constructor() {
         $('#cursos').on('change', () => {
             this.getPersonas();
         });
         $('#btn_save_asistencia').on('click', () => {
-            this.saveNotaFinalSinInternet();
+            utils.alert_confirm(() => {
+                this.saveNotaFinalSinInternet();
+            }, 'Esta seguro de guardar la nota final ?');
+
         });
         $('#select_cargos_funcionales').on('change', () => {
             this.getMeta();
@@ -135,8 +130,8 @@ class SinInternetView {
         if (ambito_selected == "-1") {
             this.ambitos.zona = null
         }
-        this.evaluacionService.filterPersonalNotaFinal(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi, this.ambitos.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
-            this.personalNotaFinal = personalNotaFinal;
+        this.sininternetService.filterPersonalSinInternet(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi, this.ambitos.zona).done((personalNotaFinal) => {
+            this.personalRankeoNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
         });
     }
@@ -153,42 +148,40 @@ class SinInternetView {
         let curso: number = $('#cursos').val();
         let ubigeo: any = {};
         this.setUbigeo();
-        this.evaluacionService.filterPersonalSinInternet(curso, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi, this.ambitos.zona).done((personalNotaFinal) => {
+        this.sininternetService.personasSinInternet(curso, `${this.ambitos.ccdd}${this.ambitos.ccpp}${this.ambitos.ccdi}`).done((personalNotaFinal) => {
             this.personalNoInternet = personalNotaFinal;
+            console.log(this.personalNoInternet);
             this.drawPersonal();
         });
     }
 
     drawPersonal() {
         let html: string = '';
-        this.personalNoInternet.map((pea: IPeaNotaFinal, index: number) => {
-            if (pea.personalaula_notafinal.length) {
-                html += `<tr data-value="${pea.id_peaaula}">
+        this.personalNoInternet.map((peanota: IPeaNotaFinalSinInternet, index: number) => {
+            html += `<tr data-value="${peanota.pea.id_pea}">
                         <td>${index + 1}</td>
-                        <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
-                        <td>${pea.id_pea.dni}</td>
-                        <td>${pea.id_pea.zona}</td>
-                        <td><input name="nota_final" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
+                        <td>${peanota.pea.ape_paterno} ${peanota.pea.ape_materno} ${peanota.pea.nombre}</td>
+                        <td>${peanota.pea.dni}</td>
+                        <td>${peanota.pea.zona}</td>
+                        <td><input name="nota_final" value="${peanota.nota_final}" type="number"></td>
                      </tr>`;
-            }
         });
         $('#table_personalnotafinal1').find('tbody').html(html);
     }
 
     drawPersonalNotaFinal() {
         let html: string = '';
-        debugger
-        this.personalNotaFinal.map((pea: IPeaNotaFinal, index: number) => {
-            if (pea.personalaula_notafinal.length) {
-                html += `<tr data-value="${pea.id_peaaula}">
-                        <td>${index + 1}</td>
-                        <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
-                        <td>${pea.id_pea.dni}</td>
-                        <td>${pea.id_pea.zona}</td>
-                        <td><input name="nota_final" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
-                        <td><span class="label"></span></td>
-                     </tr>`;
-            }
+        this.personalRankeoNotaFinal.map((pea: IPeaNotaFinalSinInternet, index: number) => {
+
+            // html += `<tr data-value="${pea.id_peaaula}">
+            //             <td>${index + 1}</td>
+            //             <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
+            //             <td>${pea.id_pea.dni}</td>
+            //             <td>${pea.id_pea.zona}</td>
+            //             <td><input name="nota_final" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
+            //             <td><span class="label"></span></td>
+            //          </tr>`;
+
         });
         $('#table_personalnotafinal').find('tbody').html(html);
     }
@@ -203,7 +196,9 @@ class SinInternetView {
                 request.push({id_pea: trpeaaula, nota_final: $(element).val()})
             }
         });
-        this.evaluacionService.saveNotasFinalSinInternet(request).done((response) => {
+        this.sininternetService.saveNotasFinalSinInternet(request).done((response) => {
+            this.getPersonas();
+            utils.showSwalAlert('La nota final se guardo correctamente', 'Exito', 'success');
         });
     }
 

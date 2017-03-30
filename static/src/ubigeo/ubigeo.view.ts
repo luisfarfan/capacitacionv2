@@ -36,16 +36,17 @@ export default class UbigeoView {
         this.distrito_element_id = distrito_element_id;
         this.zona_element_id = zona_element_id;
         this.setUbigeo = setUbigeo;
+        $(`#${this.departamento_element_id}`).off()
         $(`#${this.departamento_element_id}`).on('change', (event: any) => {
             this.ccdd = event.target.value;
             this.setProvincias(this.ccdd)
         });
-
+        $(`#${this.provincia_element_id}`).off()
         $(`#${this.provincia_element_id}`).on('change', (event: any) => {
             this.ccpp = event.target.value;
             this.setDistritos(this.ccdd, this.ccpp);
         });
-
+        $(`#${this.distrito_element_id}`).off()
         $(`#${this.distrito_element_id}`).on('change', (event: any) => {
             this.ccdi = event.target.value;
             this.ubigeo = `${this.ccdd}${this.ccpp}${this.ccdi}`;

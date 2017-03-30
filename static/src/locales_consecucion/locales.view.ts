@@ -121,11 +121,14 @@ class LocalController {
     private cursoInyection: CursoInyection;
     private ambito: any = {};
 
+    private _UBIGEO: any = {ccdd: null, ccpp: null, ccdi: null, zona: null};
+
     constructor() {
         this.cursoInyection = new CursoInyection();
         this.form_local_validate = $('#form_local').validate(utils.validateForm(this.localJsonRules));
         this.setEvents();
         this.addMethodJqueryValidator();
+        this.setUbigeo();
         new UbigeoView('departamentos', 'provincias', 'distritos', 'zona', {
             ccdd: ubigeo.ccdd,
             ccpp: ubigeo.ccpp,
@@ -133,8 +136,62 @@ class LocalController {
             zona: ubigeo.zona,
         });
         this.inputs = $('input[type="text"]');
+        $('#departamentos').on('change', () => {
+            let val = $('#departamentos').val();
+            if (val != "-1") {
+                this._UBIGEO.ccdd = val;
+                this._UBIGEO.ccpp = null;
+                this._UBIGEO.ccdi = null;
+                this._UBIGEO.zona = null;
+            } else {
+                this._UBIGEO.ccdd = null;
+                this._UBIGEO.ccpp = null;
+                this._UBIGEO.ccdi = null;
+                this._UBIGEO.zona = null;
+            }
+            this.saveUbigeo()
+        });
+        $('#provincias').on('change', () => {
+            let val = $('#provincias').val();
+            if (val != "-1") {
+                this._UBIGEO.ccpp = val;
+                this._UBIGEO.ccdi = null;
+                this._UBIGEO.zona = null;
+            } else {
+                this._UBIGEO.ccpp = null;
+                this._UBIGEO.ccdi = null;
+                this._UBIGEO.zona = null;
+            }
+            this.saveUbigeo()
+        });
+        $('#distritos').on('change', () => {
+            let val = $('#distritos').val();
+            if (val != "-1") {
+                this._UBIGEO.ccdi = val;
+                this._UBIGEO.zona = null;
+            } else {
+                this._UBIGEO.ccdi = null;
+                this._UBIGEO.zona = null;
+            }
+            this.saveUbigeo()
+        });
     }
 
+    setUbigeo() {
+        localStorage.setItem('ubigeo', JSON.stringify({ccdd: null, ccpp: null, ccdi: null, zona: null}))
+    }
+
+    getUbigeo() {
+        if (localStorage.getItem('ubigeo') !== null) {
+            this._UBIGEO = JSON.parse(localStorage.getItem('ubigeo'));
+        }
+
+    }
+
+    saveUbigeo() {
+        localStorage.setItem('ubigeo', JSON.stringify(this._UBIGEO))
+        console.log(this._UBIGEO);
+    }
 
     setEvents() {
         $('input[type="text"]').on('keyup', (ev: JQueryEventObject) => {

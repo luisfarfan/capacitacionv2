@@ -64,12 +64,13 @@ class PersonalAulaDetalleNotaFinalViewSet(generics.ListAPIView):
         if 'zona' in self.kwargs:
             filter['id_pea__zona'] = self.kwargs['zona']
 
+        print(filter)
         return PersonalAula.objects.filter(**filter).order_by(
             '-personalaula_notafinal__nota_final')
 
 
 class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
-    serializer_class = PersonalSinInternetSerializer
+    serializer_class = PeaNotaFinalSinInternetSerializer
 
     def get_queryset(self):
         curso = self.kwargs['curso']
@@ -90,6 +91,28 @@ class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
 
         return Personal.objects.filter(**filter).order_by(
             '-personalaula_notafinal__nota_final')
+
+
+class PersonalNotaFinalSinInternetViewSet(generics.ListAPIView):
+    serializer_class = PeaNotaFinalSinInternetSerializer
+
+    def get_queryset(self):
+        cargo = self.kwargs['cargo']
+        filter = {}
+        filter['pea__id_cargofuncional_id'] = cargo
+        if 'ccdd' in self.kwargs:
+            filter['pea__ubigeo__ccdd'] = self.kwargs['ccdd']
+
+        if 'ccpp' in self.kwargs:
+            filter['pea__ubigeo__ccpp'] = self.kwargs['ccpp']
+
+        if 'ccdi' in self.kwargs:
+            filter['pea__ubigeo__ccdi'] = self.kwargs['ccdi']
+
+        if 'zona' in self.kwargs:
+            filter['pea__zona'] = self.kwargs['zona']
+        print(filter)
+        return PeaNotaFinalSinInternet.objects.filter(**filter)
 
 
 def saveNotas(request):
@@ -129,7 +152,7 @@ def saveNotasFinal(request):
 
 
 def saveNotaFinalSinInternet(request):
-    postdata = request.POST['personalnotasfinal']
+    postdata = request.POST['data']
     dataDict = json.loads(postdata)
 
     for data in dataDict:
@@ -138,7 +161,7 @@ def saveNotaFinalSinInternet(request):
             notafinalpea = PeaNotaFinalSinInternet.objects.get(pea_id=data['id_pea'])
             notafinalpea.nota_final = data['nota_final']
         else:
-            notafinalpea = PersonalAulaNotaFinal(pea_id=data['id_pea'], nota_final=data['id_pea'])
+            notafinalpea = PeaNotaFinalSinInternet(pea_id=data['id_pea'], nota_final=data['nota_final'])
         notafinalpea.save()
     return JsonResponse({'msg': 'Guardado correcto'})
 
@@ -186,6 +209,17 @@ class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):
     serializer_class = PersonalNotaFinalSinInternetSerializer
 
 
+class PersonalNotasSinInternet(generics.ListAPIView):
+    serializer_class = PeaNotaFinalSinInternetSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        ubigeo = self.kwargs['ubigeo']
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+
+        return PeaNotaFinalSinInternet.objects.filter(pea__id_cargofuncional__in=cargos, pea__ubigeo=ubigeo)
+
+
 def cerrarCursoConInternet(request):
     postdata = request.POST['data']
     dataDict = json.loads(postdata)
@@ -211,6 +245,8 @@ def sendChio(peanota):
         ficha.seleccionado = peanota.seleccionado
         ficha.sw_titu = peanota.sw_titu
         ficha.notacap = peanota.notacap
+        ficha.zona_i = peanota.peaaula.id_pea.zona
+        ficha.seccion_i = '1'
         ficha.save()
     except:
         pass

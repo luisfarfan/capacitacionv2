@@ -12,7 +12,6 @@ class MetaSeleccion(models.Model):
     id_cargofuncional = models.IntegerField()
     meta = models.IntegerField()
 
-
     class Meta:
         managed = True
         db_table = 'METASELECCION'
@@ -26,6 +25,8 @@ class Ficha177(models.Model):
     seleccionado = models.IntegerField()
     sw_titu = models.IntegerField()
     bandaprob = models.IntegerField()
+    zona_i = models.CharField(max_length=5)
+    seccion_i = models.CharField(max_length=1)
 
     class Meta:
         managed = False

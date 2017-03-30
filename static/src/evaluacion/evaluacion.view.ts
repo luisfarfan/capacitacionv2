@@ -39,6 +39,7 @@ class EvaluacionView {
     private personalNotaFinal: IPeaNotaFinal[] = [];
     private ambitos: any = {};
     private ambitoDetalle: any = {};
+    private _ubigeo: any = JSON.parse(localStorage.getItem('ubigeo')) == null ? {} : JSON.parse(localStorage.getItem('ubigeo'));
 
     constructor() {
         this.cursoInyection = new CursoInyection();
@@ -47,15 +48,28 @@ class EvaluacionView {
         this.ubigeoService = new UbigeoService();
         //this.getZonas();
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
+        this.setearUbigeo();
         this.setEvents();
         this.getAmbitos();
+    }
+
+    setearUbigeo() {
+        if (ubigeo.ccdd != null) {
+            this._ubigeo.ccdd = ubigeo.ccdd
+        }
+        if (ubigeo.ccpp != null) {
+            this._ubigeo.ccpp = ubigeo.ccpp
+        }
+        if (ubigeo.ccdi != null) {
+            this._ubigeo.ccdi = ubigeo.ccdi
+        }
     }
 
     getMeta() {
         let cargofuncional = $('#select_cargos_funcionales').val();
         let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
 
-        this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
+        this.evaluacionService.getMeta(`${this._ubigeo.ccdd}${this._ubigeo.ccpp}${this._ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
             if (meta.length) {
                 $('#meta').text(meta[0].meta)
             } else {
@@ -149,20 +163,20 @@ class EvaluacionView {
         let ambito_selected = $('#select_zonas').val();
         let ubigeo: any = {};
         this.setUbigeo();
-        if (this.ambitos.ccdd == null) {
-            this.ambitos.ccdd = ambito_selected
-        } else if (this.ambitos.ccdd != null && this.ambitos.ccpp == null) {
-            this.ambitos.ccpp = ambito_selected
-        } else if (this.ambitos.ccpp != null && this.ambitos.ccdi == null) {
-            this.ambitos.ccdi = ambito_selected
-        } else if (this.ambitos.ccdi != null && this.ambitos.zona == null) {
-            this.ambitos.zona = ambito_selected
+        if (this._ubigeo.ccdd == null) {
+            this._ubigeo.ccdd = ambito_selected
+        } else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
+            this._ubigeo.ccpp = ambito_selected
+        } else if (this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
+            this._ubigeo.ccdi = ambito_selected
+        } else if (this._ubigeo.ccdi != null && this._ubigeo.zona == null) {
+            this._ubigeo.zona = ambito_selected
         }
 
         if (ambito_selected == "-1") {
-            this.ambitos.zona = null
+            this._ubigeo.zona = null
         }
-        this.evaluacionService.filterPersonalNotaFinal(cargo, this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi, this.ambitos.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
+        this.evaluacionService.filterPersonalNotaFinal(cargo, this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi, this._ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
         });
@@ -219,8 +233,6 @@ class EvaluacionView {
         let meta: number = $('#meta').text()
         let count = 0;
         this.personalNotaFinal.map((value: IPeaNotaFinal) => {
-            debugger
-            console.log(value)
             count++;
             if (value.personalaula_notafinal.length) {
                 value.personalaula_notafinal[0].notacap = value.personalaula_notafinal[0].nota_final
@@ -256,7 +268,6 @@ class EvaluacionView {
             }
 
         });
-        console.log(peanotafinal);
         this.evaluacionService.cerrarCursoConInternet(peanotafinal).done((response) => {
             console.log(response);
         })
@@ -496,15 +507,16 @@ class EvaluacionView {
     getAmbitos() {
         this.setUbigeo();
         let by: any;
-        this.evaluacionService.ambitos(this.ambitos.ccdd, this.ambitos.ccpp, this.ambitos.ccdi).done((ambitos) => {
-            if (this.ambitos.ccdd == null) {
+        console.log(this._ubigeo);
+        this.evaluacionService.ambitos(this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi).done((ambitos) => {
+            if (this._ubigeo.ccdd == null) {
                 by = {id: 'ccdd', text: ['departamento']}
             }
-            else if (this.ambitos.ccdd != null && this.ambitos.ccpp == null) {
+            else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
                 by = {id: 'ccpp', text: ['provincia']}
-            } else if (this.ambitos.ccpp != null && this.ambitos.ccdi == null) {
+            } else if (this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
                 by = {id: 'ccdi', text: ['distrito']}
-            } else if (this.ambitos.ccpp != null && this.ambitos.ccdi != null) {
+            } else if (this._ubigeo.ccpp != null && this._ubigeo.ccdi != null) {
                 by = {id: 'ZONA', text: ['ZONA']}
             }
             this.ambitoDetalle = ambitos;

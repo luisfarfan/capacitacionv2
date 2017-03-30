@@ -48,3 +48,13 @@ export interface IPeanotafinal {
     nota_final: number
     peaaula: number
 }
+export interface IPeaNotaFinalSinInternet {
+    bandaprob: number,
+    capacita: number,
+    seleccionado: number,
+    notacap: number,
+    sw_titu: number,
+    id: number,
+    nota_final: number
+    pea: IPersonal
+}

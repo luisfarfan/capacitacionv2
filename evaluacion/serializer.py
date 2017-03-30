@@ -60,6 +60,8 @@ class PersonalNotaFinalSinInternetSerializer(serializers.ModelSerializer):
 
 
 class PeaNotaFinalSinInternetSerializer(serializers.ModelSerializer):
+    pea = PersonalSerializer()
+
     class Meta:
         model = PeaNotaFinalSinInternet
         fields = '__all__'
