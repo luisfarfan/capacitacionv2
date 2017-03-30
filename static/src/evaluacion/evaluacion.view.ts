@@ -202,6 +202,9 @@ class EvaluacionView {
                 if ($(input).val() >= 11) {
                     span.addClass('label-primary')
                     span.text('reserva')
+                } else if ($(input).val() == 0) {
+                    span.addClass('label-danger')
+                    span.text('Dado de baja')
                 } else {
                     span.addClass('label-danger')
                     span.text('No seleccionado')
@@ -341,7 +344,11 @@ class EvaluacionView {
                         });
                     }
                 });
-                tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
+                if (persona.id_pea.baja_estado == 1) {
+                    tbody += `<td></td>`
+                } else {
+                    tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
+                }
             });
             nota_final = Math.round(nota_final * 100) / 100;
             let span: string = '';
@@ -350,8 +357,14 @@ class EvaluacionView {
             } else {
                 span = `<span name="span_state" class="label label-danger">No apto</span>`;
             }
-            tbody += `<td><input disabled min="0" max="20" value="${nota_final}" name="nota_final" type="number"></td>
-            <td>${span}</td></tr>`
+
+            if (persona.id_pea.baja_estado == 1) {
+                tbody += `<td></td><td><span name="span_state" class="label label-danger">Dado de baja</span></td>`
+            } else {
+                tbody += `<td><input disabled min="0" max="20" value="${nota_final}" name="nota_final" type="number"></td>
+                          <td>${span}</td></tr>`
+            }
+
         });
         $('#tabla_evaluacion').find('thead').html(this.drawHeader());
         $('#tabla_evaluacion').find('tbody').html(tbody);
