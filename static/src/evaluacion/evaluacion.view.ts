@@ -81,7 +81,7 @@ class EvaluacionView {
             } else {
                 this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
                 $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`)
-                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.referencia}`)
+                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via}`)
                 $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
                 $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
                 this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personal) => {
@@ -285,7 +285,7 @@ class EvaluacionView {
         this.criteriosCurso.criterios.map((value: ICriterio, index: number) => {
             thead += `<th>${value.nombre_criterio}</th>`
         });
-        thead += `<th>Nota final</th><th>Aptos</th>`
+        thead += `<th>Nota final</th><th>Estado</th>`
         thead += `</tr>`
         return thead;
     }

@@ -53,7 +53,7 @@ class AsistenciaView {
             } else {
                 this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
                 $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`)
-                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.referencia}`)
+                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`)
                 $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
                 $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
                 this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {

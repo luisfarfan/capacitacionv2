@@ -42,6 +42,7 @@ class DistribucionView {
     constructor() {
         this.curso = new CursoInyection();
         $('#cursos').on('change', () => {
+            $('#p_curso_actual').text($('#cursos :selected').text());
             this.filterFields.curso = this.curso.curso_selected.id_curso;
             this.filterLocalesSeleccionados();
             this.getZonasDistrito();

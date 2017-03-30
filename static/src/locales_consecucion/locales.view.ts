@@ -164,6 +164,15 @@ class LocalController {
             }
             if (this.form_local_validate.valid()) {
                 this.saveLocales()
+            } else {
+                $('#modal_erroresformulario').modal('show');
+                let ul: string = '';
+                this.form_local_validate.errorList.map((value: any) => {
+                    let name = $(value.element).parent().parent().find('label').text()
+                    let message = value.message;
+                    ul += `<li><a href="#"><span class="text-bold">${name}:</span> ${message}</a></li>`;
+                })
+                $('#errores').html(ul);
             }
         });
         $('#btn_generar_ambientes').on('click', () => {

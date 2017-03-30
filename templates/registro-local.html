@@ -550,13 +550,13 @@
 
                                 </tbody>
                                 <tfoot>
-{#                                <tr style="background-color:#A5C25C">#}
-{#                                    <td colspan="3">TOTAL</td>#}
-{#                                    <td>#}
-{#                                        <span id="capacidad_total"></span>#}
-{#                                    </td>#}
-{#                                    <td></td>#}
-{#                                </tr>#}
+                                {#                                <tr style="background-color:#A5C25C">#}
+                                {#                                    <td colspan="3">TOTAL</td>#}
+                                {#                                    <td>#}
+                                {#                                        <span id="capacidad_total"></span>#}
+                                {#                                    </td>#}
+                                {#                                    <td></td>#}
+                                {#                                </tr>#}
                                 </tfoot>
                             </table>
                         </div>
@@ -681,10 +681,51 @@
         </div>
     </div>
 
+    <div id="modal_erroresformulario" class="modal fade">
+        <div class="modal-dialog bg-danger-400">
+            <div class="modal-content">
+                <div class="modal-header bg-danger-400">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h6 class="modal-title">DATOS QUE FALTAN COMPLETAR</h6>
+                </div>
+                <div class="panel panel-body border-top-info">
+                    <ul id="errores"
+                        class="dropdown-menu dropdown-menu bg-danger-400 border-lg border-primary no-border-radius"
+                        style="display: block; position: static; width: 100%; margin-top: 0; float: none;">
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- /.modal -->
 {% endblock %}
 
 {% block js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery.extend(jQuery.validator.messages, {
+                required: "Este campo es obligatorio.",
+                remote: "Por favor, rellena este campo.",
+                email: "Por favor, escribe una dirección de correo válida",
+                url: "Por favor, escribe una URL válida.",
+                date: "Por favor, escribe una fecha válida.",
+                dateISO: "Por favor, escribe una fecha (ISO) válida.",
+                number: "Por favor, escribe un número entero válido.",
+                digits: "Por favor, escribe sólo dígitos.",
+                creditcard: "Por favor, escribe un número de tarjeta válido.",
+                equalTo: "Por favor, escribe el mismo valor de nuevo.",
+                accept: "Por favor, escribe un valor con una extensión aceptada.",
+                maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+                minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+                rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+                range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+                max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+                min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+            });
+        });
+    </script>
     <script type="text/javascript" src="{% static "assets/js/plugins/ui/moment/moment.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/ui/moment/moment_locales.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/pickers/daterangepicker.js" %}"></script>
