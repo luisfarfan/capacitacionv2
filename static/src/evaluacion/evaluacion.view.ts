@@ -39,7 +39,7 @@ class EvaluacionView {
     private personalNotaFinal: IPeaNotaFinal[] = [];
     private ambitos: any = {};
     private ambitoDetalle: any = {};
-    private _ubigeo: any = JSON.parse(localStorage.getItem('ubigeo')) == null ? {} : JSON.parse(localStorage.getItem('ubigeo'));
+    private _ubigeo: any = JSON.parse(localStorage.getItem('ubigeo'))
 
     constructor() {
         this.cursoInyection = new CursoInyection();
@@ -54,13 +54,13 @@ class EvaluacionView {
     }
 
     setearUbigeo() {
-        if (ubigeo.ccdd != null) {
+        if (ubigeo.ccdd != null && ubigeo.ccdd != '') {
             this._ubigeo.ccdd = ubigeo.ccdd
         }
-        if (ubigeo.ccpp != null) {
+        if (ubigeo.ccpp != null && ubigeo.ccpp != '') {
             this._ubigeo.ccpp = ubigeo.ccpp
         }
-        if (ubigeo.ccdi != null) {
+        if (ubigeo.ccdi != null && ubigeo.ccpp != '') {
             this._ubigeo.ccdi = ubigeo.ccdi
         }
     }
@@ -161,22 +161,24 @@ class EvaluacionView {
     getPersonalNotaFinal() {
         let cargo: number = $('#select_cargos_funcionales').val();
         let ambito_selected = $('#select_zonas').val();
-        let ubigeo: any = {};
+        let _ubigeo: any = this._ubigeo
         this.setUbigeo();
+        this._ubigeo = JSON.parse(localStorage.getItem('ubigeo'));
         if (this._ubigeo.ccdd == null) {
-            this._ubigeo.ccdd = ambito_selected
+            _ubigeo.ccdd = ambito_selected
         } else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
-            this._ubigeo.ccpp = ambito_selected
+            _ubigeo.ccpp = ambito_selected
         } else if (this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
-            this._ubigeo.ccdi = ambito_selected
+            _ubigeo.ccdi = ambito_selected
         } else if (this._ubigeo.ccdi != null && this._ubigeo.zona == null) {
-            this._ubigeo.zona = ambito_selected
+            _ubigeo.zona = ambito_selected
         }
 
         if (ambito_selected == "-1") {
             this._ubigeo.zona = null
         }
-        this.evaluacionService.filterPersonalNotaFinal(cargo, this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi, this._ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
+        console.log(this._ubigeo)
+        this.evaluacionService.filterPersonalNotaFinal(cargo, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
         });
