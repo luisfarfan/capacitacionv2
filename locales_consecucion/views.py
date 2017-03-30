@@ -22,6 +22,14 @@ def agregarDirectorioCurso(request):
     return JsonResponse(list(DirectorioLocalCurso.objects.all().values()), safe=False)
 
 
+def agregarPeatoNotaFinalSinInternet(request):
+    pea = Personal.objects.filter(ubigeo=130501)
+    for p in pea:
+        peanotafinal = PeaNotaFinalSinInternet(pea_id=p.id_pea, nota_final=0)
+        peanotafinal.save()
+    return JsonResponse(list(PeaNotaFinalSinInternet.objects.all().values()), safe=False)
+
+
 class LocalViewSet(viewsets.ModelViewSet):
     queryset = Local.objects.all()
     serializer_class = LocalSerializer

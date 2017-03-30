@@ -10,10 +10,15 @@ export class EvaluacionService {
     private url_criterios_curso: string = `${BASEURL}/evaluacion/criteriosdetalle_curso/`;
     private url_saveNotas: string = `${BASEURL}/evaluacion/saveNotas/`;
     private url_saveNotasFinal: string = `${BASEURL}/evaluacion/saveNotasFinal/`;
+    private url_saveNotaFinalSinInternet: string = `${BASEURL}/evaluacion/saveNotaFinalSinInternet/`;
+
     private url_cargos_curso: string = `${BASEURL}/evaluacion/cargos_curso/`;
     private url_personalaula_notafinal: string = `${BASEURL}/evaluacion/personalaula_notafinal/`;
+
     private url_ambitosRankeo: string = `${BASEURL}/evaluacion/ambitosRankeo/`;
     private url_meta: string = `${BASEURL}/evaluacion/meta/`;
+    private url_personalaula_sininternet: string = `${BASEURL}/evaluacion/personalaula_sininternet/`;
+    private url_cerrarCursoConInternet: string = `${BASEURL}/evaluacion/cerrarCursoConInternet/`;
 
 
     getMeta(ubigeo: string, cargofuncional: number, zona: string = null): JQueryXHR {
@@ -71,6 +76,26 @@ export class EvaluacionService {
         });
     }
 
+
+    filterPersonalSinInternet(curso: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
+        let url = `${this.url_personalaula_sininternet}${curso}/`;
+        if (ccdd != null) {
+            url += `${ccdd}/`
+        }
+        if (ccpp != null) {
+            url += `${ccpp}/`
+        }
+        if (ccdi != null) {
+            url += `${ccdi}/`
+        }
+        if (zona != null) {
+            url += `${zona}/`
+        }
+        return $.ajax({
+            url: url
+        });
+    }
+
     criteriosDetalleCurso(id_curso: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_criterios_curso}${id_curso}/`
@@ -91,6 +116,22 @@ export class EvaluacionService {
             type: 'POST',
             data: {personalnotasfinal: JSON.stringify(object)}
         })
+    }
+
+    saveNotasFinalSinInternet(object: Array<Object>) {
+        return $.ajax({
+            url: this.url_saveNotaFinalSinInternet,
+            type: 'POST',
+            data: {personalnotasfinal: JSON.stringify(object)}
+        })
+    }
+
+    cerrarCursoConInternet(object: Array<Object>) {
+        return $.ajax({
+            url: this.url_cerrarCursoConInternet,
+            type: 'POST',
+            data: {data: JSON.stringify(object)}
+        });
     }
 
     post(object: Object): JQueryXHR {

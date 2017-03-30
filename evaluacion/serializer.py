@@ -51,3 +51,24 @@ class CargosCursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CursoCargoFuncional
         fields = '__all__'
+
+
+class PersonalNotaFinalSinInternetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeaNotaFinalSinInternet
+        fields = '__all__'
+
+
+class PeaNotaFinalSinInternetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeaNotaFinalSinInternet
+        fields = '__all__'
+
+
+class PersonalSinInternetSerializer(serializers.ModelSerializer):
+    id_cargofuncional = CargoFuncionalSerializer()
+    personal_notafinal = PeaNotaFinalSinInternetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Personal
+        fields = '__all__'

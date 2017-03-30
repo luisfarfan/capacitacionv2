@@ -4,7 +4,7 @@ from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import MetaSeleccion
+from .models import MetaSeleccion, Ficha177
 import json
 from django.db.models import Count, Value
 from rest_framework.views import APIView
@@ -68,7 +68,30 @@ class PersonalAulaDetalleNotaFinalViewSet(generics.ListAPIView):
             '-personalaula_notafinal__nota_final')
 
 
-@csrf_exempt
+class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
+    serializer_class = PersonalSinInternetSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter = {}
+        filter['id_cargofuncional_id__in'] = cargos
+        if 'ccdd' in self.kwargs:
+            filter['ubigeo__ccdd'] = self.kwargs['ccdd']
+
+        if 'ccpp' in self.kwargs:
+            filter['ubigeo__ccpp'] = self.kwargs['ccpp']
+
+        if 'ccdi' in self.kwargs:
+            filter['ubigeo__ccdi'] = self.kwargs['ccdi']
+
+        if 'zona' in self.kwargs:
+            filter['zona'] = self.kwargs['zona']
+
+        return Personal.objects.filter(**filter).order_by(
+            '-personalaula_notafinal__nota_final')
+
+
 def saveNotas(request):
     postdata = request.POST['personalnotas']
     dataDict = json.loads(postdata)
@@ -90,7 +113,6 @@ def saveNotas(request):
     return JsonResponse({'msg': 'Guardado correcto'})
 
 
-@csrf_exempt
 def saveNotasFinal(request):
     postdata = request.POST['personalnotasfinal']
     dataDict = json.loads(postdata)
@@ -102,6 +124,21 @@ def saveNotasFinal(request):
             notafinalpea.nota_final = data['nota_final']
         else:
             notafinalpea = PersonalAulaNotaFinal(peaaula_id=data['peaaula'], nota_final=data['nota_final'])
+        notafinalpea.save()
+    return JsonResponse({'msg': 'Guardado correcto'})
+
+
+def saveNotaFinalSinInternet(request):
+    postdata = request.POST['personalnotasfinal']
+    dataDict = json.loads(postdata)
+
+    for data in dataDict:
+        nota_final = PeaNotaFinalSinInternet.objects.filter(pea_id=data['id_pea']).count()
+        if nota_final:
+            notafinalpea = PeaNotaFinalSinInternet.objects.get(pea_id=data['id_pea'])
+            notafinalpea.nota_final = data['nota_final']
+        else:
+            notafinalpea = PersonalAulaNotaFinal(pea_id=data['id_pea'], nota_final=data['id_pea'])
         notafinalpea.save()
     return JsonResponse({'msg': 'Guardado correcto'})
 
@@ -142,3 +179,40 @@ class Meta(APIView):
             filter['zona__isnull'] = True
         query = MetaSeleccion.objects.filter(**filter).values()
         return JsonResponse(list(query), safe=False)
+
+
+class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):
+    queryset = PeaNotaFinalSinInternet.objects.all()
+    serializer_class = PersonalNotaFinalSinInternetSerializer
+
+
+def cerrarCursoConInternet(request):
+    postdata = request.POST['data']
+    dataDict = json.loads(postdata)
+
+    for data in dataDict:
+        peanota = PersonalAulaNotaFinal.objects.get(peaaula=data['peaaula'])
+        peanota.bandaprob = data['bandaprob']
+        peanota.capacita = data['capacita']
+        peanota.seleccionado = data['seleccionado']
+        peanota.sw_titu = data['sw_titu']
+        peanota.notacap = data['notacap']
+        peanota.save()
+        sendChio(peanota)
+
+    return JsonResponse({'msg': 'Guardado correcto'})
+
+
+def sendChio(peanota):
+    try:
+        ficha = Ficha177.objects.using('consecucion').get(id_per=peanota.peaaula.id_pea.id_per)
+        ficha.bandaprob = peanota.bandaprob
+        ficha.capacita = peanota.capacita
+        ficha.seleccionado = peanota.seleccionado
+        ficha.sw_titu = peanota.sw_titu
+        ficha.notacap = peanota.notacap
+        ficha.save()
+    except:
+        pass
+
+    return True

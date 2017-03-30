@@ -39,9 +39,12 @@ export interface IPeaNotaFinal {
     personalaula_notafinal: IPeanotafinal[]
 }
 export interface IPeanotafinal {
-    estado: number,
+    bandaprob: number,
+    capacita: number,
+    seleccionado: number,
+    notacap: number,
+    sw_titu: number,
     id: number,
     nota_final: number
     peaaula: number
-
 }

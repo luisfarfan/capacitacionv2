@@ -50,6 +50,7 @@ class PersonalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class DetallePersonalSerializer(serializers.ModelSerializer):
     id_pea_reemplazo = PersonalSerializer()
 

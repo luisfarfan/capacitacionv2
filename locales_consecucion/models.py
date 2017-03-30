@@ -323,7 +323,11 @@ class PersonalCursoCriterio(models.Model):
 class PersonalAulaNotaFinal(models.Model):
     peaaula = models.ForeignKey(PersonalAula, related_name='personalaula_notafinal')
     nota_final = models.FloatField()
-    estado = models.ForeignKey('TipoResultadosCapacitacion', null=True, blank=True)
+    bandaprob = models.IntegerField(null=True, blank=True)
+    capacita = models.IntegerField(null=True, blank=True)
+    seleccionado = models.IntegerField(null=True, blank=True)
+    sw_titu = models.IntegerField(null=True, blank=True)
+    notacap = models.FloatField(null=True, blank=True)
 
     class Meta:
         managed = True
@@ -341,3 +345,27 @@ class TipoResultadosCapacitacion(models.Model):
 class UbigeoCursoMeta(models.Model):
     ubigeo = models.ForeignKey(Ubigeo)
     meta = models.IntegerField()
+
+
+"""
+bandaprob:
+- 3 alta
+- 4 baja
+capacita=0, seleccionado=0, sw_titu=0  = No seleccionado
+capacita=1, seleccionado=1, sw_titu=1  = TITULAR
+capacita=1, seleccionado=1, sw_titu=0  = RESERVA
+"""
+
+
+class PeaNotaFinalSinInternet(models.Model):
+    pea = models.ForeignKey(Personal, related_name='personal_notafinal')
+    nota_final = models.FloatField()
+    bandaprob = models.IntegerField(null=True, blank=True)
+    capacita = models.IntegerField(null=True, blank=True)
+    seleccionado = models.IntegerField(null=True, blank=True)
+    sw_titu = models.IntegerField(null=True, blank=True)
+    notacap = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PERSONALNOTAFINAL_SININTERNET'
