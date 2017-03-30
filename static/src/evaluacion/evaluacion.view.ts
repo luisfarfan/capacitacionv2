@@ -46,6 +46,7 @@ class EvaluacionView {
         this.asistenciaService = new AsistenciaService();
         this.ubigeoService = new UbigeoService();
         //this.getZonas();
+        $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         this.setEvents();
         this.getAmbitos();
     }
@@ -128,7 +129,7 @@ class EvaluacionView {
 
     exportar() {
         $('#clone').html($('#tabla_evaluacion').clone());
-        let select_instructor = $('#tabla_evaluacion').find('select :selected').text();
+        let select_instructor = $('#clone').find('select :selected').text();
         $('#clone').find('#a_save_instructor').remove()
         let inputs = $('#clone').find('input[type="number"]')
         inputs.map((index: number, element: Element) => {
@@ -175,7 +176,7 @@ class EvaluacionView {
                         <td>${index + 1}</td>
                         <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
                         <td>${pea.id_pea.dni}</td>
-                        <td><input value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
+                        <td><input name="nota_final2" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
                         <td><span class="label"></span></td>
                      </tr>`;
             }
@@ -202,7 +203,7 @@ class EvaluacionView {
                 if ($(input).val() >= 11) {
                     span.addClass('label-primary')
                     span.text('reserva')
-                } else if ($(input).val() == 0) {
+                } else if ($(input).val() <= 2) {
                     span.addClass('label-danger')
                     span.text('Dado de baja')
                 } else {
@@ -218,38 +219,42 @@ class EvaluacionView {
         let meta: number = $('#meta').text()
         let count = 0;
         this.personalNotaFinal.map((value: IPeaNotaFinal) => {
+            debugger
+            console.log(value)
             count++;
-            value.personalaula_notafinal[0].notacap = value.personalaula_notafinal[0].nota_final
-            if (value.id_pea.alta_estado == 1) {
-                value.personalaula_notafinal[0].bandaprob = 3
-            } else if (value.id_pea.baja_estado == 1) {
-                value.personalaula_notafinal[0].bandaprob = 4
-            } else {
-                value.personalaula_notafinal[0].bandaprob = 1
-            }
-            if (meta >= count) {
-                if (value.personalaula_notafinal[0].nota_final >= 11) {
-                    value.personalaula_notafinal[0].capacita = 1
-                    value.personalaula_notafinal[0].seleccionado = 1
-                    value.personalaula_notafinal[0].sw_titu = 1
+            if (value.personalaula_notafinal.length) {
+                value.personalaula_notafinal[0].notacap = value.personalaula_notafinal[0].nota_final
+                if (value.id_pea.alta_estado == 1) {
+                    value.personalaula_notafinal[0].bandaprob = 3
+                } else if (value.id_pea.baja_estado == 1) {
+                    value.personalaula_notafinal[0].bandaprob = 4
                 } else {
-                    value.personalaula_notafinal[0].capacita = 0
-                    value.personalaula_notafinal[0].seleccionado = 0
-                    value.personalaula_notafinal[0].sw_titu = 0
+                    value.personalaula_notafinal[0].bandaprob = 1
                 }
-            } else {
-                if (value.personalaula_notafinal[0].nota_final >= 11) {
-                    value.personalaula_notafinal[0].capacita = 1
-                    value.personalaula_notafinal[0].seleccionado = 1
-                    value.personalaula_notafinal[0].sw_titu = 0
+                if (meta >= count) {
+                    if (value.personalaula_notafinal[0].nota_final >= 11) {
+                        value.personalaula_notafinal[0].capacita = 1
+                        value.personalaula_notafinal[0].seleccionado = 1
+                        value.personalaula_notafinal[0].sw_titu = 1
+                    } else {
+                        value.personalaula_notafinal[0].capacita = 0
+                        value.personalaula_notafinal[0].seleccionado = 0
+                        value.personalaula_notafinal[0].sw_titu = 0
+                    }
                 } else {
-                    value.personalaula_notafinal[0].capacita = 0
-                    value.personalaula_notafinal[0].seleccionado = 0
-                    value.personalaula_notafinal[0].sw_titu = 0
+                    if (value.personalaula_notafinal[0].nota_final >= 11) {
+                        value.personalaula_notafinal[0].capacita = 1
+                        value.personalaula_notafinal[0].seleccionado = 1
+                        value.personalaula_notafinal[0].sw_titu = 0
+                    } else {
+                        value.personalaula_notafinal[0].capacita = 0
+                        value.personalaula_notafinal[0].seleccionado = 0
+                        value.personalaula_notafinal[0].sw_titu = 0
+                    }
                 }
+                peanotafinal.push(value.personalaula_notafinal[0]);
             }
 
-            peanotafinal.push(value.personalaula_notafinal[0]);
         });
         console.log(peanotafinal);
         this.evaluacionService.cerrarCursoConInternet(peanotafinal).done((response) => {
@@ -293,14 +298,23 @@ class EvaluacionView {
     calcularAsistencia(peaaula: IPersonalAula[]) {
         let asistencia: number = 18;
         peaaula.map((value: IPersonalAula, index: number) => {
+            console.log(value);
             if (value.turno_manana == 1) {
                 asistencia = asistencia - 0.5;
             }
-            if (value.turno_manana == 2) {
+            if (value.turno_manana == 2 && value.turno_tarde == 2) {
+                asistencia = asistencia - 1;
+            } else if (value.turno_manana == 2 && value.turno_tarde !== 2) {
+                asistencia = asistencia - 1;
+            } else if (value.turno_tarde == 2 && value.turno_manana !== 2) {
                 asistencia = asistencia - 1;
             }
+
+            if (value.turno_tarde == 1) {
+                asistencia = asistencia - 0.5;
+            }
+
         })
-        console.log(asistencia);
         return asistencia
     }
 
@@ -352,7 +366,7 @@ class EvaluacionView {
             });
             nota_final = Math.round(nota_final * 100) / 100;
             let span: string = '';
-            if (nota_final > 10) {
+            if (nota_final >= 11) {
                 span = `<span name="span_state" class="label label-success">Apto</span>`;
             } else {
                 span = `<span name="span_state" class="label label-danger">No apto</span>`;
@@ -459,7 +473,7 @@ class EvaluacionView {
             });
             nota_final = Math.round(nota_final * 100) / 100;
             $(tr).find('[name="nota_final"]').val(nota_final);
-            if (nota_final > 10) {
+            if (nota_final >= 11) {
                 $(tr).find('span').removeClass('label-danger');
                 $(tr).find('span').addClass('label-success');
                 $(tr).find('span').text('Apto');

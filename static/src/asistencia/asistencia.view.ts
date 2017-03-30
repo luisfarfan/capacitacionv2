@@ -365,7 +365,7 @@ class AsistenciaView {
     }
 
     exportar() {
-        $('#asistenciaclone').html($('#div_tabla_asistencia').html())
+        $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
         let divsManana: any = $('#asistenciaclone').find('[name="divTurnosManana"]')
         let divsTarde: any = $('#asistenciaclone').find('[name="divTurnosTarde"]')
         divsManana.map((index: number, domElement: Element) => {

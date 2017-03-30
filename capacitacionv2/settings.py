@@ -195,10 +195,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'CACHE_TABLE',
     }
 }
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
