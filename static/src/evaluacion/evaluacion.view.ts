@@ -39,14 +39,13 @@ class EvaluacionView {
     private personalNotaFinal: IPeaNotaFinal[] = [];
     private ambitos: any = {};
     private ambitoDetalle: any = {};
-    private _ubigeo: any = JSON.parse(localStorage.getItem('ubigeo'))
+    private _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
 
     constructor() {
         this.cursoInyection = new CursoInyection();
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
         this.ubigeoService = new UbigeoService();
-        //this.getZonas();
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         this.setearUbigeo();
         this.setEvents();
@@ -68,6 +67,7 @@ class EvaluacionView {
     getMeta() {
         let cargofuncional = $('#select_cargos_funcionales').val();
         let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
+        this.setearUbigeo();
 
         this.evaluacionService.getMeta(`${this._ubigeo.ccdd}${this._ubigeo.ccpp}${this._ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
             if (meta.length) {
@@ -161,23 +161,33 @@ class EvaluacionView {
     getPersonalNotaFinal() {
         let cargo: number = $('#select_cargos_funcionales').val();
         let ambito_selected = $('#select_zonas').val();
-        let _ubigeo: any = this._ubigeo
+        let _ubigeo: any = {ccdd: null, ccpp: null, ccdi: null, zona: null}
         this.setUbigeo();
+        this.setearUbigeo();
         this._ubigeo = JSON.parse(localStorage.getItem('ubigeo'));
         if (this._ubigeo.ccdd == null) {
             _ubigeo.ccdd = ambito_selected
-        } else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
+        }
+        else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
+            _ubigeo.ccdd = this._ubigeo.ccdd
             _ubigeo.ccpp = ambito_selected
-        } else if (this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
+        }
+        else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
+            _ubigeo.ccdd = this._ubigeo.ccdd
+            _ubigeo.ccpp = this._ubigeo.ccpp
             _ubigeo.ccdi = ambito_selected
-        } else if (this._ubigeo.ccdi != null && this._ubigeo.zona == null) {
+        }
+        else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp != null && this._ubigeo.ccdi != null && this._ubigeo.zona == null) {
+            _ubigeo.ccdd = this._ubigeo.ccdd
+            _ubigeo.ccpp = this._ubigeo.ccpp
+            _ubigeo.ccdi = this._ubigeo.ccdi
             _ubigeo.zona = ambito_selected
         }
 
         if (ambito_selected == "-1") {
             this._ubigeo.zona = null
         }
-        console.log(this._ubigeo)
+        console.log(_ubigeo);
         this.evaluacionService.filterPersonalNotaFinal(cargo, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
@@ -186,18 +196,43 @@ class EvaluacionView {
 
     drawPersonalNotaFinal() {
         let html: string = '';
+        let count: number = 0;
         this.personalNotaFinal.map((pea: IPeaNotaFinal, index: number) => {
             if (pea.personalaula_notafinal.length) {
+                count++
+                let estado = this.drawEstado(pea, count);
                 html += `<tr data-value="${pea.id_peaaula}">
                         <td>${index + 1}</td>
                         <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
                         <td>${pea.id_pea.dni}</td>
                         <td><input name="nota_final2" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
-                        <td><span class="label"></span></td>
+                        <td>${estado}</td>
                      </tr>`;
             }
         });
         $('#table_personalnotafinal').find('tbody').html(html);
+    }
+
+    drawEstado(value: IPeaNotaFinal, count: number) {
+        let meta: number = $('#meta').text();
+
+        if (value.id_pea.baja_estado == 1) {
+            return `<span class="label label-danger">Dado de baja</span>`
+        } else {
+            if (meta >= count) {
+                if (value.personalaula_notafinal[0].nota_final >= 11) {
+                    return `<span class="label label-success">Titular</span>`
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`
+                }
+            } else {
+                if (value.personalaula_notafinal[0].nota_final >= 11) {
+                    return `<span class="label label-primary">Reserva</span>`;
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`;
+                }
+            }
+        }
     }
 
     rankear() {
@@ -268,7 +303,6 @@ class EvaluacionView {
                 }
                 peanotafinal.push(value.personalaula_notafinal[0]);
             }
-
         });
         this.evaluacionService.cerrarCursoConInternet(peanotafinal).done((response) => {
             console.log(response);
@@ -509,7 +543,6 @@ class EvaluacionView {
     getAmbitos() {
         this.setUbigeo();
         let by: any;
-        console.log(this._ubigeo);
         this.evaluacionService.ambitos(this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi).done((ambitos) => {
             if (this._ubigeo.ccdd == null) {
                 by = {id: 'ccdd', text: ['departamento']}
@@ -530,6 +563,7 @@ class EvaluacionView {
             }, false, 'Todos');
         });
     }
+
 }
 
 new EvaluacionView();

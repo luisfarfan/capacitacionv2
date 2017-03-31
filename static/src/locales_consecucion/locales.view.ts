@@ -15,13 +15,14 @@ import * as utils from '../core/utils';
 import {IUbigeo} from "../ubigeo/ubigeo.view";
 import {CursoInyection} from '../comun.utils';
 
+
 declare var $: any;
 declare var jQuery: any;
 declare var ubigeo: IUbigeo;
 class LocalController {
     private ubigeo: any = {};
-    private localService = new LocalService()
-    private cursoService = new CursoService()
+    private localService = new LocalService();
+    private cursoService = new CursoService();
     private directoriolocalService = new DirectorioLocalService();
     private dirlocalcursoService = new DirectorioLocalCursoService();
     private localambienteService = new LocalAmbienteService();
@@ -178,7 +179,12 @@ class LocalController {
     }
 
     setUbigeo() {
-        localStorage.setItem('ubigeo', JSON.stringify({ccdd: null, ccpp: null, ccdi: null, zona: null}))
+        localStorage.setItem('ubigeo', JSON.stringify({
+            ccdd: ubigeo.ccdd == '' ? null : ubigeo.ccdd,
+            ccpp: ubigeo.ccpp == '' ? null : ubigeo.ccpp,
+            ccdi: ubigeo.ccdi == '' ? null : ubigeo.ccdi,
+            zona: ubigeo.zona == '' ? null : ubigeo.zona
+        }))
     }
 
     getUbigeo() {
@@ -188,9 +194,12 @@ class LocalController {
 
     }
 
+    ubigeoUsuarioToUbigeoRankeo() {
+
+    }
+
     saveUbigeo() {
         localStorage.setItem('ubigeo', JSON.stringify(this._UBIGEO))
-        console.log(this._UBIGEO);
     }
 
     setEvents() {

@@ -8,6 +8,7 @@ from .models import MetaSeleccion, Ficha177
 import json
 from django.db.models import Count, Value
 from rest_framework.views import APIView
+from django.db.models import Q
 
 
 # class LocalAmbientebyInstructorViewSet(generics.ListAPIView):
@@ -111,8 +112,8 @@ class PersonalNotaFinalSinInternetViewSet(generics.ListAPIView):
 
         if 'zona' in self.kwargs:
             filter['pea__zona'] = self.kwargs['zona']
-        print(filter)
-        return PeaNotaFinalSinInternet.objects.filter(**filter)
+
+        return PeaNotaFinalSinInternet.objects.filter(**filter).order_by('-nota_final')
 
 
 def saveNotas(request):
@@ -217,13 +218,14 @@ class PersonalNotasSinInternet(generics.ListAPIView):
         ubigeo = self.kwargs['ubigeo']
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
 
-        return PeaNotaFinalSinInternet.objects.filter(pea__id_cargofuncional__in=cargos, pea__ubigeo=ubigeo)
+        return PeaNotaFinalSinInternet.objects.filter(pea__id_cargofuncional__in=cargos, pea__ubigeo=ubigeo).order_by(
+            '-nota_final')
 
 
 def cerrarCursoConInternet(request):
     postdata = request.POST['data']
     dataDict = json.loads(postdata)
-
+    count = 0
     for data in dataDict:
         peanota = PersonalAulaNotaFinal.objects.get(peaaula=data['peaaula'])
         peanota.bandaprob = data['bandaprob']
@@ -232,6 +234,7 @@ def cerrarCursoConInternet(request):
         peanota.sw_titu = data['sw_titu']
         peanota.notacap = data['notacap']
         peanota.save()
+        count = count + 1
         sendChio(peanota)
 
     return JsonResponse({'msg': 'Guardado correcto'})
@@ -247,6 +250,116 @@ def sendChio(peanota):
         ficha.notacap = peanota.notacap
         ficha.zona_i = peanota.peaaula.id_pea.zona
         ficha.seccion_i = '1'
+        ficha.save()
+        print(ficha.bandaprob, ficha.capacita, ficha.seleccionado, ficha.sw_titu, ficha.notacap, ficha.zona_i,
+              ficha.seccion_i)
+    except:
+        pass
+
+    return True
+
+
+def algo(request):
+    query = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500').values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def bajas(request):
+    query = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500',
+                                                 bandaprob=4).values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def altas(request):
+    query = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500',
+                                                 bandaprob=3).values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def titulares(request):
+    query = PersonalAulaNotaFinal.objects.exclude(
+        id__in=PersonalAulaNotaFinal.objects.filter(bandaprob=3).values_list('id', flat=True)).filter(
+        peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500', sw_titu=1, capacita=1, seleccionado=1).values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def reserva(request):
+    query = PersonalAulaNotaFinal.objects.exclude(
+        id__in=PersonalAulaNotaFinal.objects.filter(bandaprob=4).values_list('id', flat=True)).filter(
+        peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500', sw_titu=0, capacita=1, seleccionado=1).values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def aprobados(request):
+    query = PersonalAulaNotaFinal.objects.exclude(
+        id__in=PersonalAulaNotaFinal.objects.filter(bandaprob=4).values_list('id', flat=True)).filter(
+        peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500', nota_final__gt=10).values(
+        'peaaula__id_pea__dni', 'nota_final', 'bandaprob', 'capacita', 'sw_titu', 'seleccionado',
+        'peaaula__id_pea__zona')
+    return JsonResponse(list(query), safe=False)
+
+
+def chio(request):
+    query = PersonalAulaNotaFinal.objects.exclude(
+        id__in=PersonalAulaNotaFinal.objects.filter(bandaprob=4).values_list('id', flat=True)).filter(
+        peaaula__id_pea__ubigeo=150113, peaaula__id_pea__zona='00500', nota_final__gt=11).values_list(
+        'peaaula__id_pea__dni', flat=True)
+    return JsonResponse(list(query), safe=False)
+
+
+def updateBajas(request):
+    PersonalAulaNotaFinal.objects.filter(
+        peaaula__id_pea__ubigeo='150113', peaaula__id_pea__zona='00400', peaaula__id_pea__baja_estado=1).update(
+        nota_final=0)
+    query = PersonalAulaNotaFinal.objects.filter(
+        peaaula__id_pea__ubigeo='150113', peaaula__id_pea__zona='00400', peaaula__id_pea__baja_estado=1).values()
+    return JsonResponse(list(query), safe=False)
+
+
+"""
+bandaprob:
+- 3 alta
+- 4 baja
+capacita=0, seleccionado=0, sw_titu=0  = No seleccionado
+capacita=1, seleccionado=1, sw_titu=1  = TITULAR
+capacita=1, seleccionado=1, sw_titu=0  = RESERVA
+"""
+
+
+def cerrarCursoSinInternet(request):
+    postdata = request.POST['data']
+    dataDict = json.loads(postdata)
+    for data in dataDict:
+        peanota = PeaNotaFinalSinInternet.objects.get(pea_id=data['pea_id'])
+        peanota.bandaprob = data['bandaprob']
+        peanota.capacita = data['capacita']
+        peanota.seleccionado = data['seleccionado']
+        peanota.sw_titu = data['sw_titu']
+        peanota.notacap = data['notacap']
+        peanota.save()
+        sendChio(peanota)
+
+    return JsonResponse({'msg': 'Guardado correcto'})
+
+
+def sendChio(peanota):
+    try:
+        ficha = Ficha177.objects.using('consecucion').get(id_per=peanota.pea.id_per)
+        ficha.bandaprob = peanota.bandaprob
+        ficha.capacita = peanota.capacita
+        ficha.seleccionado = peanota.seleccionado
+        ficha.sw_titu = peanota.sw_titu
+        ficha.notacap = peanota.notacap
         ficha.save()
     except:
         pass

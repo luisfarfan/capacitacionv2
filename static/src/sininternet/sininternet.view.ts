@@ -13,6 +13,7 @@ import {SinInternetService} from 'sininternet.service';
 import {IPersonal} from "../distribucion/distribucion.interface";
 
 declare var ubigeo: any;
+declare var $: any;
 class SinInternetView {
     private evaluacionService: EvaluacionService = new EvaluacionService();
     private cursoInyection: CursoInyection = new CursoInyection();
@@ -56,7 +57,32 @@ class SinInternetView {
         $('#select_zonas').on('change', () => {
             this.getMeta();
         });
+        $('#btn_cierre_curso').on('click', () => {
+            utils.alert_confirm(() => {
+                this.cerrarCurso();
+            }, 'Esta seguro de Cerrar la Zona?');
+        });
+        $('#btn_exportar').on('click', () => {
+            this.exportar();
+        });
         this.getAmbitos();
+    }
+
+    exportar() {
+        $('#clone').html($('#table_personalnotafinal1').clone());
+        let select_instructor = $('#clone').find('select :selected').text();
+        $('#clone').find('#a_save_instructor').remove()
+        let inputs = $('#clone').find('input[type="number"]')
+        inputs.map((index: number, element: Element) => {
+            let val = $(element).val();
+            $(element).replaceWith(`<span>${val}</span>`);
+        });
+        var uri = $("#clone").battatech_excelexport({
+            containerid: "clone",
+            datatype: 'table',
+            returnUri: true
+        });
+        $('#btn_exportar').attr('download', 'reporte_personal_por_aula.xls').attr('href', uri).attr('target', '_blank');
     }
 
     getCargosFuncionales(id_curso: number) {
@@ -171,19 +197,42 @@ class SinInternetView {
 
     drawPersonalNotaFinal() {
         let html: string = '';
+        let count = 0;
         this.personalRankeoNotaFinal.map((pea: IPeaNotaFinalSinInternet, index: number) => {
-
-            // html += `<tr data-value="${pea.id_peaaula}">
-            //             <td>${index + 1}</td>
-            //             <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
-            //             <td>${pea.id_pea.dni}</td>
-            //             <td>${pea.id_pea.zona}</td>
-            //             <td><input name="nota_final" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
-            //             <td><span class="label"></span></td>
-            //          </tr>`;
+            count++
+            let estado = this.drawEstado(pea, count);
+            html += `<tr data-value="${pea.id}">
+                        <td>${index + 1}</td>
+                        <td>${pea.pea.ape_paterno} ${pea.pea.ape_materno} ${pea.pea.nombre}</td>
+                        <td>${pea.pea.dni}</td>
+                        <td>${pea.pea.zona}</td>
+                        <td><input name="nota_final_rankeo" value="${pea.nota_final}" type="number"></td>
+                        <td>${estado}</td>
+                     </tr>`;
 
         });
         $('#table_personalnotafinal').find('tbody').html(html);
+    }
+
+    drawEstado(value: IPeaNotaFinalSinInternet, count: number) {
+        let meta: any = $('#meta').text();
+        if (value.pea.baja_estado == 1) {
+            return `<span class="label label-danger">Dado de baja</span>`
+        } else {
+            if (meta >= count) {
+                if (value.nota_final >= 11) {
+                    return `<span class="label label-success">Titular</span>`
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`
+                }
+            } else {
+                if (value.nota_final >= 11) {
+                    return `<span class="label label-primary">Reserva</span>`;
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`;
+                }
+            }
+        }
     }
 
     saveNotaFinalSinInternet() {
@@ -200,6 +249,57 @@ class SinInternetView {
             this.getPersonas();
             utils.showSwalAlert('La nota final se guardo correctamente', 'Exito', 'success');
         });
+    }
+
+    cerrarCurso() {
+        let peanotafinal: Array<any> = [];
+        let meta: any = $('#meta').text()
+        let count = 0;
+        this.personalRankeoNotaFinal.map((value: IPeaNotaFinalSinInternet) => {
+            count++;
+            value.notacap = value.nota_final
+            if (value.pea.alta_estado == 1) {
+                value.bandaprob = 3
+            } else if (value.pea.baja_estado == 1) {
+                value.bandaprob = 4
+            } else {
+                value.bandaprob = 1
+            }
+            if (meta >= count) {
+                if (value.nota_final >= 11) {
+                    value.capacita = 1
+                    value.seleccionado = 1
+                    value.sw_titu = 1
+                } else {
+                    value.capacita = 0
+                    value.seleccionado = 0
+                    value.sw_titu = 0
+                }
+            } else {
+                if (value.nota_final >= 11) {
+                    value.capacita = 1
+                    value.seleccionado = 1
+                    value.sw_titu = 0
+                } else {
+                    value.capacita = 0
+                    value.seleccionado = 0
+                    value.sw_titu = 0
+                }
+            }
+            peanotafinal.push({
+                capacita: value.capacita,
+                seleccionado: value.seleccionado,
+                sw_titu: value.sw_titu,
+                nota_final: value.nota_final,
+                notacap: value.notacap,
+                pea_id: value.pea.id_pea,
+                bandaprob: value.bandaprob
+            });
+        });
+        console.log(peanotafinal)
+        this.sininternetService.cerrarCurso(peanotafinal).done((response) => {
+            console.log(response);
+        })
     }
 
     getAmbitos() {

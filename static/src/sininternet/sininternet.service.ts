@@ -9,6 +9,7 @@ export class SinInternetService {
     private url_personalnotas_sininternet: string = `${BASEURL}/evaluacion/personalnotas_sininternet/`;
     private url_saveNotaFinalSinInternet: string = `${BASEURL}/evaluacion/saveNotaFinalSinInternet/`;
     private url_personalrankeo_sininternet: string = `${BASEURL}/evaluacion/personalrankeo_sininternet/`;
+    private url_cerrarCursoSinInternet: string = `${BASEURL}/evaluacion/cerrarCursoSinInternet/`;
 
 
     personasSinInternet(curso: number, ubigeo: string): JQueryXHR {
@@ -22,7 +23,7 @@ export class SinInternetService {
             url: this.url_saveNotaFinalSinInternet,
             type: 'POST',
             data: {data: JSON.stringify(object)}
-        })
+        });
     }
 
     filterPersonalSinInternet(cargo: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
@@ -44,5 +45,11 @@ export class SinInternetService {
         });
     }
 
-
+    cerrarCurso(object: Array<Object>) {
+        return $.ajax({
+            url: this.url_cerrarCursoSinInternet,
+            type: 'POST',
+            data: {data: JSON.stringify(object)}
+        });
+    }
 }

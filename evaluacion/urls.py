@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'saveNotas/$', saveNotas),
     url(r'saveNotasFinal/$', saveNotasFinal),
     url(r'cerrarCursoConInternet/$', cerrarCursoConInternet),
+    url(r'cerrarCursoSinInternet/$', cerrarCursoSinInternet),
     url(r'saveNotaFinalSinInternet/$', saveNotaFinalSinInternet),
     url(r'criteriosdetalle_curso/(?P<curso>[0-9]+)/$',
         CriterioCursoFilterViewSet.as_view()),
@@ -60,4 +61,12 @@ urlpatterns = [
     url(
         r'personalrankeo_sininternet/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         PersonalNotaFinalSinInternetViewSet.as_view()),
+    url(r'algo/$', algo),
+    url(r'bajas/$', bajas),
+    url(r'altas/$', altas),
+    url(r'titulares/$', titulares),
+    url(r'reserva/$', reserva),
+    url(r'aprobados/$', aprobados),
+    url(r'dnis/$', chio),
+    url(r'updateBajas/$', updateBajas),
 ]

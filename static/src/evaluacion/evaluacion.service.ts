@@ -115,7 +115,7 @@ export class EvaluacionService {
             url: this.url_saveNotasFinal,
             type: 'POST',
             data: {personalnotasfinal: JSON.stringify(object)}
-        })
+        });
     }
 
     saveNotasFinalSinInternet(object: Array<Object>) {
@@ -123,7 +123,7 @@ export class EvaluacionService {
             url: this.url_saveNotaFinalSinInternet,
             type: 'POST',
             data: {personalnotasfinal: JSON.stringify(object)}
-        })
+        });
     }
 
     cerrarCursoConInternet(object: Array<Object>) {
