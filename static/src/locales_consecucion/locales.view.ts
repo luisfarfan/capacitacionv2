@@ -72,6 +72,7 @@ class LocalController {
             validateFechaFin: true,
         },
         responsable_nombre: {
+            lettersonly: true,
             minlength: 9,
         },
         responsable_email: {
@@ -86,6 +87,9 @@ class LocalController {
         },
         cantidad_disponible_aulas: {
             esMenor2: true
+        },
+        funcionario_nombre: {
+            lettersonly: true,
         },
         cantidad_disponible_auditorios: {
             esMenor2: true
@@ -355,6 +359,10 @@ class LocalController {
             var i = Date.parse(inicio);
             return f <= i
         }, jQuery.validator.format("Fecha de Fin tiene que ser mayor que la Fecha Inicio"));
+
+        jQuery.validator.addMethod("lettersonly", function (value: any, element: any) {
+            return this.optional(element) || /^[a-z]+$/i.test(value);
+        }, "Ingrese sólo letras por favor");
     }
 
     getCursos() {
