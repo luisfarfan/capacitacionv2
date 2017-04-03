@@ -1,10 +1,11 @@
 import urllib.request, json
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView
+from reportes.models import Reportes
 
-URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
+# URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 
-# URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
 URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
 
 
@@ -52,3 +53,32 @@ class RenderTemplate(TemplateView):
             return context
         except:
             return redirect('http://cpv.inei.gob.pe')
+
+
+class RenderReportes(TemplateView):
+    def get_template_names(self):
+        slug = self.kwargs.get('slug')
+        try:
+            print(slug)
+            if slug == 'main':
+                template = 'main.html'
+            else:
+                template = Reportes.objects.get(slug=slug).template_html
+            return 'reportes/{}'.format(template)
+        except:
+            return 'reportes/reporte.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RenderReportes, self).get_context_data(**kwargs)
+        slug = self.kwargs.get('slug')
+        try:
+            if slug == 'main':
+                context['breadcumbs'] = 'Reportes'
+                context['session_key'] = self.request.session.session_key
+            else:
+                reporte = Reportes.objects.get(slug=slug)
+                context['breadcumbs'] = reporte.nombre
+                context['session_key'] = self.request.session.session_key
+            return context
+        except:
+            return redirect('localhost:8001/reportes/main')

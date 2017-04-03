@@ -25,6 +25,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'reporte/(?P<slug>.+)/$', ensure_csrf_cookie(RenderReportes.as_view())),
     url(r'modulos/(?P<slug>.+)/$', ensure_csrf_cookie(RenderTemplate.as_view())),
     url(r'^locales/', include(router.urls)),
     url(r'^locales/', include('locales_consecucion.urls')),
