@@ -13,11 +13,11 @@ export interface IUbigeo {
 }
 export default class UbigeoView {
     private ubigeoService = new UbigeoService();
-    private ccdd: string;
-    private ccpp: string;
-    private ccdi: string;
-    private ubigeo: string;
-    private zona: string;
+    public ccdd: string;
+    public ccpp: string;
+    public ccdi: string;
+    public ubigeo: string;
+    public zona: string;
 
     private departamentos: Array<Object>;
     private provincias: Array<Object>;

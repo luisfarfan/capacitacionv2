@@ -3,9 +3,9 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView
 from reportes.models import Reportes
 
-# URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
+#URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 
-URL_USERDATASESSION = 'http://localhost:8000/seguridad/getUserData/?key={}'
+URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
 URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
 
 
@@ -58,8 +58,8 @@ class RenderTemplate(TemplateView):
 class RenderReportes(TemplateView):
     def get_template_names(self):
         slug = self.kwargs.get('slug')
+        self.request.session['modulo_id'] = 108
         try:
-            print(slug)
             if slug == 'main':
                 template = 'main.html'
             else:

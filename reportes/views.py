@@ -51,9 +51,11 @@ class postulantesSeleccionadosporCurso(APIView):
         cantidad = Personal.objects.filter(**filter).count()
         return JsonResponse({'cantidad': cantidad})
 
+
 """
 Reporte N° 3
 """
+
 
 class postulantesAsistieronporCurso(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
@@ -74,6 +76,7 @@ class postulantesAsistieronporCurso(APIView):
         cantidad = Personal.objects.filter(**filter).count()
         return JsonResponse({'cantidad': cantidad})
 
+
 """
 Reporte N°7
 """
@@ -91,7 +94,7 @@ class directoriolocalesNumeroAmbientes(APIView):
         if zona is not None:
             filter['zona_ubicacion_local'] = zona
 
-        query = DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso).values()
+        query = DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso)
         return JsonResponse(list(query), safe=False)
 
 
