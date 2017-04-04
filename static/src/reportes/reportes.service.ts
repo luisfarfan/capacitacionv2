@@ -9,6 +9,12 @@ export class ReporteService {
         })
     }
 
+    reporteDinamico(url_params: string): JQueryXHR {
+        return $.ajax({
+            url: url_params,
+        })
+    }
+
     post(object: Object): JQueryXHR {
         return $.ajax({
             type: 'POST',

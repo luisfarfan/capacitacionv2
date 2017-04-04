@@ -46,6 +46,7 @@ export interface IUbigeo {
     departamento: string,
     provincia: string,
     distrito: string,
+    zona: string,
 }
 
 export interface IZona {

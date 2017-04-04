@@ -226,10 +226,18 @@ class DistribucionView {
         });
     }
 
+    clearZonasRepetidas(localzonas: IUbigeo[]) {
+        localzonas.map((localzona: IUbigeo) => {
+            $(`#select_zonas_por_asignar option[value='${localzona.zona}']`).remove();
+        })
+    }
+
     getLocalZonas(localselected: any) {
         this.setLocalCurso(localselected);
         if (this.localCursoSelected) {
             this.distribucionService.filterLocalZona(this.localCursoSelected.id).done((localzonas: IUbigeo[]) => {
+                this.clearZonasRepetidas(localzonas);
+                console.log(localzonas);
                 utils.drawTable(localzonas, ['nombre_local', 'departamento', 'provincia', 'distrito', 'zona'], 'localambito_id', {
                     enumerar: true,
                     checkbox: '',

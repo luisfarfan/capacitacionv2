@@ -84,7 +84,8 @@ def ambitoPorLocal(curso, ccdd=None, ccpp=None, ccdi=None):
                                                    'provincia').annotate(dcount=Count('ccdi', 'distrito'))
     if ccdi is not None:
         zonaFilter['UBIGEO'] = ccdd + ccpp + ccdi
-        return Zona.objects.exclude(ZONA__in=excludeambitoPorLocal(curso, ccdd, ccpp, ccdi)).filter(**zonaFilter)
+        # return Zona.objects.exclude(ZONA__in=excludeambitoPorLocal(curso, ccdd, ccpp, ccdi)).filter(**zonaFilter)
+        return Zona.objects.filter(**zonaFilter)
 
     return queryFinal
 

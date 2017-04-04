@@ -7,6 +7,7 @@ class Reportes(models.Model):
     slug = models.CharField(max_length=255, blank=True, null=True)
     template_html = models.CharField(max_length=255, blank=True, null=True)
     url_service = models.CharField(max_length=100, blank=True, null=True)
+    codigo = models.CharField(max_length=6, blank=True, null=True)
     order = models.IntegerField(default=0)
 
     class Meta:

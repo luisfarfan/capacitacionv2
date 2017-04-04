@@ -94,7 +94,7 @@ class directoriolocalesNumeroAmbientes(APIView):
         if zona is not None:
             filter['zona_ubicacion_local'] = zona
 
-        query = DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso)
+        query = DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso).values()
         return JsonResponse(list(query), safe=False)
 
 
