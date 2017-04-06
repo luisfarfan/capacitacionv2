@@ -61,12 +61,7 @@ class AsistenciaView {
                 this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
                     this.rangoFechas = fechasRango;
                     this.drawHeaderFechas();
-                    this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personalAsistencia) => {
-                        this.personalAsistencia = personalAsistencia;
-                        this.setPersonalParaBaja(true);
-                        this.drawPersonal();
-                        this.getContingencia();
-                    });
+                    this.cargarPersonalAsistenciaPorAula();
                 });
             }
         });
@@ -92,6 +87,15 @@ class AsistenciaView {
             this.darAlta(this.pea_id);
         });
         this.disabledChecks();
+    }
+
+    cargarPersonalAsistenciaPorAula() {
+        this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personalAsistencia) => {
+            this.personalAsistencia = personalAsistencia;
+            this.setPersonalParaBaja(true);
+            this.drawPersonal();
+            this.getContingencia();
+        });
     }
 
     setPersonalParaBaja(draw: boolean = false) {
@@ -246,28 +250,21 @@ class AsistenciaView {
             });
             tbody += `</tr>`
         });
-        $('#tabla_asistencia').find('tbody').html(tbody);
-        // let tablaasistenciaDT = $('#tabla_asistencia').DataTable();
-        // tablaasistenciaDT.destroy();
-        $('#tabla_asistencia').find('tbody').html(tbody);
-        // $('#tabla_asistencia').DataTable({
-        //     "bPaginate": false,
-        // });
+        if (this.cursoSelected == 4) {
+            if (utils.isDataTable('#tabla_asistencia')) {
+                $('#tabla_asistencia').DataTable().destroy();
+            }
+            $('#tabla_asistencia').find('tbody').html(tbody);
+            $('#tabla_asistencia').DataTable({
+                bPaginate: false,
+            });
+            this.disabledChecks();
+            this.countAsistenciaTotalPorFecha();
+        }
         $('#btn_exportar').off();
         $('#btn_exportar').on('click', () => {
             this.exportar();
         });
-        if (this.cursoSelected == 4) {
-            this.disabledChecks();
-            this.countAsistenciaTotalPorFecha();
-            // if (utils.isDataTable('#tabla_asistencia')) {
-            //     $('#tabla_asistencia').DataTable().destroy();
-            // } else {
-            //     $('#tabla_asistencia').DataTable({
-            //         bPaginate: false,
-            //     });
-            // }
-        }
     }
 
     drawDivAsistencia(divParams: ModelDivAsistencia) {
@@ -461,12 +458,13 @@ class AsistenciaView {
             }
         });
         if (!request.length) {
-            utils.showInfo('No ha marcado la asistencia de ninguna, no puede guardar aún');
+            utils.showInfo('No ha marcado la asistencia de ninguna persona, no puede guardar aún');
             return false;
         }
         utils.alert_confirm(() => {
             this.asistenciaService.saveAsistenciaEmpadronadorUrbano(request).done((response) => {
                 utils.showSwalAlert('La asistencia fue guardada con éxito!', 'Exito', 'success');
+                this.cargarPersonalAsistenciaPorAula();
             });
         }, 'Esta seguro de guardar la asistencia?', 'success');
     }
