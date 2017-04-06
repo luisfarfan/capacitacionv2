@@ -262,6 +262,143 @@ def sendSMS(request):
     return JsonResponse(resultado, safe=False)
 
 
+def sendSMSEmpadronadorUrbano(request):
+    # 150113 00400 00500
+    # 150125 00200 02500
+    texto00400 = """Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+         el día de mañana 06 de abril en el local "CASA DE LA JUVENTUD MUNICIPALIDAD JESÚS MARÍA" Avenida Horacio Urteaga 1035 a las 07:30 am”
+        Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación_INEI.
+        """
+    texto00500 = """
+    “Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+    el día de mañana 06 de abril en el local "UNIVERSIDAD JAIME BAUSATE Y MEZA" Jirón Río de Janeiro 560 a las 07:30 am”
+     Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+                """
+
+    texto00200 = """
+    Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+    el día de mañana 06 de abril en el local "​EX COLEGIO ​MIGUEL DE CERVANTES" Calle Los Claveles 125 a las 07:30 am”
+    Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+    """
+    texto02500 = """
+    Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+     el día de mañana 06 de abril en el local "​EX COLEGIO ​MIGUEL DE CERVANTES" Calle Los Claveles 125 a las 07:30 am”
+     Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+    """
+    jsonSend = [{'cod': 'jm00400', 'msg': texto00400, 'numeros': '', 'cant': 0},
+                {'cod': 'jm00500', 'msg': texto00500, 'numeros': '', 'cant': 0},
+                {'cod': 'pp00200', 'msg': texto00200,
+                 'numeros': '997575460,991889695,967767430,989522941,990642582,997566305,986595664,950410178,993585787,946897632,955959369,987822369,991681402,966798025,990658702,966645378,964962079,997584522,991681383,992194145',
+                 'cant': 0},
+                {'cod': 'pp02500', 'msg': texto02500, 'numeros': '', 'cant': 0}]
+
+    cargofuncional = {'id_cargofuncional': 549}
+
+    personalJesusMariazona00400 = Personal.objects.filter(**cargofuncional, ubigeo='150113',
+                                                          zona='00400').order_by('ape_paterno')[:405]
+    for jm00400 in personalJesusMariazona00400:
+        if validarCelular(jm00400.celular):
+            jsonSend[0]['numeros'] = jsonSend[0]['numeros'] + jm00400.celular + ','
+            jsonSend[0]['cant'] = jsonSend[0]['cant'] + 1
+
+    personalJesusMariazona00500 = Personal.objects.filter(**cargofuncional, ubigeo='150113', zona='00500').order_by(
+        'ape_paterno')[:265]
+    for jm00500 in personalJesusMariazona00500:
+        if validarCelular(jm00500.celular):
+            jsonSend[1]['numeros'] = jsonSend[1]['numeros'] + jm00500.celular + ','
+            jsonSend[1]['cant'] = jsonSend[1]['cant'] + 1
+
+    personalPuentePiedra00200 = Personal.objects.filter(**cargofuncional, ubigeo='150125', zona='00200').order_by(
+        'ape_paterno')[:89]
+    for pp00200 in personalPuentePiedra00200:
+        if validarCelular(pp00200.celular):
+            jsonSend[2]['numeros'] = jsonSend[2]['numeros'] + pp00200.celular + ','
+            jsonSend[2]['cant'] = jsonSend[2]['cant'] + 1
+
+    personalPuentePiedra02500 = Personal.objects.filter(**cargofuncional, ubigeo='150125', zona='02500').order_by(
+        'ape_paterno')[:112]
+    for pp02500 in personalPuentePiedra02500:
+        if validarCelular(pp02500.celular):
+            jsonSend[3]['numeros'] = jsonSend[3]['numeros'] + pp02500.celular + ','
+            jsonSend[3]['cant'] = jsonSend[3]['cant'] + 1
+
+    return JsonResponse(jsonSend, safe=False)
+
+
+def sendSMSEmpadronadorUrbanoDia2(request):
+    # 150113 00400 00500
+    # 150125 00200 02500
+    texto00400 = """“Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+     el día 07 de abril en el local "CASA DE LA JUVENTUD MUNICIPALIDAD JESÚS MARÍA" Avenida Horacio Urteaga 1035 a las 07:30 am”
+     Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+        """
+    texto00500 = """
+    “Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+    el día 07 de abril en el local  "UNIVERSIDAD JAIME BAUSATE Y MEZA" Jirón Río de Janeiro 560 a las 07:30 am”
+    Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+                """
+    texto00200 = """
+    “Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+    el día 07 de abril en el local "​EX COLEGIO ​MIGUEL DE CERVANTES" Calle Los Claveles 125 a las 07:30 am”
+    Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación.
+    """
+    texto02500 = """
+    “Usted ha sido seleccionado para participar en el curso de capacitación dirigido a “Empadronadores Urbanos”,
+    el día 07 de abril en el local "​EX COLEGIO ​MIGUEL DE CERVANTES" Calle Los Claveles 125 a las 07:30 am”
+    Llevar consigo su DNI, se tomará en cuenta su puntualidad para el ingreso al local de capacitación _INEI.
+    """
+    jsonSend = [{'cod': 'jm00400', 'msg': texto00400, 'numeros': '', 'cant': 0},
+                {'cod': 'jm00500', 'msg': texto00500, 'numeros': '', 'cant': 0},
+                {'cod': 'pp00200', 'msg': texto00200,
+                 'numeros': '997575460,991889695,967767430,989522941,990642582,997566305,986595664,950410178,993585787,946897632,955959369,987822369,991681402,966798025,990658702,966645378,964962079,997584522,991681383,992194145',
+                 'cant': 0},
+                {'cod': 'pp02500', 'msg': texto02500, 'numeros': '', 'cant': 0}]
+
+    cargofuncional = {'id_cargofuncional': 549}
+
+    _personalJesusMariazona00400 = Personal.objects.filter(**cargofuncional, ubigeo='150113',
+                                                           zona='00400').order_by('ape_paterno')[:405].values_list(
+        'id_pea', flat=True)
+    personalJesusMariazona00400 = Personal.objects.exclude(id_pea__in=_personalJesusMariazona00400).filter(
+        **cargofuncional, ubigeo='150113', zona='00400')
+    for jm00400 in personalJesusMariazona00400:
+        if validarCelular(jm00400.celular):
+            jsonSend[0]['numeros'] = jsonSend[0]['numeros'] + jm00400.celular + ','
+            jsonSend[0]['cant'] = jsonSend[0]['cant'] + 1
+
+    _personalJesusMariazona00500 = Personal.objects.filter(**cargofuncional, ubigeo='150113', zona='00500').order_by(
+        'ape_paterno')[:265].values_list('id_pea', flat=True)
+    personalJesusMariazona00500 = Personal.objects.exclude(id_pea__in=_personalJesusMariazona00500).filter(
+        **cargofuncional, ubigeo='150113', zona='00500')
+    for jm00500 in personalJesusMariazona00500:
+        if validarCelular(jm00500.celular):
+            jsonSend[1]['numeros'] = jsonSend[1]['numeros'] + jm00500.celular + ','
+            jsonSend[1]['cant'] = jsonSend[1]['cant'] + 1
+
+    _personalPuentePiedra00200 = Personal.objects.filter(**cargofuncional, ubigeo='150125', zona='00200').order_by(
+        'ape_paterno')[:89].values_list('id_pea', flat=True)
+    personalPuentePiedra00200 = Personal.objects.exclude(id_pea__in=_personalPuentePiedra00200).filter(**cargofuncional,
+                                                                                                       ubigeo='150125',
+                                                                                                       zona='00200')
+    for pp00200 in personalPuentePiedra00200:
+        if validarCelular(pp00200.celular):
+            jsonSend[2]['numeros'] = jsonSend[2]['numeros'] + pp00200.celular + ','
+            jsonSend[2]['cant'] = jsonSend[2]['cant'] + 1
+
+    _personalPuentePiedra02500 = Personal.objects.filter(**cargofuncional, ubigeo='150125', zona='02500').order_by(
+        'ape_paterno')[:112].values_list(
+        'id_pea', flat=True)
+    personalPuentePiedra02500 = Personal.objects.exclude(id_pea__in=_personalPuentePiedra02500).filter(**cargofuncional,
+                                                                                                       ubigeo='150125',
+                                                                                                       zona='02500')
+    for pp02500 in personalPuentePiedra02500:
+        if validarCelular(pp02500.celular):
+            jsonSend[3]['numeros'] = jsonSend[3]['numeros'] + pp02500.celular + ','
+            jsonSend[3]['cant'] = jsonSend[3]['cant'] + 1
+
+    return JsonResponse(jsonSend, safe=False)
+
+
 def validarCelular(numero):
     numerook = str(numero).replace(" ", "").strip()
     print(numerook)

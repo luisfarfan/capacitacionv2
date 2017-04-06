@@ -35,6 +35,7 @@ class AsistenciaView {
     private personaldadadeBaja: IPersonal[] = [];
     private personalContingencia: IPersonal[] = [];
     private pea_id: number = null;
+    private cursoSelected: number;
 
     constructor() {
         this.asistenciaService = new AsistenciaService();
@@ -43,6 +44,7 @@ class AsistenciaView {
         this.distribucionService = new DistribucionService();
         $('#cursos').on('change', (element: JQueryEventObject) => {
             let curso_id = $(element.currentTarget).val();
+            this.cursoSelected = curso_id;
             $('#p_curso_actual').text($('#cursos :selected').text());
             this.getAulas(curso_id);
         });
@@ -70,7 +72,14 @@ class AsistenciaView {
         });
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
-            this.saveAsistencia();
+            if (this.cursoSelected == 4) {
+                if (utils.isDataTable('#tabla_asistencia')) {
+                    $('#tabla_asistencia').dataTable().fnFilterClear()
+                }
+                this.saveAsistenciaEmpadronadorUrbano();
+            } else {
+                this.saveAsistencia();
+            }
         });
 
         $('#btn_bajas_altas').on('click', () => {
@@ -82,6 +91,7 @@ class AsistenciaView {
         $('#btn_dar_alta').on('click', (element: JQueryEventObject) => {
             this.darAlta(this.pea_id);
         });
+        this.disabledChecks();
     }
 
     setPersonalParaBaja(draw: boolean = false) {
@@ -168,12 +178,28 @@ class AsistenciaView {
     drawHeaderFechas() {
         let header: string = '';
         let subHeader: string = '<tr>';
+        let colspan: number = 1;
+        let spanEmpadronadorUrbano: string = '';
+        if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
+            colspan = 2;
+        }
+
         header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>`
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>`;
+
         this.rangoFechas.map((fecha: string, index: number) => {
-            header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="2">${fecha}</th>`
-            subHeader += `<th>MAÑANA</th><th>TARDE</th>`
+            if (this.cursoSelected == 4) {
+                spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
+            }
+            header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="${colspan}"><center>${fecha} ${spanEmpadronadorUrbano}</center></th>`;
+            if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 0) {
+                subHeader += `<th>MAÑANA</th>`
+            } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 1) {
+                subHeader += `<th>TARDE</th>`
+            } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
+                subHeader += `<th>TARDE</th><th>MAÑANA</th>`
+            }
         });
         header += `</tr>`;
         $('#tabla_asistencia').find('thead').html(header + subHeader + '</tr>');
@@ -211,9 +237,12 @@ class AsistenciaView {
                 if (value.id_pea.baja_estado == 1) {
                     tbody += `<td></td><td></td>`;
                 } else {
-                    tbody += this.drawDivAsistencia(divParams);
+                    if (this.cursoSelected == 4) {
+                        tbody += this.drawDivAsistenciaEmpadronadorUrbano(divParams, ind);
+                    } else {
+                        tbody += this.drawDivAsistencia(divParams);
+                    }
                 }
-
             });
             tbody += `</tr>`
         });
@@ -227,14 +256,27 @@ class AsistenciaView {
         $('#btn_exportar').off();
         $('#btn_exportar').on('click', () => {
             this.exportar();
-        })
+        });
+        if (this.cursoSelected == 4) {
+            this.disabledChecks();
+            this.countAsistenciaTotalPorFecha();
+            // if (utils.isDataTable('#tabla_asistencia')) {
+            //     $('#tabla_asistencia').DataTable().destroy();
+            // } else {
+            //     $('#tabla_asistencia').DataTable({
+            //         bPaginate: false,
+            //     });
+            // }
+        }
     }
 
     drawDivAsistencia(divParams: ModelDivAsistencia) {
         let turno_uso_local: number = this.localAmbienteSelected.localcurso.local.turno_uso_local;
         let json: String = JSON.stringify({fecha: divParams.fecha, id_personalaula: divParams.id_personalaula});
         let silverBrackground: string = `style="background-color: #dedede"`;
-        return `<td ${turno_uso_local == 1 ? silverBrackground : ''}><div name="divTurnosManana" data-value=${json} class="form-group">
+        if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 0) {
+            return `<td ${turno_uso_local == 1 ? silverBrackground : ''}>
+                    <div name="divTurnosManana" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
                             <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
@@ -259,8 +301,9 @@ class AsistenciaView {
                             Falta
                         </label>
                     </div>
-				</div></td>
-                <td ${turno_uso_local == 0 ? silverBrackground : ''}><div name="divTurnosTarde" data-value=${json} class="form-group">
+				</div></td>`;
+        } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 1) {
+            return `<td ${turno_uso_local == 0 ? silverBrackground : ''}><div name="divTurnosTarde" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
                             <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
@@ -286,6 +329,187 @@ class AsistenciaView {
                         </label>
                     </div>
 				</div></td>`;
+        } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
+            return `<td ${turno_uso_local == 1 ? silverBrackground : ''}><div name="divTurnosManana" data-value=${json} class="form-group">
+                    <div class="checkbox checkbox-right">
+                        <label style="display: table;">
+                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                             name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
+                            ${divParams.turno_manana == 0 ? 'checked' : ''} value="0">
+                            Puntual
+                        </label>
+                    </div>
+                    <div class="checkbox checkbox-right">
+                        <label style="display: table;">
+                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                             name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
+                             ${divParams.turno_manana == 1 ? 'checked' : ''} value="1">
+                            Tardanza
+                        </label>
+                    </div>
+                    <div class="checkbox checkbox-right">
+                        <label style="display: table;">
+                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                             name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
+                             ${divParams.turno_manana == 2 ? 'checked' : ''} value="2">
+                            Falta
+                        </label>
+                    </div>
+				</div></td>
+				<td ${turno_uso_local == 0 ? silverBrackground : ''}><div name="divTurnosTarde" data-value=${json} class="form-group">
+                    <div class="checkbox checkbox-right">
+                        <label style="display: flex;">
+                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                             name="turno_tarde${divParams.fecha}${divParams.id_personalaula}" 
+                            ${divParams.turno_tarde == 0 ? 'checked' : ''} value="0">
+                            Puntual
+                        </label>
+                    </div>
+                    <div class="checkbox checkbox-right">
+                        <label style="display: flex;">
+                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''} 
+                            name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
+                             ${divParams.turno_tarde == 1 ? 'checked' : ''} value="1">
+                            Tardanza
+                        </label>
+                    </div>
+                    <div class="checkbox checkbox-right">
+                        <label style="display: flex;">
+                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                             name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
+                             ${divParams.turno_tarde == 2 ? 'checked' : ''} value="2">
+                            Falta
+                        </label>
+                    </div>
+				</div></td>`;
+        }
+    }
+
+    drawDivAsistenciaEmpadronadorUrbano(checkParams: ModelDivAsistencia, ind: number) {
+        let objectData: string = JSON.stringify({
+            id_personalaula: checkParams.id_personalaula,
+            fecha: checkParams.fecha
+        });
+        let disabledMananaChecked = '';
+        let disabledTardeChecked = '';
+        let disabledManana = '';
+        let disabledTarde = '';
+        if (checkParams.turno_manana != null && checkParams.turno_tarde == null) {
+            disabledMananaChecked = 'checked';
+        } else if (checkParams.turno_tarde != null && checkParams.turno_manana == null) {
+            disabledTardeChecked = 'checked';
+        }
+        this.personalAsistencia.map((pea: IPersonalAsistenciaDetalle) => {
+            if (pea.id_peaaula == checkParams.id_personalaula) {
+                if (pea.personalaula.length) {
+                    disabledManana = 'disabled'
+                    disabledTarde = 'disabled';
+                } else {
+                    disabledManana = ''
+                    disabledTarde = '';
+                }
+            }
+        });
+        let objectFecha: string = JSON.stringify({fecha: checkParams.fecha});
+        if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 0) {
+            //mañana
+            return `<td>
+                        <label data-value=${objectFecha} class="label--checkbox" name="checkManana">
+                            <input ${disabledMananaChecked} ${disabledManana} data-value=${objectData} id="${checkParams.id_personalaula}${ind}0" class="checkbox-mdl" name="${checkParams.id_personalaula}${ind}0" type="checkbox" />
+                        </label>
+                    </td>`;
+        } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 1) {
+            //tarde
+            return `<td>
+                        <label data-value=${objectFecha} class="label--checkbox" name="checkTarde">
+                            <input ${disabledTardeChecked} ${disabledTarde} data-value=${objectData} id="${checkParams.id_personalaula}${ind}1" class="checkbox-mdl" name="${checkParams.id_personalaula}${ind}1" type="checkbox" />
+                        </label>
+                    </td>`;
+        } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
+            return `<td>
+                        <label data-value=${objectFecha} class="label--checkbox" name="checkManana">
+                            <input ${disabledMananaChecked} ${disabledManana} data-value=${objectData} id="${checkParams.id_personalaula}${ind}0" class="checkbox-mdl" name="${checkParams.id_personalaula}${ind}0" type="checkbox" />
+                        </label>
+                    </td>
+                    <td>
+                        <label data-value=${objectFecha} class="label--checkbox" name="checkTarde">
+                            <input ${disabledTardeChecked} ${disabledTarde} data-value=${objectData} id="${checkParams.id_personalaula}${ind}1" class="checkbox-mdl" name="${checkParams.id_personalaula}${ind}1" type="checkbox" />
+                        </label>
+                    </td>`;
+        }
+    }
+
+    saveAsistenciaEmpadronadorUrbano() {
+        let labelsManana = $('[name="checkManana"]');
+        let labelsTarde = $('[name="checkTarde"]');
+        let request: Array<any> = [];
+        let exist: boolean = false;
+        labelsManana.map((index: number, domElement: Element) => {
+            let input = $(domElement).find('input');
+            if (input.is(':checked') && !input.is(':disabled')) {
+                let id_personalaula = $(domElement).find('input').data('value').id_personalaula;
+                let fecha = $(domElement).find('input').data('value').fecha;
+                request.push({id_personalaula: id_personalaula, fecha: fecha, turno_manana: 0, turno_tarde: null});
+            }
+        });
+        labelsTarde.map((index: number, domElement: Element) => {
+            let input = $(domElement).find('input');
+            if (input.is(':checked') && !input.is(':disabled')) {
+                let id_personalaula = $(domElement).find('input').data('value').id_personalaula
+                let fecha = $(domElement).find('input').data('value').fecha;
+                request.push({id_personalaula: id_personalaula, fecha: fecha, turno_tarde: 0, turno_manana: null});
+            }
+        });
+        if (!request.length) {
+            utils.showInfo('No ha marcado la asistencia de ninguna, no puede guardar aún');
+            return false;
+        }
+        utils.alert_confirm(() => {
+            this.asistenciaService.saveAsistenciaEmpadronadorUrbano(request).done((response) => {
+                utils.showSwalAlert('La asistencia fue guardada con éxito!', 'Exito', 'success');
+            });
+        }, 'Esta seguro de guardar la asistencia?', 'success');
+    }
+
+    disabledChecks() {
+        $('input[type="checkbox"]').off();
+        $('input[type="checkbox"]').on('click', (element: JQueryEventObject) => {
+            let target = $(element.target)
+            let tr = target.parent().parent().parent();
+            let id_checkbox = target.attr('id');
+            if (target.is(':checked')) {
+                tr.find('input').not(`[name="${id_checkbox}"]`).prop('disabled', true);
+            } else {
+                tr.find('input').prop('disabled', false);
+            }
+            this.countAsistenciaPorDiaOnClick(element);
+        });
+    }
+
+    countAsistenciaPorDiaOnClick(element: BaseJQueryEventObject) {
+        let target = $(element.target);
+        let fecha = $(element.target).parent().data('value').fecha;
+        let contador: number = parseInt($(`#fecha${fecha.replace(/\//g, '')}`).text());
+        if (target.is(':checked')) {
+            contador++;
+        } else {
+            contador = contador == 0 ? 0 : contador - 1;
+        }
+        $(`#fecha${fecha.replace(/\//g, '')}`).text(contador);
+    }
+
+    countAsistenciaTotalPorFecha() {
+        this.rangoFechas.map((fecha: string, index: number) => {
+            let contador: number = 0;
+            this.personalAsistencia.map((pea: IPersonalAsistenciaDetalle) => {
+                pea.personalaula.map((asistencias: IPersonalAula) => {
+                    if (asistencias.fecha == fecha) {
+                        contador++;
+                    }
+                });
+            });
+            $(`#fecha${fecha.replace(/\//g, '')}`).text(contador);
+        });
     }
 
     saveAsistencia() {
@@ -364,8 +588,7 @@ class AsistenciaView {
         });
     }
 
-    exportar() {
-        $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
+    _exportarGeneral() {
         let divsManana: any = $('#asistenciaclone').find('[name="divTurnosManana"]')
         let divsTarde: any = $('#asistenciaclone').find('[name="divTurnosTarde"]')
         divsManana.map((index: number, domElement: Element) => {
@@ -400,6 +623,27 @@ class AsistenciaView {
                 $(domElement).replaceWith(`<span></span>`)
             }
         });
+    }
+
+    exportarEmpadronadorUrbano() {
+        let labels: any = $('#asistenciaclone').find('label')
+        labels.map((index: number, domElement: Element) => {
+            let input = $(domElement).find('input');
+            if (input.is(':checked')) {
+                $(domElement).replaceWith(`<span>ASISTIO</span>`)
+            } else {
+                $(domElement).replaceWith(`<span></span>`)
+            }
+        });
+    }
+
+    exportar() {
+        $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
+        if (this.cursoSelected == 4) {
+            this.exportarEmpadronadorUrbano();
+        } else {
+            this._exportarGeneral();
+        }
         var uri = $("#asistenciaclone").battatech_excelexport({
             containerid: "asistenciaclone",
             datatype: 'table',

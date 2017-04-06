@@ -100,7 +100,6 @@
 <script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
-<script type="text/javascript" src="{% static "assets/js/plugins/loaders/blockui.min.js" %}"></script>
 <!-- /core JS files -->
 {% block js %}
 {% endblock %}
@@ -133,5 +132,29 @@
             }
         }
     });
+    jQuery.fn.dataTableExt.oApi.fnFilterClear = function (oSettings) {
+        var i, iLen;
+
+        /* Remove global filter */
+        oSettings.oPreviousSearch.sSearch = "";
+
+        /* Remove the text of the global filter in the input boxes */
+        if (typeof oSettings.aanFeatures.f != 'undefined') {
+            var n = oSettings.aanFeatures.f;
+            for (i = 0, iLen = n.length; i < iLen; i++) {
+                $('input', n[i]).val('');
+            }
+        }
+
+        /* Remove the search text for the column filters - NOTE - if you have input boxes for these
+         * filters, these will need to be reset
+         */
+        for (i = 0, iLen = oSettings.aoPreSearchCols.length; i < iLen; i++) {
+            oSettings.aoPreSearchCols[i].sSearch = "";
+        }
+
+        /* Redraw */
+        oSettings.oApi._fnReDraw(oSettings);
+    };
 </script>
 </html>

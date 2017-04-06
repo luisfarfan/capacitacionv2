@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'personalaula_bylocalambiente/(?P<id_localambiente>[0-9]+)/$',
         FilterPersonalAulaDetalleViewSet.as_view()),
     url(r'saveAsistencia/$', saveAsistencia),
+    url(r'saveAsistenciaEmpadronadorUrbano/$', saveAsistenciaEmpadronadorUrbano),
     url(r'darAlta/$', darAlta),
 
 ]

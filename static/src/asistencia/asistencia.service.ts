@@ -41,6 +41,7 @@ export class AsistenciaService {
     private url_getrangofechas: string = `${BASEURL}/asistencia/getrangofechas/`;
     private url_personalaula: string = `${BASEURL}/asistencia/personalaula_bylocalambiente/`;
     private url_saveAsistencia: string = `${BASEURL}/asistencia/saveAsistencia/`;
+    private url_saveAsistenciaEmpadronadorUrbano: string = `${BASEURL}/asistencia/saveAsistenciaEmpadronadorUrbano/`;
     private url_darAlta: string = `${BASEURL}/asistencia/darAlta/`;
 
 
@@ -53,6 +54,14 @@ export class AsistenciaService {
     saveAsistencia(data: Array<Object>) {
         return $.ajax({
             url: this.url_saveAsistencia,
+            type: 'POST',
+            data: {personalasistencia: JSON.stringify(data)}
+        });
+    }
+
+    saveAsistenciaEmpadronadorUrbano(data: Array<Object>) {
+        return $.ajax({
+            url: this.url_saveAsistenciaEmpadronadorUrbano,
             type: 'POST',
             data: {personalasistencia: JSON.stringify(data)}
         });

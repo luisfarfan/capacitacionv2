@@ -31,5 +31,6 @@ urlpatterns = [
     # Url para setear instructor
     url(r'setInstructor/$', setInstructor),
     url(r'sendSMS/$', sendSMS),
-
+    url(r'sendSMSEmpadronadorUrbano/$', sendSMSEmpadronadorUrbano),
+    url(r'sendSMSEmpadronadorUrbanoDia2/$', sendSMSEmpadronadorUrbanoDia2),
 ]

@@ -47,7 +47,6 @@ class FilterPersonalAulaDetalleViewSet(generics.ListAPIView):
         return PersonalAula.objects.filter(id_localambiente_id=id_localambiente)
 
 
-@csrf_exempt
 def saveAsistencia(request):
     postdata = request.POST['personalasistencia']
     dataDict = json.loads(postdata)
@@ -67,6 +66,24 @@ def saveAsistencia(request):
             personalAsistencia.turno_tarde = data['turno_tarde']
 
         personalAsistencia.save()
+
+    return JsonResponse({'msg': 'Guardado correcto'})
+
+
+def saveAsistenciaEmpadronadorUrbano(request):
+    postdata = request.POST['personalasistencia']
+    dataDict = json.loads(postdata)
+    bulk_insert = []
+
+    for data in dataDict:
+        personalAsistencia = PersonalAulaAsistencia()
+        personalAsistencia.peaaula_id = data['id_personalaula']
+        personalAsistencia.fecha = data['fecha']
+        personalAsistencia.turno_manana = data['turno_manana']
+        personalAsistencia.turno_tarde = data['turno_tarde']
+        bulk_insert.append(personalAsistencia)
+
+    PersonalAulaAsistencia.objects.bulk_create(bulk_insert)
 
     return JsonResponse({'msg': 'Guardado correcto'})
 

@@ -3,6 +3,15 @@
 
 {% block css %}
     <link href="{% static "assets/css/bootstrap-modal.css" %}" rel="stylesheet" type="text/css">
+    <style>
+        input[type=checkbox] {
+            /* Double-sized Checkboxes */
+            -ms-transform: scale(2); /* IE */
+            -moz-transform: scale(2); /* FF */
+            -webkit-transform: scale(2); /* Safari and Chrome */
+            -o-transform: scale(2); /* Opera */
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <div class="col-md-12">

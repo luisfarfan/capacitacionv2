@@ -288,3 +288,7 @@ export function upgradeTooltip() {
         trigger: 'hover'
     });
 }
+
+export function isDataTable(id: string) {
+    return $.fn.DataTable.fnIsDataTable(id);
+}
