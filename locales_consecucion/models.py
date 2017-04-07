@@ -133,6 +133,7 @@ class Local(models.Model):
     cantidad_total_computo = models.IntegerField(blank=True, null=True)
     cantidad_disponible_computo = models.IntegerField(blank=True, null=True)
     cantidad_usar_computo = models.IntegerField(blank=True, null=True)
+    total_aulas = models.IntegerField(blank=True, null=True)
     id_directoriolocal = models.ForeignKey('DirectorioLocal', blank=True, null=True)
 
     class Meta:
@@ -369,3 +370,92 @@ class PeaNotaFinalSinInternet(models.Model):
     class Meta:
         managed = True
         db_table = 'PERSONALNOTAFINAL_SININTERNET'
+
+
+class GISLimiteDep(models.Model):
+    CCDD = models.CharField(primary_key=True, max_length=2)
+    CAPACITACION_CURSO1 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO2 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO3 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO4 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO5 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO6 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO7 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO8 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO9 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO10 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO11 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO12 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO14 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO15 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO16 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO17 = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sde].[CPV_SEGMENTACION_DBO_TB_LIMITE_DEP'
+
+
+class GISLimiteProv(models.Model):
+    CCDD = models.CharField(max_length=2)
+    CCPP = models.CharField(primary_key=True, max_length=2)
+    CAPACITACION_CURSO1 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO2 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO3 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO4 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO5 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO6 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO7 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO8 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO9 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO10 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO11 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO12 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO14 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO15 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO16 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO17 = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sde].[CPV_SEGMENTACION_DBO_TB_LIMITE_PRO'
+
+
+class GISLimiteDis(models.Model):
+    CCDD = models.CharField(max_length=2)
+    CCPP = models.CharField(max_length=2)
+    CCDI = models.CharField(max_length=2)
+    UBIGEO = models.CharField(primary_key=True, max_length=6)
+    CAPACITACION_CURSO1 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO2 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO3 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO4 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO5 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO6 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO7 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO8 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO9 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO10 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO11 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO12 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO14 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO15 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO16 = models.IntegerField(null=True, blank=True)
+    CAPACITACION_CURSO17 = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sde].[CPV_SEGMENTACION_DBO_TB_LIMITE_DIS'
+
+
+class MetaAula(models.Model):
+    ccdd = models.CharField(max_length=2)
+    ccpp = models.CharField(max_length=2)
+    ccdi = models.CharField(max_length=2)
+    ubigeo = models.CharField(max_length=6)
+    curso = models.IntegerField()
+    meta = models.IntegerField(null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'META_AULA'

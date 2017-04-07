@@ -33,4 +33,7 @@ urlpatterns = [
     url(r'sendSMS/$', sendSMS),
     url(r'sendSMSEmpadronadorUrbano/$', sendSMSEmpadronadorUrbano),
     url(r'sendSMSEmpadronadorUrbanoDia2/$', sendSMSEmpadronadorUrbanoDia2),
+    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1),
+    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4),
+    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5),
 ]

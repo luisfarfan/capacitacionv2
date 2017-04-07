@@ -144,7 +144,8 @@ class PersonalLibreporCursoViewSet(generics.ListAPIView):
         localcurso = self.kwargs['localcurso']
         contingencia = True if 'contingencia' in self.kwargs else False
 
-        peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True)
+        peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True).filter(
+            id_localambiente__localcurso_id=localcurso)
         if contingencia:
             return personasLibres(localcurso).filter(contingencia=1)
         else:
@@ -186,7 +187,8 @@ def distribuir_byLocalCurso(request, localcurso_id):
     for localAmbiente in localAmbientes:
         bulk = []
         capacidadDistribuir = localAmbienteValid(localAmbiente.id_localambiente)
-        peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True)
+        peaDistribuida = PersonalAula.objects.values_list('id_pea', flat=True).filter(
+            id_localambiente__localcurso_id=localcurso_id)
         if capacidadDistribuir > 0:
             _pea_distribuir = personasLibres(localcurso_id, peaDistribuida).filter(contingencia=0)
             pea_distribuir = _pea_distribuir.order_by('ubigeo__ccdd', 'ubigeo__ccpp', 'ubigeo__ccdi', 'zona',
@@ -397,6 +399,71 @@ def sendSMSEmpadronadorUrbanoDia2(request):
             jsonSend[3]['cant'] = jsonSend[3]['cant'] + 1
 
     return JsonResponse(jsonSend, safe=False)
+
+
+def sendSMSEmpadronadorUrbanoNoAsistieronDia1(request):
+    cargofuncional = {'peaaula__id_pea__id_cargofuncional': 549}
+    data = {
+        'msg': 'Te esperamos mañana 7:30am, "EX COLEGIO MIGUEL DE CERVANTES" Carretera Panamericana Norte Paradero Hospital Carlos Lanfranco, traer DNI - INEI',
+        'numeros': '997584522,997575460,991889695,967767430,989522941,990642582,997566305,986595664,950410178,993585787,946897632,955959369,987822369,991681402,966798025,990658702,966645378,964962079,997584522,991681383,992194145,',
+        'cant': len(
+            'Te esperamos mañana 7:30am, "EX COLEGIO MIGUEL DE CERVANTES" Carretera Panamericana Norte Paradero Hospital Carlos Lanfranco, traer DNI - INEI')}
+    personalAsistio = PersonalAulaAsistencia.objects.filter(**cargofuncional, peaaula__id_pea__ubigeo='150125',
+                                                            peaaula__id_pea__zona__in=['02500', '00200']).values_list(
+        'peaaula__id_pea_id', flat=True)
+
+    personalNoAsistio = Personal.objects.exclude(id_pea__in=personalAsistio).filter(id_cargofuncional=549,
+                                                                                    ubigeo='150125',
+                                                                                    zona__in=['02500', '00200'])
+
+    for persona in personalNoAsistio:
+        if validarCelular(persona.celular):
+            data['numeros'] = data['numeros'] + persona.celular + ',';
+
+    return JsonResponse(data)
+
+
+def sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4(request):
+    cargofuncional = {'peaaula__id_pea__id_cargofuncional': 549}
+    data = {
+        'msg': 'Te esperamos mañana 7:30 am, "​CASA DE LA JUVENTUD MUNICIPALIDAD JESÚS MARÍA" Cruce Horacio Urteaga con Av. Santa Cruz, Traer DNI - INEI.',
+        'numeros': '997584522,997575460,991889695,967767430,989522941,990642582,997566305,986595664,950410178,993585787,946897632,955959369,987822369,991681402,966798025,990658702,966645378,964962079,997584522,991681383,992194145,',
+        'cant': len(
+            'Te esperamos mañana 7:30am, "EX COLEGIO MIGUEL DE CERVANTES" Carretera Panamericana Norte Paradero Hospital Carlos Lanfranco, traer DNI - INEI')}
+    personalAsistio = PersonalAulaAsistencia.objects.filter(**cargofuncional, peaaula__id_pea__ubigeo='150113',
+                                                            peaaula__id_pea__zona__in=['00400']).values_list(
+        'peaaula__id_pea_id', flat=True)
+
+    personalNoAsistio = Personal.objects.exclude(id_pea__in=personalAsistio).filter(id_cargofuncional=549,
+                                                                                    ubigeo='150113',
+                                                                                    zona__in=['00400'])
+
+    for persona in personalNoAsistio:
+        if validarCelular(persona.celular):
+            data['numeros'] = data['numeros'] + persona.celular + ',';
+
+    return JsonResponse(data)
+
+
+def sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5(request):
+    cargofuncional = {'peaaula__id_pea__id_cargofuncional': 549}
+    data = {
+        'msg': 'Te esperamos mañana 7:30 am, "​UNIVERSIDAD JAIME BAUSEATE Y MEZA" entre Jr. Costa Rica y Jr. Río de Janeiro, Traer DNI - INEI.',
+        'numeros': '997584522,997575460,991889695,967767430,989522941,990642582,997566305,986595664,950410178,993585787,946897632,955959369,987822369,991681402,966798025,990658702,966645378,964962079,997584522,991681383,992194145,',
+        'cant': len(
+            'Te esperamos mañana 7:30am, "EX COLEGIO MIGUEL DE CERVANTES" Carretera Panamericana Norte Paradero Hospital Carlos Lanfranco, traer DNI - INEI')}
+    personalAsistio = PersonalAulaAsistencia.objects.filter(**cargofuncional, peaaula__id_pea__ubigeo='150113',
+                                                            peaaula__id_pea__zona__in=['00500']).values_list(
+        'peaaula__id_pea_id', flat=True)
+
+    personalNoAsistio = Personal.objects.exclude(id_pea__in=personalAsistio).filter(id_cargofuncional=549,
+                                                                                    ubigeo='150113',
+                                                                                    zona__in=['00500'])
+
+    for persona in personalNoAsistio:
+        if validarCelular(persona.celular):
+            data['numeros'] = data['numeros'] + persona.celular + ',';
+    return JsonResponse(data)
 
 
 def validarCelular(numero):

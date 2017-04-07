@@ -6,6 +6,7 @@ from rest_framework import generics, viewsets
 from django.http import JsonResponse
 from .utils import restar
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count, Min, Sum, Avg
 
 
 def agregarDirectorioCurso(request):
@@ -266,3 +267,83 @@ def addLocalesCurso():
     for curso in cursos:
         for dir in directorio:
             localcurso = DirectorioLocalCurso(curso_id=curso.id_curso, local_id=dir.id_local)
+
+
+def calcularTotalAulas(request):
+    locales = Local.objects.all()
+    for local in locales:
+        local.total_aulas = int(local.cantidad_usar_auditorios or 0) + int(local.cantidad_usar_aulas or 0) + int(
+            local.cantidad_usar_computo or 0) + int(local.cantidad_usar_oficina or 0) + int(
+            local.cantidad_usar_otros or 0) + int(
+            local.cantidad_usar_sala or 0) + int(local.cantidad_usar_sala or 0)
+        local.save()
+    return JsonResponse({'msg': True})
+
+
+def llenarDBGIS(request):
+    metaubigeos = MetaAula.objects.values('ubigeo').distinct()
+    responseTotal = []
+    for metaubigeo in metaubigeos:
+        metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
+        response = {}
+        response['UBIGEO'] = metaubigeo['ubigeo']
+        for ubigeo in metaCurso:
+            metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
+                total=Sum('local__total_aulas'))
+            model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
+            if metaubigeocurso['total'] is not None:
+                print(metaubigeocurso['total'], ubigeo.meta)
+                percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
+                response[model_key] = percent
+            else:
+                response[model_key] = 0
+        GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
+        metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
+        query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
+    return JsonResponse(list(query), safe=False)
+
+
+def llenarDBGISDep(request):
+    metaubigeos = MetaAula.objects.values('ubigeo').distinct()
+    responseTotal = []
+    for metaubigeo in metaubigeos:
+        metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
+        response = {}
+        response['UBIGEO'] = metaubigeo['ubigeo']
+        for ubigeo in metaCurso:
+            metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
+                total=Sum('local__total_aulas'))
+            model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
+            if metaubigeocurso['total'] is not None:
+                print(metaubigeocurso['total'], ubigeo.meta)
+                percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
+                response[model_key] = percent
+            else:
+                response[model_key] = 0
+        GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
+        metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
+        query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
+    return JsonResponse(list(query), safe=False)
+
+
+def llenarDBGISProv(request):
+    metaubigeos = MetaAula.objects.values('ubigeo').distinct()
+    responseTotal = []
+    for metaubigeo in metaubigeos:
+        metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
+        response = {}
+        response['UBIGEO'] = metaubigeo['ubigeo']
+        for ubigeo in metaCurso:
+            metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
+                total=Sum('local__total_aulas'))
+            model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
+            if metaubigeocurso['total'] is not None:
+                print(metaubigeocurso['total'], ubigeo.meta)
+                percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
+                response[model_key] = percent
+            else:
+                response[model_key] = 0
+        GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
+        metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
+        query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
+    return JsonResponse(list(query), safe=False)

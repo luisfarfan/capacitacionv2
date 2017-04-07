@@ -14,7 +14,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ENV = 'DESARROLLO'
+ENV = 'LOCAL'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -119,7 +119,18 @@ if ENV == 'LOCAL':
                 'driver': 'SQL Server',
                 'unicode_results': True
             },
-        }
+        },
+        'arcgis': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_MONITOREO_GIS',
+            'USER': 'us_cpv2017_monitoreo',
+            'PASSWORD': 'brEStarABr2c*CrE',
+            'HOST': '192.168.202.84',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        },
     }
 elif ENV == 'DESARROLLO':
     _DATABASECONF = {
@@ -140,6 +151,17 @@ elif ENV == 'DESARROLLO':
             'USER': 'us_inei_bdrrhh_consecucion',
             'PASSWORD': 'nU6&beTRi',
             'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        },
+        'arcgis': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_MONITOREO_GIS',
+            'USER': 'us_cpv2017_monitoreo',
+            'PASSWORD': 'brEStarABr2c*CrE',
+            'HOST': '192.168.202.84',
             'OPTIONS': {
                 'driver': 'ODBC Driver 11 for SQL Server',
                 'unicode_results': True

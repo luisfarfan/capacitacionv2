@@ -45,4 +45,6 @@ urlpatterns = [
     # Agregar directorio a locales
     url(r'agregarDirectorioCurso/$', agregarDirectorioCurso),
     url(r'agregarPeatoNotaFinalSinInternet/$', agregarPeatoNotaFinalSinInternet),
+    url(r'llenarDBGIS/$', llenarDBGIS),
+    url(r'calcularTotalAulas/$', calcularTotalAulas),
 ]
