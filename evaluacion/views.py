@@ -1,14 +1,10 @@
-from locales_consecucion.models import *
-from locales_consecucion.serializer import LocalCursoDetalleSerializer
 from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from .models import MetaSeleccion, Ficha177
 import json
-from django.db.models import Count, Value
+from django.db.models import Count
 from rest_framework.views import APIView
-from django.db.models import Q
 
 
 # class LocalAmbientebyInstructorViewSet(generics.ListAPIView):

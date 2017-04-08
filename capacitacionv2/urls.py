@@ -38,5 +38,6 @@ urlpatterns = [
     url(r'^reportes/', include('reportes.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
     url('^setSession/$', setSession),
-    url('^setSessionPrueba/$', setSessionPrueba)
+    url('^setSessionPrueba/$', setSessionPrueba),
+    url(r'^monitoreo/', include('monitoreo.urls')),
 ]

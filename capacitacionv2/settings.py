@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'distribucion',
     'seguridad',
     'reportes',
+    'monitoreo'
 ]
 
 MIDDLEWARE = [
