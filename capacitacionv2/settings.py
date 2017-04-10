@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'pandas',
     'rest_framework',
     'asistencia',
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'capacitacionv2.urls'
@@ -224,3 +227,11 @@ CACHES = {
     }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+CORS_ORIGIN_WHITELIST = (
+    '192.168.200.123:8001',
+    'cpv.inei.gob.pe:5050',
+    'cpv.inei.gob.pe:85',
+    '172.16.2.205:8000',
+    'localhost:3000'
+)
