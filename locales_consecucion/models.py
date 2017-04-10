@@ -4,34 +4,34 @@ from ubigeo.models import Ubigeo, Zona
 
 # Create your models here.
 
-# class NivelGrado(models.Model):
-#     nivel_grado_id = models.IntegerField(primary_key=True)
-#     descripcion = models.CharField(max_length=255)
-#     nivel_id = models.IntegerField()
-#     grado_id = models.IntegerField()
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'nivel_grado'
-#
-#
-# class Instituciones(models.Model):
-#     ID_INSTITUCION = models.IntegerField(primary_key=True)
-#     DESC_INSTITUCION = models.CharField(max_length=255)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'MAE_INSTITUCION'
-#
-#
-# class Profesion(models.Model):
-#     codigo = models.CharField(primary_key=True, max_length=10)
-#     detalle = models.CharField(max_length=255, null=True, blank=True)
-#     estado = models.IntegerField(null=True, blank=True)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'PROFESION'
+class NivelGrado(models.Model):
+    nivel_grado_id = models.IntegerField(primary_key=True)
+    descripcion = models.CharField(max_length=255)
+    nivel_id = models.IntegerField()
+    grado_id = models.IntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'nivel_grado'
+
+
+class Instituciones(models.Model):
+    ID_INSTITUCION = models.IntegerField(primary_key=True)
+    DESC_INSTITUCION = models.CharField(max_length=255)
+
+    class Meta:
+        managed = True
+        db_table = 'MAE_INSTITUCION'
+
+
+class Profesion(models.Model):
+    codigo = models.CharField(primary_key=True, max_length=10)
+    detalle = models.CharField(max_length=255, null=True, blank=True)
+    estado = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'PROFESION'
 
 
 class Etapa(models.Model):
@@ -304,9 +304,9 @@ class Personal(models.Model):
     ape_materno = models.CharField(max_length=100, blank=True, null=True)
     nombre = models.CharField(max_length=100, blank=True, null=True)
     celular = models.CharField(max_length=100, blank=True, null=True)
-    # grado = models.ForeignKey(NivelGrado, blank=True, null=True)
-    # profesion = models.ForeignKey(ProfesionPersonal, null=True)
-    # tipo_inst = models.ForeignKey(Instituciones, blank=True, null=True)
+    grado = models.ForeignKey(NivelGrado, blank=True, null=True)
+    profesion = models.ForeignKey(Profesion, null=True)
+    tipo_inst = models.ForeignKey(Instituciones, blank=True, null=True)
     id_cargofuncional = models.ForeignKey(CargoFuncional, null=True, blank=True)
     id_convocatoriacargo = models.CharField(max_length=4, blank=True, null=True)
     zona = models.CharField(max_length=5, blank=True, null=True)
@@ -492,3 +492,19 @@ class MetaAula(models.Model):
     class Meta:
         managed = True
         db_table = 'META_AULA'
+
+
+# class MetaCapacitacionPersonal(models.Model):
+#     ccdd = models.CharField(max_length=2)
+#     ccpp = models.CharField(max_length=2)
+#     ccdi = models.CharField(max_length=2)
+#     ubigeo = models.CharField(max_length=6)
+#     zona = models.CharField(max_length=6)
+#     id_cargofuncional = models.IntegerField()
+#     meta_campo = models.IntegerField()
+#     meta_capacitacion = models.IntegerField()
+#     inscritos = models.IntegerField(null=True, blank=True)
+#
+#     class Meta:
+#         managed = True
+#         db_table = 'META_CAPACITACION_PERSONAL'

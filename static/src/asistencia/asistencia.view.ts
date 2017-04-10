@@ -260,6 +260,8 @@ class AsistenciaView {
             });
             this.disabledChecks();
             this.countAsistenciaTotalPorFecha();
+        } else {
+            $('#tabla_asistencia').find('tbody').html(tbody);
         }
         $('#btn_exportar').off();
         $('#btn_exportar').on('click', () => {

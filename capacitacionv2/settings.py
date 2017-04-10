@@ -14,7 +14,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ENV = 'LOCAL'
+ENV = 'DESARROLLO'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -233,5 +233,6 @@ CORS_ORIGIN_WHITELIST = (
     'cpv.inei.gob.pe:5050',
     'cpv.inei.gob.pe:85',
     '172.16.2.205:8000',
-    'localhost:3000'
+    'localhost:3000',
+    '192.168.200.123:3000',
 )

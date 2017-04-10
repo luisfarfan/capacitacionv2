@@ -31,17 +31,28 @@ def resumenNacional(request, curso, ccdd, ):
 
 
 class ResumenNacional(APIView):
-    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+    def get(self, request, curso):
         cargosCurso = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
-        response = {'ambito': '', 'programados': 0, 'disponibles': 0, 'percent': 0, 'personalcapacitar': 0,
-                    'personalreclutado': 0}
-        responseTotal = []
-        ambitos = getAmbitosIterator(curso, ccdd, ccpp, ccdi).values()
-        for ambito in ambitos:
-            print(ambito)
-            pass
 
-        return JsonResponse(response)
+        responseTotal = []
+        departamentos = Ubigeo.objects.values('ccdd', 'departamento').annotate(dcount=Count('ccdd', 'departamento'))
+        print(departamentos)
+        for dep in departamentos:
+            response = {'ambito': '', 'programados': 0, 'disponibles': 0, 'percent': 0, 'personalcapacitar': 0,
+                        'personalreclutado': 0}
+            query = LocalCurso.objects.filter(curso_id=curso, local__ubigeo__ccdd=dep['ccdd'])
+            queryProgramados = query.aggregate(programados=Sum('local__total_aulas'))
+            for disponible in query:
+                disponible_total = disponible.local.cantidad_disponible_auditorios + disponible.local.cantidad_disponible_sala + disponible.local.cantidad_disponible_aulas + disponible.local.cantidad_disponible_computo + disponible.local.cantidad_disponible_oficina + disponible.local.cantidad_disponible_otros
+                response['disponibles'] = response['disponibles'] + disponible_total
+            response['personalcapacitar'] = Personal.objects.filter(id_cargofuncional__in=cargosCurso,
+                                                                    ubigeo__ccdd=dep['ccdd'], contingencia=0).count()
+            response['programados'] = queryProgramados['programados']
+            response['ambito'] = dep['departamento']
+
+            responseTotal.append(cleanDict(response))
+
+        return JsonResponse(responseTotal, safe=False)
 
 
 def getDisponiblesTotal(curso, ccdd=None, ccpp=None, ccdi=None):
