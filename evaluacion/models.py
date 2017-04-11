@@ -20,6 +20,8 @@ class MetaSeleccion(models.Model):
 class Ficha177(models.Model):
     id_per = models.IntegerField(primary_key=True)
     id_convocatoriacargo = models.IntegerField()
+    dni = models.CharField(max_length=9)
+    sexo = models.CharField(max_length=1)
     capacita = models.IntegerField()
     notacap = models.FloatField()
     seleccionado = models.IntegerField()
@@ -27,6 +29,10 @@ class Ficha177(models.Model):
     bandaprob = models.IntegerField()
     zona_i = models.CharField(max_length=5)
     seccion_i = models.CharField(max_length=1)
+    grado = models.IntegerField(null=True)
+    profesion = models.CharField(max_length=10, null=True)
+    tipo_inst = models.IntegerField(null=True)
+    edad = models.IntegerField()
 
     class Meta:
         managed = False

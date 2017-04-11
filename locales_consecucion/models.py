@@ -1,5 +1,6 @@
 from django.db import models
 from ubigeo.models import Ubigeo, Zona
+from django.contrib import admin
 
 
 # Create your models here.
@@ -58,6 +59,14 @@ class Curso(models.Model):
     class Meta:
         managed = True
         db_table = 'CURSO'
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.id_curso, self.nombre_curso, self.etapa.nombre_etapa)
+
+
+@admin.register(Curso)
+class CursoAdmin(admin.ModelAdmin):
+    pass
 
 
 class Criterio(models.Model):
@@ -299,6 +308,7 @@ class CursoCargoFuncional(models.Model):
 class Personal(models.Model):
     id_pea = models.AutoField(primary_key=True)
     id_per = models.CharField(max_length=8, blank=True, null=True)
+    sexo = models.CharField(max_length=1, blank=True, null=True)
     dni = models.CharField(max_length=8, blank=True, null=True)
     ape_paterno = models.CharField(max_length=100, blank=True, null=True)
     ape_materno = models.CharField(max_length=100, blank=True, null=True)
@@ -315,6 +325,7 @@ class Personal(models.Model):
     baja_estado = models.IntegerField(null=True, blank=True, default=0)
     alta_estado = models.IntegerField(null=True, blank=True, default=0)
     id_pea_reemplazo = models.ForeignKey('Personal', null=True, blank=True)
+    edad = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = True
@@ -494,17 +505,17 @@ class MetaAula(models.Model):
         db_table = 'META_AULA'
 
 
-# class MetaCapacitacionPersonal(models.Model):
-#     ccdd = models.CharField(max_length=2)
-#     ccpp = models.CharField(max_length=2)
-#     ccdi = models.CharField(max_length=2)
-#     ubigeo = models.CharField(max_length=6)
-#     zona = models.CharField(max_length=6)
-#     id_cargofuncional = models.IntegerField()
-#     meta_campo = models.IntegerField()
-#     meta_capacitacion = models.IntegerField()
-#     inscritos = models.IntegerField(null=True, blank=True)
-#
-#     class Meta:
-#         managed = True
-#         db_table = 'META_CAPACITACION_PERSONAL'
+class MetaCapacitacionPersonal(models.Model):
+    ccdd = models.CharField(max_length=2)
+    ccpp = models.CharField(max_length=2)
+    ccdi = models.CharField(max_length=2)
+    ubigeo = models.CharField(max_length=6)
+    zona = models.CharField(max_length=6, null=True)
+    id_cargofuncional = models.IntegerField()
+    meta_campo = models.IntegerField()
+    meta_capacitacion = models.IntegerField()
+    inscritos = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'META_CAPACITACION_PERSONAL'

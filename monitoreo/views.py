@@ -26,10 +26,6 @@ class Cursos(APIView):
         return JsonResponse(list(cursos), safe=False)
 
 
-def resumenNacional(request, curso, ccdd, ):
-    pass
-
-
 class ResumenNacional(APIView):
     def get(self, request, curso):
         cargosCurso = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
@@ -140,14 +136,20 @@ class personalCapacitar(APIView):
                     'reserva': 0}
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
         filter = {'id_cargofuncional__in': cargos}
+        filter2 = {'id_cargofuncional__in': cargos}
         if ccdd is not None:
             filter['ubigeo__ccdd'] = ccdd
+            filter2['ccdd'] = ccdd
         if ccpp is not None:
             filter['ubigeo__ccpp'] = ccpp
+            filter2['ccpp'] = ccpp
         if ccdi is not None:
             filter['ubigeo__ccdi'] = ccdi
+            filter2['ccdi'] = ccdi
 
         personal = Personal.objects.filter(**filter)
+        response['metacapacitar'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
+            meta_capacitacion=Sum('meta_capacitacion'))['meta_capacitacion']
         response['aptoscapacitar'] = personal.count()
         response['seleccionadoscapacitacion'] = personal.filter(contingencia=0).count()
         response['reserva'] = personal.filter(contingencia=1).count()
@@ -182,14 +184,18 @@ class resultadosCapacitacion(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
         response = {'metacampo': 0, 'personalcapacitado': 0, 'titulares': 0, 'reserva': 0}
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter2 = {'id_cargofuncional__in': cargos}
         if ccdd != 13:
             filter = {'peaaula__id_pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
                 filter['peaaula__id_pea__ubigeo__ccdd'] = ccdd
+                filter2['ccdd'] = ccdd
             if ccpp is not None:
                 filter['peaaula__id_pea__ubigeo__ccpp'] = ccpp
+                filter2['ccpp'] = ccpp
             if ccdi is not None:
                 filter['peaaula__id_pea__ubigeo__ccdi'] = ccdi
+                filter2['ccdi'] = ccdi
 
             personal = PersonalAulaNotaFinal.objects.filter(**filter)
             response['personalcapacitado'] = personal.filter(peaaula__id_pea__contingencia=0).count()
@@ -197,17 +203,124 @@ class resultadosCapacitacion(APIView):
             filter = {'pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
                 filter['pea__ubigeo__ccdd'] = ccdd
+                filter2['ccdd'] = ccdd
             if ccpp is not None:
                 filter['pea__ubigeo_ccpp'] = ccpp
+                filter2['ccpp'] = ccpp
             if ccdi is not None:
                 filter['pea__ubigeo__ccdi'] = ccdi
+                filter2['ccdi'] = ccdi
             personal = PeaNotaFinalSinInternet.objects.filter(**filter)
             response['personalcapacitado'] = personal.filter(pea__contingencia=0).count()
-
+        response['metacampo'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
+            metacampo=Sum('meta_campo'))['metacampo']
         response['titulares'] = personal.filter(sw_titu=1, seleccionado=1).count()
         response['reserva'] = personal.filter(sw_titu=1, seleccionado=0).count()
 
         return JsonResponse(cleanDict(response))
+
+
+class porSexo(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter = {'id_cargofuncional__in': cargos, 'contingencia': 0}
+        if ccdd is not None:
+            filter['ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['ubigeo__ccdi'] = ccdi
+
+        personal = Personal.objects.filter(**filter)
+        aprobadosM = PersonalAulaNotaFinal.objects.filter(
+            peaaula__id_pea_id__in=personal.filter(sexo='M').values_list('id_pea', flat=True),
+            nota_final__gte=10).count()
+        aprobadosF = PersonalAulaNotaFinal.objects.filter(
+            peaaula__id_pea_id__in=personal.filter(sexo='F').values_list('id_pea', flat=True),
+            nota_final__gte=10).count()
+
+        data = [
+            {'name': 'Seleccionados para Capacitación',
+             'data': [personal.filter(sexo='F').count(), personal.filter(sexo='M').count()]},
+            {'name': 'Personal Capacitado',
+             'data': [personal.filter(sexo='F').count(), personal.filter(sexo='M').count()]},
+            {'name': 'Titulares', 'data': [aprobadosF, aprobadosM]}
+        ]
+
+        return JsonResponse(data, safe=False)
+
+
+class grupoEdad(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter = {'id_cargofuncional__in': cargos, 'contingencia': 0}
+        if ccdd is not None:
+            filter['ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['ubigeo__ccdi'] = ccdi
+
+        personal = Personal.objects.filter(**filter)
+        aprobados = PersonalAulaNotaFinal.objects.filter(
+            peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True),
+            nota_final__gte=10)
+        p15_17 = personal.filter(edad__range=[15, 17]).count()
+        p18_19 = personal.filter(edad__range=[18, 19]).count()
+        p20_30 = personal.filter(edad__range=[20, 30]).count()
+        p31_40 = personal.filter(edad__range=[31, 40]).count()
+        p51_60 = personal.filter(edad__range=[51, 60]).count()
+        p61_mas = personal.filter(edad__range=[61, 100]).count()
+
+        a15_17 = aprobados.filter(peaaula__id_pea__edad__range=[15, 17]).count()
+        a18_19 = aprobados.filter(peaaula__id_pea__edad__range=[18, 19]).count()
+        a20_30 = aprobados.filter(peaaula__id_pea__edad__range=[20, 30]).count()
+        a31_40 = aprobados.filter(peaaula__id_pea__edad__range=[31, 40]).count()
+        a51_60 = aprobados.filter(peaaula__id_pea__edad__range=[51, 60]).count()
+        a61_mas = aprobados.filter(peaaula__id_pea__edad__range=[61, 100]).count()
+        data = [
+            {'name': 'Seleccionados para Capacitación',
+             'data': [p15_17, p18_19, p20_30, p31_40, p51_60, p61_mas]},
+            {'name': 'Personal Capacitado',
+             'data': [p15_17, p18_19, p20_30, p31_40, p51_60, p61_mas]},
+            {'name': 'Titulares',
+             'data': [a15_17, a18_19, a20_30, a31_40, a51_60, a61_mas]},
+        ]
+        return JsonResponse(data, safe=False)
+
+
+class nivelEducativo(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter = {'id_cargofuncional__in': cargos, 'contingencia': 0}
+        if ccdd is not None:
+            filter['ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['ubigeo__ccdi'] = ccdi
+
+        personal = Personal.objects.filter(**filter)
+        aprobados = PersonalAulaNotaFinal.objects.filter(
+            peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True), sw_titu=1, seleccionado=1)
+        quintosecundaria = personal.filter(grado=12).count()
+        superiornouniversitaria = personal.filter(grado__in=[4, 5, 6]).count()
+        superioruniversitaria = personal.filter(grado__in=[7, 8, 9, 10]).count()
+
+        aquintosecundaria = aprobados.filter(peaaula__id_pea__grado=12).count()
+        asuperiornouniversitaria = aprobados.filter(peaaula__id_pea__grado__in=[4, 5, 6]).count()
+        asuperioruniversitaria = aprobados.filter(peaaula__id_pea__grado__in=[7, 8, 9, 10]).count()
+
+        data = [
+            {'name': 'Seleccionados para Capacitación',
+             'data': [quintosecundaria, superiornouniversitaria, superioruniversitaria]},
+            {'name': 'Personal Capacitado',
+             'data': [quintosecundaria, superiornouniversitaria, superioruniversitaria]},
+            {'name': 'Titulares',
+             'data': [aquintosecundaria, asuperiornouniversitaria, asuperioruniversitaria]},
+        ]
+        return JsonResponse(data, safe=False)
+
 
 
 def updateCantidadAulasLocales(request):
@@ -235,5 +348,28 @@ def updateCantidadAulasLocales(request):
 def updatePersonal(request):
     personal = Personal.objects.all()
     for pea in personal:
-        ficha = Ficha177.objects.get(id_per=pea.id_per, id_convocatoriacargo=pea.id_convocatoriacargo)
-        pea.tipo_inst = ficha
+        ficha = Ficha177.objects.using('consecucion').filter(dni=pea.dni)
+        if ficha.count():
+            ficha = Ficha177.objects.using('consecucion').get(dni=pea.dni)
+            if ficha.tipo_inst != 0:
+                pea.tipo_inst_id = ficha.tipo_inst
+            if ficha.grado != 0:
+                pea.grado_id = ficha.grado
+            if ficha.profesion != '0':
+                pea.profesion_id = ficha.profesion
+            pea.save()
+
+    return JsonResponse({'msg': 'actualizado'})
+
+
+def updateSexo(request):
+    personal = Personal.objects.all()
+    for pea in personal:
+        ficha = Ficha177.objects.using('consecucion').filter(dni=pea.dni)
+        if ficha.count():
+            ficha = Ficha177.objects.using('consecucion').get(dni=pea.dni)
+            pea.sexo = ficha.sexo
+            pea.edad = ficha.edad
+            pea.save()
+
+    return JsonResponse({'msg': 'actualizado'})
