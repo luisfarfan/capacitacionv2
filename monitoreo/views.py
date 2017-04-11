@@ -32,7 +32,6 @@ class ResumenNacional(APIView):
 
         responseTotal = []
         departamentos = Ubigeo.objects.values('ccdd', 'departamento').annotate(dcount=Count('ccdd', 'departamento'))
-        print(departamentos)
         for dep in departamentos:
             response = {'ambito': '', 'programados': 0, 'disponibles': 0, 'percent': 0, 'personalcapacitar': 0,
                         'personalreclutado': 0}

@@ -303,6 +303,17 @@ def llenarDBGIS(request):
     return JsonResponse(list(query), safe=False)
 
 
+def diccionarioCursos(request):
+    cursos = Curso.objects.all()
+    response = {}
+    for curso in cursos:
+        keycurso = 'CAPACITACION_CURSO{}'.format(curso.id_curso)
+        nombrecurso = curso.nombre_curso
+        response[keycurso] = nombrecurso
+
+    return JsonResponse(response)
+
+
 def llenarDBGISDep(request):
     metaubigeos = MetaAula.objects.values('ubigeo').distinct()
     responseTotal = []

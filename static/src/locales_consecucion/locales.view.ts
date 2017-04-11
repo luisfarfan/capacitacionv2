@@ -608,7 +608,7 @@ class LocalController {
                         <td><input type="number" name="piso_ambiente" class="form-control" value="${value.n_piso == null ? '' : value.n_piso}"></td>
                         <td>
                             <ul class="icons-list">
-                                <li name="li_save_capacidad_piso" data-value="${value.id_localambiente}" class="text-primary-600"><a><i class="icon-pencil7"></i></a></li>
+                                <li name="li_save_capacidad_piso" data-value="${value.id_localambiente}" class="text-primary-600"><a><i class="icon-floppy-disk"></i></a></li>
                             </ul>
                         </td>
                      </tr>`

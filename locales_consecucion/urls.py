@@ -47,4 +47,6 @@ urlpatterns = [
     url(r'agregarPeatoNotaFinalSinInternet/$', agregarPeatoNotaFinalSinInternet),
     url(r'llenarDBGIS/$', llenarDBGIS),
     url(r'calcularTotalAulas/$', calcularTotalAulas),
+    url(r'diccionarioCursos/$', diccionarioCursos),
+
 ]

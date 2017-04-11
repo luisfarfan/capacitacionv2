@@ -187,10 +187,18 @@ class AsistenciaView {
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
             colspan = 2;
         }
-
-        header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
+        if (this.cursoSelected == 4) {
+            header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
+        } else {
+            header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>`;
+        }
+
 
         this.rangoFechas.map((fecha: string, index: number) => {
             if (this.cursoSelected == 4) {
@@ -221,8 +229,10 @@ class AsistenciaView {
                 tbody += `<tr>`;
             }
             tbody += `<td>${index + 1}</td>
+                      <td>${value.id_pea.dni}</td>
                       <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
-                      <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>`
+                      <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>
+                      <td>${value.id_pea.zona}</td>`
             this.rangoFechas.map((fecha: string, ind: number) => {
                 let divParams: ModelDivAsistencia = {
                     fecha: fecha,
