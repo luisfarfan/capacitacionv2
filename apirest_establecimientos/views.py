@@ -111,7 +111,7 @@ def getNameAmbito(codambito):
         name_ambito = 'DISTRITO'
 
     if codambito == '00':
-        response = 'Todos'
+        response = 'Total'
     else:
         query = FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito).values()[0]
         print(query)
