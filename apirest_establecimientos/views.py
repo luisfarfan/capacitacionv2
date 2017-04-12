@@ -8,7 +8,9 @@ from django.db.models.functions import Length
 class Establecimientos(APIView):
     def get(self, request, ccdd=None, ccpp=None, ccdi=None, zona=None):
         if ccdd is None:
-            query = FenomenoMonitoreo.objects.using('segmentacion').annotate(cod_ambito=Length('COD_AMBITO')).filter(
+            queryNacional = FenomenoMonitoreo.objects.using('segmentacion').filter(COD_AMBITO='00')
+            query = FenomenoMonitoreo.objects.using('segmentacion').exclude(COD_AMBITO='00').annotate(
+                cod_ambito=Length('COD_AMBITO')).filter(
                 cod_ambito=2)
         elif ccdd is not None and ccpp is None:
             query = FenomenoMonitoreo.objects.using('segmentacion').annotate(cod_ambito=Length('COD_AMBITO')).filter(
@@ -18,8 +20,12 @@ class Establecimientos(APIView):
             query = FenomenoMonitoreo.objects.using('segmentacion').annotate(cod_ambito=Length('COD_AMBITO')).filter(
                 cod_ambito=6,
                 COD_AMBITO__startswith=ccdd + ccpp)
-
-        formatQuery = getCampos(query)
+        if ccdd is None:
+            formatQuery = sorted(getCampos(query), key=lambda k: k['ambito'])
+            nacional = getCampos(queryNacional)[0]
+            formatQuery.insert(0, nacional)
+        else:
+            formatQuery = getCampos(query)
         return JsonResponse(list(formatQuery), safe=False)
 
 
