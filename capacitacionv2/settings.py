@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'distribucion',
     'seguridad',
     'reportes',
-    'monitoreo'
+    'monitoreo',
+    'apirest_establecimientos'
 ]
 
 MIDDLEWARE = [
@@ -135,6 +136,17 @@ if ENV == 'LOCAL':
                 'unicode_results': True
             },
         },
+        'segmentacion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_SEGMENTACION',
+            'USER': 'us_segmentacion_web',
+            'PASSWORD': 'u$s3g*mentaWeB',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        }
     }
 elif ENV == 'DESARROLLO':
     _DATABASECONF = {
@@ -171,6 +183,17 @@ elif ENV == 'DESARROLLO':
                 'unicode_results': True
             },
         },
+        'segmentacion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_SEGMENTACION',
+            'USER': 'us_segmentacion_web',
+            'PASSWORD': 'u$s3g*mentaWeB',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        }
     }
 elif ENV == 'SQLITE':
     _DATABASECONF = {
@@ -228,11 +251,12 @@ CACHES = {
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-CORS_ORIGIN_WHITELIST = (
-    '192.168.200.123:8001',
-    'cpv.inei.gob.pe:5050',
-    'cpv.inei.gob.pe:85',
-    '172.16.2.205:8000',
-    'localhost:3000',
-    '192.168.200.123:3000',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     '192.168.200.123:8001',
+#     'cpv.inei.gob.pe:5050',
+#     'cpv.inei.gob.pe:85',
+#     '172.16.2.205:8000',
+#     'localhost:3000',
+#     '192.168.200.123:3000',
+# )

@@ -40,4 +40,5 @@ urlpatterns = [
     url('^setSession/$', setSession),
     url('^setSessionPrueba/$', setSessionPrueba),
     url(r'^monitoreo/', include('monitoreo.urls')),
+    url(r'^apirest_establecimientos/', include('apirest_establecimientos.urls')),
 ]
