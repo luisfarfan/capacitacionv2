@@ -47,6 +47,11 @@ class AsistenciaView {
             this.cursoSelected = curso_id;
             $('#p_curso_actual').text($('#cursos :selected').text());
             this.getAulas(curso_id);
+            if (this.cursoSelected != 4) {
+                $('#btn_cierre_curso').hide()
+            } else {
+                $('#btn_cierre_curso').show()
+            }
         });
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
             let selected = $(element.currentTarget).val();
@@ -86,9 +91,6 @@ class AsistenciaView {
         $('#btn_dar_alta').on('click', (element: JQueryEventObject) => {
             this.darAlta(this.pea_id);
         });
-        if (this.cursoSelected == 4) {
-            $('#btn_cierre_curso').remove()
-        }
         $('#btn_cierre_curso').on('click', () => {
             utils.alert_confirm(() => {
                 this.cerrarCursoEmpadronador();
