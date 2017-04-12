@@ -332,6 +332,34 @@ capacita=1, seleccionado=1, sw_titu=0  = RESERVA
 """
 
 
+def cerrarCursoEmpadronador(request):
+    postdata = request.POST['data']
+    dataDict = json.loads(postdata)
+    print(dataDict)
+    for data in dataDict:
+        peaaula = PersonalAula.objects.get(pk=data)
+        persona = Personal.objects.get(id_pea=peaaula.id_pea_id)
+        sendFicha177Empadronador(persona.id_per)
+
+    return JsonResponse({'msg': 'Cierre de curso exitoso'})
+
+
+def sendFicha177Empadronador(id_per):
+    try:
+        print(id_per)
+        ficha = Ficha177.objects.using('consecucion').get(id_per=id_per)
+        ficha.bandaprob = 1
+        ficha.capacita = 1
+        ficha.seleccionado = 1
+        ficha.sw_titu = 1
+        ficha.notacap = 20
+        ficha.save()
+    except:
+        pass
+
+    return True
+
+
 def cerrarCursoSinInternet(request):
     postdata = request.POST['data']
     dataDict = json.loads(postdata)

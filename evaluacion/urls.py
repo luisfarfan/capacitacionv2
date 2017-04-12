@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'cerrarCursoConInternet/$', cerrarCursoConInternet),
     url(r'cerrarCursoSinInternet/$', cerrarCursoSinInternet),
     url(r'saveNotaFinalSinInternet/$', saveNotaFinalSinInternet),
+    url(r'cerrarCursoEmpadronador/$', cerrarCursoEmpadronador),
     url(r'criteriosdetalle_curso/(?P<curso>[0-9]+)/$',
         CriterioCursoFilterViewSet.as_view()),
 

@@ -43,12 +43,21 @@ export class AsistenciaService {
     private url_saveAsistencia: string = `${BASEURL}/asistencia/saveAsistencia/`;
     private url_saveAsistenciaEmpadronadorUrbano: string = `${BASEURL}/asistencia/saveAsistenciaEmpadronadorUrbano/`;
     private url_darAlta: string = `${BASEURL}/asistencia/darAlta/`;
+    private url_cerrarCursoEmpadronador: string = `${BASEURL}/evaluacion/cerrarCursoEmpadronador/`;
 
 
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_localambienteInstructor}${id_instructor}/${curso}/`
         })
+    }
+
+    cerrarCursoEmpadronador(object: Array<number>) {
+        return $.ajax({
+            url: this.url_cerrarCursoEmpadronador,
+            type: 'POST',
+            data: {data: JSON.stringify(object)}
+        });
     }
 
     saveAsistencia(data: Array<Object>) {

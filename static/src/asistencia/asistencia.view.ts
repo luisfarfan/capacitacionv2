@@ -86,6 +86,11 @@ class AsistenciaView {
         $('#btn_dar_alta').on('click', (element: JQueryEventObject) => {
             this.darAlta(this.pea_id);
         });
+        $('#btn_cierre_curso').on('click', () => {
+            utils.alert_confirm(() => {
+                this.cerrarCursoEmpadronador();
+            }, 'Esta seguro de Cerrar el curso?');
+        });
         this.disabledChecks();
     }
 
@@ -177,6 +182,19 @@ class AsistenciaView {
             $('#select_aulas_asignadas').trigger('change');
             $('#modal_darAlta').modal('hide');
         })
+    }
+
+    cerrarCursoEmpadronador() {
+        let inputsChecked = $('#tabla_asistencia').find('input[type="checkbox"]:checked');
+        let aprobados: Array<number> = [];
+        inputsChecked.map((index: number, domElement: Element) => {
+            let peaaula = $(domElement).data('value').id_personalaula
+            aprobados.push(peaaula)
+        })
+        console.log(aprobados)
+        this.asistenciaService.cerrarCursoEmpadronador(aprobados).done((response) => {
+            console.log(response);
+        });
     }
 
     drawHeaderFechas() {
