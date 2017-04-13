@@ -441,8 +441,9 @@ class GISLimiteDep(models.Model):
 
 
 class GISLimiteProv(models.Model):
+    OBJECTID = models.IntegerField(primary_key=True)
     CCDD = models.CharField(max_length=2)
-    CCPP = models.CharField(primary_key=True, max_length=2)
+    CCPP = models.CharField(max_length=2)
     CAPACITACION_CURSO1 = models.IntegerField(null=True, blank=True)
     CAPACITACION_CURSO2 = models.IntegerField(null=True, blank=True)
     CAPACITACION_CURSO3 = models.IntegerField(null=True, blank=True)
@@ -510,7 +511,7 @@ class MetaCapacitacionPersonal(models.Model):
     ccpp = models.CharField(max_length=2)
     ccdi = models.CharField(max_length=2)
     ubigeo = models.CharField(max_length=6)
-    zona = models.CharField(max_length=6, null=True)
+    zona = models.CharField(max_length=6, null=True, blank=True)
     id_cargofuncional = models.IntegerField()
     meta_campo = models.IntegerField()
     meta_capacitacion = models.IntegerField()
@@ -519,3 +520,11 @@ class MetaCapacitacionPersonal(models.Model):
     class Meta:
         managed = True
         db_table = 'META_CAPACITACION_PERSONAL'
+
+    def __str__(self):
+        return '{} - {} - {} - {}'.format(self.ccdd, self.ccpp, self.ccdi, self.id_cargofuncional)
+
+
+@admin.register(MetaCapacitacionPersonal)
+class MetaCapacitacionPersonalAdmin(admin.ModelAdmin):
+    pass

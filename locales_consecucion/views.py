@@ -314,47 +314,65 @@ def diccionarioCursos(request):
     return JsonResponse(response)
 
 
-def llenarDBGISDep(request):
-    metaubigeos = MetaAula.objects.values('ubigeo').distinct()
-    responseTotal = []
-    for metaubigeo in metaubigeos:
-        metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
-        response = {}
-        response['UBIGEO'] = metaubigeo['ubigeo']
-        for ubigeo in metaCurso:
-            metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
-                total=Sum('local__total_aulas'))
-            model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
-            if metaubigeocurso['total'] is not None:
-                print(metaubigeocurso['total'], ubigeo.meta)
-                percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
-                response[model_key] = percent
-            else:
-                response[model_key] = 0
-        GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
-        metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
-        query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
-    return JsonResponse(list(query), safe=False)
-
-
 def llenarDBGISProv(request):
-    metaubigeos = MetaAula.objects.values('ubigeo').distinct()
-    responseTotal = []
-    for metaubigeo in metaubigeos:
-        metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
-        response = {}
-        response['UBIGEO'] = metaubigeo['ubigeo']
-        for ubigeo in metaCurso:
-            metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
+    GISLimiteDis.objects.all()
+    provincias = GISLimiteProv.objects.using('arcgis').all()
+    cursos = Curso.objects.all()
+    for prov in provincias:
+        for curso in cursos:
+            valuecurso = 'CAPACITACION_CURSO{}'.format(curso.id_curso)
+            totalcurso = LocalCurso.objects.filter(curso_id=curso.id_curso, local__ubigeo__ccdd=prov.CCDD,
+                                                   local__ubigeo__ccpp=prov.CCPP).aggregate(
                 total=Sum('local__total_aulas'))
-            model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
-            if metaubigeocurso['total'] is not None:
-                print(metaubigeocurso['total'], ubigeo.meta)
-                percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
-                response[model_key] = percent
+            metaCurso = MetaAula.objects.filter(ccdd=prov.CCDD, ccpp=prov.CCPP, curso=curso.id_curso).aggregate(
+                totalMeta=Sum('meta'))
+            if totalcurso['total'] is None or metaCurso['totalMeta'] is None:
+                percent = None
             else:
-                response[model_key] = 0
-        GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
-        metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
-        query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
-    return JsonResponse(list(query), safe=False)
+                percent = int(round((totalcurso['total'] / metaCurso['totalMeta']) * 100))
+            kwargs = {valuecurso: percent}
+            GISLimiteProv.objects.using('arcgis').filter(OBJECTID=prov.OBJECTID).update(**kwargs)
+
+    return JsonResponse({'msg': 'Actualizado con exito'}, safe=False)
+
+
+def llenarDBGISDep(request):
+    departamentos = GISLimiteDep.objects.using('arcgis').all()
+    cursos = Curso.objects.all()
+    for prov in departamentos:
+        for curso in cursos:
+            valuecurso = 'CAPACITACION_CURSO{}'.format(curso.id_curso)
+            totalcurso = LocalCurso.objects.filter(curso_id=curso.id_curso, local__ubigeo__ccdd=prov.CCDD).aggregate(
+                total=Sum('local__total_aulas'))
+            metaCurso = MetaAula.objects.filter(ccdd=prov.CCDD, curso=curso.id_curso).aggregate(
+                totalMeta=Sum('meta'))
+            if totalcurso['total'] is None or metaCurso['totalMeta'] is None:
+                percent = None
+            else:
+                percent = int(round((totalcurso['total'] / metaCurso['totalMeta']) * 100))
+            kwargs = {valuecurso: percent}
+            GISLimiteDep.objects.using('arcgis').filter(CCDD=prov.CCDD).update(**kwargs)
+
+    return JsonResponse({'msg': 'Actualizado con exito'}, safe=False)
+
+# def llenarDBGISProv(request):
+#     metaubigeos = MetaAula.objects.values('ubigeo').distinct()
+#     responseTotal = []
+#     for metaubigeo in metaubigeos:
+#         metaCurso = MetaAula.objects.filter(ubigeo=metaubigeo['ubigeo'])
+#         response = {}
+#         response['UBIGEO'] = metaubigeo['ubigeo']
+#         for ubigeo in metaCurso:
+#             metaubigeocurso = LocalCurso.objects.filter(curso_id=ubigeo.curso, local__ubigeo=ubigeo.ubigeo).aggregate(
+#                 total=Sum('local__total_aulas'))
+#             model_key = 'CAPACITACION_CURSO{}'.format(ubigeo.curso)
+#             if metaubigeocurso['total'] is not None:
+#                 print(metaubigeocurso['total'], ubigeo.meta)
+#                 percent = int(round((metaubigeocurso['total'] / ubigeo.meta) * 100))
+#                 response[model_key] = percent
+#             else:
+#                 response[model_key] = 0
+#         GISLimiteDis.objects.using('arcgis').filter(UBIGEO=response['UBIGEO']).update(**response)
+#         metaubigeos = list(MetaAula.objects.values_list('ubigeo', flat=True).distinct())
+#         query = GISLimiteDis.objects.using('arcgis').filter(UBIGEO__in=metaubigeos).values()
+#     return JsonResponse(list(query), safe=False)

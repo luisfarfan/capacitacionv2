@@ -149,6 +149,8 @@ class personalCapacitar(APIView):
         personal = Personal.objects.filter(**filter)
         response['metacapacitar'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
             meta_capacitacion=Sum('meta_capacitacion'))['meta_capacitacion']
+        response['inscritos'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
+            inscritos=Sum('inscritos'))['inscritos']
         response['aptoscapacitar'] = personal.count()
         response['seleccionadoscapacitacion'] = personal.filter(contingencia=0).count()
         response['reserva'] = personal.filter(contingencia=1).count()
@@ -261,6 +263,7 @@ class grupoEdad(APIView):
             filter['ubigeo__ccdi'] = ccdi
 
         personal = Personal.objects.filter(**filter)
+        print(filter)
         aprobados = PersonalAulaNotaFinal.objects.filter(
             peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True),
             nota_final__gte=10)
@@ -268,14 +271,14 @@ class grupoEdad(APIView):
         p18_19 = personal.filter(edad__range=[18, 19]).count()
         p20_30 = personal.filter(edad__range=[20, 30]).count()
         p31_40 = personal.filter(edad__range=[31, 40]).count()
-        p51_60 = personal.filter(edad__range=[51, 60]).count()
-        p61_mas = personal.filter(edad__range=[61, 100]).count()
+        p51_60 = personal.filter(edad__range=[41, 60]).count()
+        p61_mas = personal.filter(edad__range=[61, 500]).count()
 
         a15_17 = aprobados.filter(peaaula__id_pea__edad__range=[15, 17]).count()
         a18_19 = aprobados.filter(peaaula__id_pea__edad__range=[18, 19]).count()
         a20_30 = aprobados.filter(peaaula__id_pea__edad__range=[20, 30]).count()
         a31_40 = aprobados.filter(peaaula__id_pea__edad__range=[31, 40]).count()
-        a51_60 = aprobados.filter(peaaula__id_pea__edad__range=[51, 60]).count()
+        a51_60 = aprobados.filter(peaaula__id_pea__edad__range=[41, 60]).count()
         a61_mas = aprobados.filter(peaaula__id_pea__edad__range=[61, 100]).count()
         data = [
             {'name': 'Seleccionados para Capacitación',
@@ -301,14 +304,17 @@ class nivelEducativo(APIView):
 
         personal = Personal.objects.filter(**filter)
         aprobados = PersonalAulaNotaFinal.objects.filter(
-            peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True), sw_titu=1, seleccionado=1)
-        quintosecundaria = personal.filter(grado=12).count()
-        superiornouniversitaria = personal.filter(grado__in=[4, 5, 6]).count()
-        superioruniversitaria = personal.filter(grado__in=[7, 8, 9, 10]).count()
+            peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True), sw_titu=1, seleccionado=1).values_list(
+            'peaaula__id_pea', flat=True)
+        quintosecundaria = personal.filter(grado__grado_id=11).count()
+        superiornouniversitaria = personal.filter(grado__nivel_id=5, grado__grado_id__in=[1, 2, 4]).count()
+        superioruniversitaria = personal.filter(grado__nivel_id=4, grado__grado_id__in=[1, 2, 3, 4]).count()
 
-        aquintosecundaria = aprobados.filter(peaaula__id_pea__grado=12).count()
-        asuperiornouniversitaria = aprobados.filter(peaaula__id_pea__grado__in=[4, 5, 6]).count()
-        asuperioruniversitaria = aprobados.filter(peaaula__id_pea__grado__in=[7, 8, 9, 10]).count()
+        aquintosecundaria = Personal.objects.filter(id_pea__in=aprobados, grado__grado_id=11).count()
+        asuperiornouniversitaria = Personal.objects.filter(id_pea__in=aprobados, grado__nivel_id=5,
+                                                           grado__grado_id__in=[1, 2, 4]).count()
+        asuperioruniversitaria = Personal.objects.filter(id_pea__in=aprobados, grado__nivel_id=4,
+                                                         grado__grado_id__in=[1, 2, 3, 4]).count()
 
         data = [
             {'name': 'Seleccionados para Capacitación',
@@ -319,7 +325,6 @@ class nivelEducativo(APIView):
              'data': [aquintosecundaria, asuperiornouniversitaria, asuperioruniversitaria]},
         ]
         return JsonResponse(data, safe=False)
-
 
 
 def updateCantidadAulasLocales(request):

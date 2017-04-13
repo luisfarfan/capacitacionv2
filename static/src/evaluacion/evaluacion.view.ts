@@ -68,8 +68,10 @@ class EvaluacionView {
         let cargofuncional = $('#select_cargos_funcionales').val();
         let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
         this.setearUbigeo();
-
-        this.evaluacionService.getMeta(`${this._ubigeo.ccdd}${this._ubigeo.ccpp}${this._ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
+        this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
+        this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
+        this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
+        this.evaluacionService.getMeta(`${this._ubigeo.ccdd}${this._ubigeo.ccpp}${$('#select_zonas').val()}`, cargofuncional).done((meta: Array<any>) => {
             if (meta.length) {
                 $('#meta').text(meta[0].meta)
             } else {
@@ -543,6 +545,9 @@ class EvaluacionView {
     getAmbitos() {
         this.setUbigeo();
         let by: any;
+        this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
+        this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
+        this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
         this.evaluacionService.ambitos(this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi).done((ambitos) => {
             if (this._ubigeo.ccdd == null) {
                 by = {id: 'ccdd', text: ['departamento']}
