@@ -335,10 +335,11 @@ capacita=1, seleccionado=1, sw_titu=0  = RESERVA
 def cerrarCursoEmpadronador(request):
     postdata = request.POST['data']
     dataDict = json.loads(postdata)
-    print(dataDict)
     for data in dataDict:
         peaaula = PersonalAula.objects.get(pk=data)
         persona = Personal.objects.get(id_pea=peaaula.id_pea_id)
+        PersonalAulaNotaFinal(peaaula_id=peaaula.id_peaaula, bandaprob=1, capacita=1, seleccionado=1, sw_titu=1,
+                              notacap=20, nota_final=20).save()
         sendFicha177Empadronador(persona.id_per)
 
     return JsonResponse({'msg': 'Cierre de curso exitoso'})
