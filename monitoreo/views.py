@@ -327,6 +327,40 @@ class nivelEducativo(APIView):
         return JsonResponse(data, safe=False)
 
 
+class profesion(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None):
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        filter = {'id_cargofuncional__in': cargos, 'contingencia': 0}
+        if ccdd is not None:
+            filter['ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['ubigeo__ccdi'] = ccdi
+
+        data = [
+            {'name': 'Seleccionados para Capacitación',
+             'data': []},
+            {'name': 'Personal Capacitado',
+             'data': []},
+            {'name': 'Titulares',
+             'data': []},
+        ]
+        personal = Personal.objects.filter(**filter)
+        rank5 = personal.values('profesion_id', 'profesion__detalle').annotate(total=Count('profesion_id')).order_by(
+            '-total')[:5]
+        response = {'categories': [], 'series_data': data}
+        aprobados = PersonalAulaNotaFinal.objects.filter(
+            peaaula__id_pea_id__in=personal.values_list('id_pea', flat=True), sw_titu=1, seleccionado=1)
+        for rank in rank5:
+            response['categories'].append(rank['profesion__detalle'])
+            data[0]['data'].append(personal.filter(profesion_id=rank['profesion_id']).count())
+            data[1]['data'].append(personal.filter(profesion_id=rank['profesion_id']).count())
+            data[2]['data'].append(aprobados.filter(peaaula__id_pea__profesion=rank['profesion_id']).count())
+
+        return JsonResponse(response, safe=False)
+
+
 def updateCantidadAulasLocales(request):
     locales = Local.objects.all()
     for local in locales:
@@ -359,8 +393,9 @@ def updatePersonal(request):
                 pea.tipo_inst_id = ficha.tipo_inst
             if ficha.grado != 0:
                 pea.grado_id = ficha.grado
-            if ficha.profesion != '0':
+            if ficha.profesion != '0' and ficha.profesion != '#N/A':
                 pea.profesion_id = ficha.profesion
+            print(ficha.profesion)
             pea.save()
 
     return JsonResponse({'msg': 'actualizado'})

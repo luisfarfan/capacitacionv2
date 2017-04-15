@@ -58,6 +58,13 @@ urlpatterns = [
     url(r'nivelEducativo/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
         nivelEducativo.as_view()),
 
+    url(r'profesion/(?P<curso>[0-9]+)/$', profesion.as_view()),
+    url(r'profesion/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$', profesion.as_view()),
+    url(r'profesion/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        profesion.as_view()),
+    url(r'profesion/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        profesion.as_view()),
+
     url(r'updateCantidadAulasLocales/$', updateCantidadAulasLocales),
     url(r'updatePersonal/$', updatePersonal),
     url(r'updateSexo/$', updateSexo),
