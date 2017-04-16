@@ -34,11 +34,12 @@ class EstablecimientosDistritosZonas(APIView):
         if zona is not None:
             query = FenomenoMonitoreo.objects.using('segmentacion').annotate(cod_ambito=Length('COD_AMBITO')).filter(
                 cod_ambito__gte=10, COD_AMBITO__startswith=ubigeo + zona)
+            formatQuery = getCampos(query, False)
         else:
             query = FenomenoMonitoreo.objects.using('segmentacion').annotate(cod_ambito=Length('COD_AMBITO')).filter(
                 cod_ambito__in=[10, 11], COD_AMBITO__startswith=ubigeo)
+            formatQuery = getCampos(query, True)
 
-        formatQuery = getCampos(query, True)
         return JsonResponse(list(formatQuery), safe=False)
 
 
@@ -111,13 +112,13 @@ def getNameAmbito(codambito):
     elif len(codambito) == 6:
         name_ambito = 'DISTRITO'
 
+    print(codambito, len(codambito))
     if codambito == '00':
         response = 'Total'
     elif len(codambito) == 11:
-        response = name_ambito[-5:]
+        response = codambito[-5:]
     else:
         query = FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito).values()[0]
-        print(query)
         response = query[name_ambito]
     return response
 
@@ -146,11 +147,19 @@ def getFullNameAmbitoService(request, codambito):
     responseTotal = []
     if len(codambito) == 2:
         responseTotal.append({'ambito': '', 'ambito_nombre': 'Nacional'})
+        query = FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:2]).values()[0]
+        nameambito = query['DEPARTAMENTO']
+        responseTotal.append({'ambito': codambito[:2], 'ambito_nombre': nameambito})
     elif len(codambito) == 4:
         responseTotal.append({'ambito': '', 'ambito_nombre': 'Nacional'})
         query = FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:2]).values()[0]
         nameambito = query['DEPARTAMENTO']
         responseTotal.append({'ambito': codambito[:2], 'ambito_nombre': nameambito})
+
+        queryProvincia = \
+            FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:4]).values()[0]
+        nameambitoProvincia = queryProvincia['PROVINCIA']
+        responseTotal.append({'ambito': codambito[:4], 'ambito_nombre': nameambitoProvincia})
     elif len(codambito) == 6:
         responseTotal.append({'ambito': '', 'ambito_nombre': 'Nacional'})
         queryProvincia = \
@@ -161,5 +170,27 @@ def getFullNameAmbitoService(request, codambito):
             FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:4]).values()[0]
         nameambitoDistrito = queryDistrito['PROVINCIA']
         responseTotal.append({'ambito': codambito[:4], 'ambito_nombre': nameambitoDistrito})
+
+        queryDistrito2 = \
+            FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:6]).values()[0]
+        nameambitoDistrito2 = queryDistrito2['DISTRITO']
+        responseTotal.append({'ambito': codambito[:6], 'ambito_nombre': nameambitoDistrito2})
+    elif len(codambito) > 6:
+        responseTotal.append({'ambito': '', 'ambito_nombre': 'Nacional'})
+        queryProvincia = \
+            FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:2]).values()[0]
+        nameambitoProvincia = queryProvincia['DEPARTAMENTO']
+        responseTotal.append({'ambito': codambito[:2], 'ambito_nombre': nameambitoProvincia})
+        queryDistrito = \
+            FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:4]).values()[0]
+        nameambitoDistrito = queryDistrito['PROVINCIA']
+        responseTotal.append({'ambito': codambito[:4], 'ambito_nombre': nameambitoDistrito})
+
+        queryDistrito2 = \
+            FenomenoMarcoDistrito.objects.using('segmentacion').filter(UBIGEO__startswith=codambito[:6]).values()[0]
+        nameambitoDistrito2 = queryDistrito2['DISTRITO']
+        responseTotal.append({'ambito': codambito[:6], 'ambito_nombre': nameambitoDistrito2})
+
+        responseTotal.append({'ambito': codambito[:11], 'ambito_nombre': codambito[-5:]})
 
     return JsonResponse(responseTotal, safe=False)
