@@ -15,7 +15,15 @@
     <link href="{% static "assets/css/components.css" %}" rel="stylesheet" type="text/css">
     <link href="{% static "assets/css/colors.css" %}" rel="stylesheet" type="text/css">
     <!-- /global stylesheets -->
+    <style>
+        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+            border: 1px solid #0065a9;
+        }
 
+        table > thead > tr > th {
+            font-weight: 900;
+        }
+    </style>
     <!-- own styles -->
     {% block css %}
     {% endblock %}

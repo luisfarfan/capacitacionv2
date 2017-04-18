@@ -71,44 +71,42 @@
         </div>
     </div>
     <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h6 class="panel-title"><a class="heading-elements-toggle"><i
+                    class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+                <div class="heading-btn">
+                    <a id="btn_exportar" href="#" download="" data-popup="tooltip"
+                       title="Exportar"
+                       class="btn btn-success btn-icon legitRipple"><i
+                            class="icon-file-excel"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="panel-body">
-            <table id="directorio_locales" class="table table-bordered">
+            <table id="header_reporte" style="width: 40%" class="table table-bordered table-condensed">
                 <thead>
                 <tr>
-                    <th colspan="2" class="bg-primary-400">Departamento</th>
-                    <td colspan="3"><span id="span_departamento"></span></td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="bg-primary-400">Privincia</th>
-                    <td colspan="3"><span id="span_provincia"></span></td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="bg-primary-400">Distrito</th>
-                    <td colspan="3"><span id="span_distrito"></span></td>
+                    <th class="bg-primary" style="width: 10%">CURSO</th>
+                    <th style="width: 50%"><span id="span_curso"></span></th>
                 </tr>
                 </thead>
+
+            </table>
+            <table id="tabla_reporte" class="table table-bordered">
                 <thead>
-                <tr class="bg-primary">
-                    <th rowspan="2">N°</th>
-                    <th rowspan="2">Centro Poblado</th>
-                    <th rowspan="2">Zona</th>
-                    <th rowspan="2">Nombre del Local</th>
-                    <th colspan="7">
-                        <center>DIRECCIÓN DEL LOCAL</center>
-                    </th>
-                    <th rowspan="2">Número de ambientes (aulas)</th>
-                    <th colspan="2">Responsable del Local</th>
+                <tr>
+                    <th colspan="2" rowspan="2">DEPARTAMENTO PROVINCIA Y DISTRITO</th>
+                    <th colspan="2" rowspan="2">Total aulas (META)</th>
+                    <th colspan="2">Aulas disponibles (obtenidas)</th>
+                    <th colspan="2">Aulas a usar</th>
                 </tr>
-                <tr class="bg-primary">
-                    <th>Tipo de Vía</th>
-                    <th>Nombre de la vía</th>
-                    <th>N°</th>
-                    <th>Piso</th>
-                    <th>Mz.</th>
-                    <th>Lote</th>
-                    <th>Km</th>
-                    <th>Nombres y Apellidos</th>
-                    <th>Teléfono</th>
+                <tr>
+                    <th>Absoluto</th>
+                    <th>%</th>
+                    <th>Absoluto</th>
+                    <th>%</th>
                 </tr>
                 </thead>
                 <tbody>

@@ -8,7 +8,7 @@ export class CursoInyection {
     curso_id: number;
     cursoService = new CursoService();
     cursos: ICurso[];
-    curso_selected: ICurso;
+    public curso_selected: ICurso;
     etapa_id: number = null;
 
     constructor() {

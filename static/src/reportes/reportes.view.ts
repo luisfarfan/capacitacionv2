@@ -16,6 +16,7 @@ class ReportesView extends UbigeoView {
     private reporte_selected: IReportes = null;
     private curso: number;
     private urlParams: string = '';
+    private cursoinyection: CursoInyection = null;
 
     constructor() {
         super('departamentos', 'provincias', 'distritos', 'zona', {
@@ -24,7 +25,13 @@ class ReportesView extends UbigeoView {
             ccdi: ubigeo.ccdi,
             zona: ubigeo.zona,
         });
-        new CursoInyection();
+        if (localStorage.getItem('reporteSelected') == null) {
+            this.reporte_selected = null
+        } else {
+            let json: any = localStorage.getItem('reporteSelected')
+            this.reporte_selected = json
+        }
+        this.cursoinyection = new CursoInyection();
         this.getReportes();
         this.setEvents();
         this.getReporteSelectedSession();
@@ -60,15 +67,16 @@ class ReportesView extends UbigeoView {
 
     consultarReporte() {
         let url = this.armarUrl();
+        console.log(url);
         this.reporteService.reporteDinamico(url).done((data: any) => {
-
+            console.log(data);
         })
     }
 
     armarFieldsData(data: any) {
         let arrayFields: Array<string> = [];
         if (this.reporte_selected.codigo == 'r7') {
-            arrayFields = ['zona','nombre_local','tipo_via','nombre_via']
+            arrayFields = ['zona', 'nombre_local', 'tipo_via', 'nombre_via']
         }
 
         utils.drawTable(data, [], null, {
@@ -84,23 +92,22 @@ class ReportesView extends UbigeoView {
 
     armarUrl(): string {
         let params: string = '';
-        if (this.reporte_selected.codigo != 'r1') {
-            if (this.curso != null) {
-                params += `${this.curso}/`
-            }
-            if (this.ccdd != null) {
-                params += `${this.ccdd}/`
-            }
-            if (this.ccpp != null) {
-                params += `${this.ccpp}/`
-            }
-            if (this.ccdi != null) {
-                params += `${this.ccdi}/`
-            }
-            if (this.zona != null) {
-                params += `${this.zona}/`
-            }
+        if (this.cursoinyection.curso_selected.id_curso != null) {
+            params += `${this.cursoinyection.curso_selected.id_curso}/`
         }
+        if (this.ccdd != null && this.ccdd != "-1") {
+            params += `${this.ccdd}/`
+        }
+        if (this.ccpp != null && this.ccpp != "-1") {
+            params += `${this.ccpp}/`
+        }
+        if (this.ccdi != null && this.ccdi != "-1") {
+            params += `${this.ccdi}/`
+        }
+        if (this.zona != null && this.zona != "-1") {
+            params += `${this.zona}/`
+        }
+
         return `${BASEURL}/reportes/${this.reporte_selected.url_service}/${params}`
     }
 
@@ -109,7 +116,15 @@ class ReportesView extends UbigeoView {
             this.reportes = reportes;
             let html = `<option value="">Seleccione</option>`;
             this.reportes.map((reporte: IReportes) => {
-                html += `<option value="${reporte.id}">${reporte.nombre}</option>`
+                if (this.reporte_selected !== null) {
+                    if (this.reporte_selected.id == reporte.id) {
+                        html += `<option selected value="${reporte.id}">${reporte.nombre}</option>`
+                    } else {
+                        html += `<option value="${reporte.id}">${reporte.nombre}</option>`
+                    }
+                } else {
+                    html += `<option value="${reporte.id}">${reporte.nombre}</option>`
+                }
             });
             $('#select_reportes').html(html);
             $('#select_reportes').selectBoxIt({

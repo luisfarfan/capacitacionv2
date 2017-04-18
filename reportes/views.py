@@ -28,6 +28,46 @@ def putHTMLSlugReportes(request):
 
 
 """
+Reporte N° 1
+"""
+
+
+class NumeroaulasCoberturadas(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
+        filter = {'curso_id': curso}
+        if ccdd is not None:
+            filter['local__ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['local__ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['local__ubigeo__ccdi'] = ccdi
+        if zona is not None:
+            filter['local__ubigeo__zona'] = zona
+
+        localcursogroup = LocalCurso.objects.filter(**filter).values('local__ubigeo_id', 'local__ubigeo__departamento',
+                                                                     'local__ubigeo__provincia',
+                                                                     'local__ubigeo__distrito').annotate(
+            dcount=Count('local__ubigeo_id'))
+        response = []
+        for locales in localcursogroup:
+            data = {'departamento': '', 'provincia': '', 'distrito': '', 'totalaulas_meta': 0, 'aulas_disponible': 0,
+                    'aulas_usar': 0}
+            filterAula = {'curso': curso}
+            filterAula['ubigeo'] = locales['local__ubigeo_id']
+            meta = MetaAula.objects.filter(**filterAula).aggregate(total=Sum('meta'))
+
+            data['departamento'] = locales['local__ubigeo__departamento']
+            data['provincia'] = locales['local__ubigeo__provincia']
+            data['distrito'] = locales['local__ubigeo__distrito']
+            data['totalaulas_meta'] = meta
+            data['aulas_disponible'] = meta
+
+            response.append(data)
+
+        return JsonResponse({'msg': True}, safe=False)
+
+
+"""
 Reporte N° 2
 """
 

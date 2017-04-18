@@ -52,6 +52,10 @@ export default class UbigeoView {
             this.ubigeo = `${this.ccdd}${this.ccpp}${this.ccdi}`;
             this.setZonas(this.ubigeo);
         });
+        $(`#${this.zona_element_id}`).on('change', (event: any) => {
+            this.zona = event.target.value;
+            this.ubigeo = `${this.ccdd}${this.ccpp}${this.ccdi}`;
+        });
         this.setDepartamentos();
     }
 

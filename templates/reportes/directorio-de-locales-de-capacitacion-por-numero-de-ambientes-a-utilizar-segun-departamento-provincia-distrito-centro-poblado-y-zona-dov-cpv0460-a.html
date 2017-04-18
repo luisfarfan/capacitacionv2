@@ -71,50 +71,93 @@
         </div>
     </div>
     <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h6 class="panel-title"><a class="heading-elements-toggle"><i
+                    class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+                <div class="heading-btn">
+                    <a id="btn_exportar" href="#" download="" data-popup="tooltip"
+                       title="Exportar"
+                       class="btn btn-success btn-icon legitRipple"><i
+                            class="icon-file-excel"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="panel-body">
-            <table id="directorio_locales" class="table table-bordered">
-                <thead>
-                <tr>
-                    <th colspan="2" class="bg-primary-400">Departamento</th>
-                    <td colspan="3"><span id="span_departamento"></span></td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="bg-primary-400">Privincia</th>
-                    <td colspan="3"><span id="span_provincia"></span></td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="bg-primary-400">Distrito</th>
-                    <td colspan="3"><span id="span_distrito"></span></td>
-                </tr>
-                </thead>
-                <thead>
-                <tr class="bg-primary">
-                    <th rowspan="2">N°</th>
-                    <th rowspan="2">Centro Poblado</th>
-                    <th rowspan="2">Zona</th>
-                    <th rowspan="2">Nombre del Local</th>
-                    <th colspan="7">
-                        <center>DIRECCIÓN DEL LOCAL</center>
-                    </th>
-                    <th rowspan="2">Número de ambientes (aulas)</th>
-                    <th colspan="2">Responsable del Local</th>
-                </tr>
-                <tr class="bg-primary">
-                    <th>Tipo de Vía</th>
-                    <th>Nombre de la vía</th>
-                    <th>N°</th>
-                    <th>Piso</th>
-                    <th>Mz.</th>
-                    <th>Lote</th>
-                    <th>Km</th>
-                    <th>Nombres y Apellidos</th>
-                    <th>Teléfono</th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="row">
+                <table id="header_reporte_ambito" style="width: 40%"
+                       class="table table-bordered table-condensed pull-left">
+                    <thead>
+                    <tr>
+                        <th class="bg-primary" style="width: 10%">DEPARTAMENTO</th>
+                        <th style="width: 50%"><span id="span_curso"></span></th>
+                    </tr>
+                    <tr>
+                        <th class="bg-primary" style="width: 10%">PROVINCIA</th>
+                        <th style="width: 50%"><span id="span_curso"></span></th>
+                    </tr>
+                    <tr>
+                        <th class="bg-primary" style="width: 10%">DISTRITO</th>
+                        <th style="width: 50%"><span id="span_curso"></span></th>
+                    </tr>
+                    </thead>
 
-                </tbody>
-            </table>
+                </table>
+                <table id="header_reporte_curso" style="width: 40%"
+                       class="table table-bordered table-condensed pull-right">
+                    <thead>
+                    <tr>
+                        <th class="bg-primary" style="width: 10%">CURSO</th>
+                        <th style="width: 50%"><span id="span_curso"></span></th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+            <div class="row">
+                <table id="tabla_reporte" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th colspan="3" rowspan="3">N°</th>
+                        <th colspan="3" rowspan="3">Centro Poblado</th>
+                        <th colspan="3" rowspan="3">Zona</th>
+                        <th colspan="13">
+                            <center>LOCAL DE CAPACITACIÓN</center>
+                        </th>
+                        <th colspan="2">
+                            <center>RESPONSABLE DEL LOCAL</center>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="2" rowspan="2">Nombre</th>
+                        <th colspan="8">
+                            <center>Dirección</center>
+                        </th>
+                        <th colspan="2">Teléfono</th>
+                        <th rowspan="2">Número de ambientes (aulas)</th>
+                        <th rowspan="2">Nombres y Apellidos</th>
+                        <th rowspan="2">Teléfono</th>
+                    </tr>
+                    <tr>
+                        <th>Tipo de Vía</th>
+                        <th>Nombre de la vía</th>
+                        <th>N°</th>
+                        <th>Piso</th>
+                        <th>Int</th>
+                        <th>Mz</th>
+                        <th>Lote</th>
+                        <th>Km</th>
+                        <th>Fijo</th>
+                        <th>Celular</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 
