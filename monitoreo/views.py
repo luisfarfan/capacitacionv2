@@ -207,7 +207,6 @@ class resultadosCapacitacion(APIView):
             personal = PersonalAulaNotaFinal.objects.filter(**filter)
             response['personalcapacitado'] = personal.filter(peaaula__id_pea__contingencia=0).count()
         else:
-            print(cargos)
             filter = {'pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
                 filter['pea__ubigeo__ccdd'] = ccdd
