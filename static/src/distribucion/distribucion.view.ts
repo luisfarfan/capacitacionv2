@@ -39,6 +39,7 @@ class DistribucionView {
     private ambitosLibres: IUbigeo[] = [];
     private instructores: IUsuario[] = [];
 
+
     constructor() {
         this.curso = new CursoInyection();
         $('#cursos').on('change', () => {

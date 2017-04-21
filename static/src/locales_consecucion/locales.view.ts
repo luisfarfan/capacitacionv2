@@ -240,6 +240,7 @@ class LocalController {
                 $('#errores').html(ul);
             }
         });
+
         $('#btn_generar_ambientes').on('click', () => {
             this.form_local_validate.form()
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {

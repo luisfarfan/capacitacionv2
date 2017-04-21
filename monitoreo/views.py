@@ -120,7 +120,13 @@ class consecucionAulas(APIView):
         queryLocalesCount = query.count()
         queryProgramados = query.aggregate(programados=Sum('local__total_aulas'))
         for disponible in query:
-            disponible_total = disponible.local.cantidad_disponible_auditorios + disponible.local.cantidad_disponible_sala + disponible.local.cantidad_disponible_aulas + disponible.local.cantidad_disponible_computo + disponible.local.cantidad_disponible_oficina + disponible.local.cantidad_disponible_otros
+            disponible_total = int(
+                disponible.local.cantidad_disponible_auditorios or 0) + int(
+                disponible.local.cantidad_disponible_sala or 0) + int(
+                disponible.local.cantidad_disponible_aulas or 0) + int(
+                disponible.local.cantidad_disponible_computo or 0) + int(
+                disponible.local.cantidad_disponible_oficina or 0) + int(
+                disponible.local.cantidad_disponible_otros or 0)
             response['disponibles'] = response['disponibles'] + disponible_total
 
         response['locales_disponibles'] = queryLocalesCount
@@ -186,7 +192,7 @@ class resultadosCapacitacion(APIView):
         response = {'metacampo': 0, 'personalcapacitado': 0, 'titulares': 0, 'reserva': 0}
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
         filter2 = {'id_cargofuncional__in': cargos}
-        if ccdd != 13:
+        if ccdd != '13':
             filter = {'peaaula__id_pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
                 filter['peaaula__id_pea__ubigeo__ccdd'] = ccdd
@@ -201,6 +207,7 @@ class resultadosCapacitacion(APIView):
             personal = PersonalAulaNotaFinal.objects.filter(**filter)
             response['personalcapacitado'] = personal.filter(peaaula__id_pea__contingencia=0).count()
         else:
+            print(cargos)
             filter = {'pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
                 filter['pea__ubigeo__ccdd'] = ccdd

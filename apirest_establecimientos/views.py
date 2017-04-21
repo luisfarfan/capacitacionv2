@@ -100,7 +100,8 @@ def calcPocentaje(partial, total):
     if partial == 0 or total == 0:
         return 0
 
-    return (partial * 100) / total
+    porcentaje = (partial * 100) / total
+    return float("{0:.2f}".format(porcentaje) or 0)
 
 
 def getNameAmbito(codambito):
