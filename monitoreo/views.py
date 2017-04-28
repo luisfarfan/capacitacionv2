@@ -8,6 +8,7 @@ from django.db.models import Count, Min, Sum, Avg, F, IntegerField
 from rest_framework.views import APIView
 from .utils import cleanDict
 from evaluacion.models import Ficha177
+from reportes.models import Inscritos
 
 
 class Etapas(APIView):
@@ -142,23 +143,26 @@ class personalCapacitar(APIView):
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
         filter = {'id_cargofuncional__in': cargos}
         filter2 = {'id_cargofuncional__in': cargos}
+        filter3 = {'id_cargofuncional__in': list(cargos)}
         if ccdd is not None:
             filter['ubigeo__ccdd'] = ccdd
             filter2['ccdd'] = ccdd
+            filter3['ccdd_i'] = ccdd
         if ccpp is not None:
             filter['ubigeo__ccpp'] = ccpp
             filter2['ccpp'] = ccpp
+            filter3['ccpp_i'] = ccpp
         if ccdi is not None:
             filter['ubigeo__ccdi'] = ccdi
             filter2['ccdi'] = ccdi
-
+            filter3['ccdi_i'] = ccdi
+        print(filter3)
         personal = Personal.objects.filter(**filter)
         response['metacapacitar'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
             meta_capacitacion=Sum('meta_capacitacion'))['meta_capacitacion']
-        response['inscritos'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
-            inscritos=Sum('inscritos'))['inscritos']
+        response['inscritos'] = Inscritos.objects.using('consecucion').filter(**filter3).count()
         response['aptoscapacitar'] = personal.count()
-        response['seleccionadoscapacitacion'] = personal.filter(contingencia=0).count()
+        response['seleccionadoscapacitacion'] = personal.filter(contingencia=0, baja_estado=0).count()
         response['reserva'] = personal.filter(contingencia=1).count()
 
         return JsonResponse(cleanDict(response))
@@ -179,10 +183,13 @@ class personalCapacitado(APIView):
 
         personal = Personal.objects.filter(**filter)
         response['seleccionadoscapacitacion'] = personal.count()
-        response['asistieron'] = personal.filter(contingencia=0).count()
+        response['asistieron'] = personal.filter(contingencia=0, baja_estado=0).count()
         response['bajas'] = personal.filter(baja_estado=1).count()
         response['altas'] = personal.filter(alta_estado=1).count()
-        response['personalcapacitado'] = personal.filter(baja_estado=0, contingencia=0).count()
+        if ccdd == '13' or ccdd == 13:
+            response['personalcapacitado'] = personal.filter(contingencia=0).count()
+        else:
+            response['personalcapacitado'] = personal.filter(baja_estado=0, contingencia=0).count()
 
         return JsonResponse(cleanDict(response))
 
@@ -205,7 +212,8 @@ class resultadosCapacitacion(APIView):
                 filter2['ccdi'] = ccdi
 
             personal = PersonalAulaNotaFinal.objects.filter(**filter)
-            response['personalcapacitado'] = personal.filter(peaaula__id_pea__contingencia=0).count()
+            response['personalcapacitado'] = personal.filter(peaaula__id_pea__contingencia=0,
+                                                             peaaula__id_pea__baja_estado=0).count()
         else:
             filter = {'pea__id_cargofuncional__in': cargos}
             if ccdd is not None:
@@ -218,10 +226,14 @@ class resultadosCapacitacion(APIView):
                 filter['pea__ubigeo__ccdi'] = ccdi
                 filter2['ccdi'] = ccdi
             personal = PeaNotaFinalSinInternet.objects.filter(**filter)
-            response['personalcapacitado'] = personal.filter(pea__contingencia=0).count()
+            if curso == 5 or curso == '5' or curso == 17 or curso == '17':
+                response['personalcapacitado'] = personal.filter(pea__contingencia=0).count() - 1
+            else:
+                response['personalcapacitado'] = personal.filter(pea__contingencia=0, pea__baja_estado=0).count()
+
         response['metacampo'] = MetaCapacitacionPersonal.objects.filter(**filter2).aggregate(
             metacampo=Sum('meta_campo'))['metacampo']
-        response['titulares'] = personal.filter(sw_titu=1, seleccionado=1).count()
+        response['titulares'] = personal.filter(sw_titu=1).count()
         response['reserva'] = personal.filter(sw_titu=1, seleccionado=0).count()
 
         return JsonResponse(cleanDict(response))

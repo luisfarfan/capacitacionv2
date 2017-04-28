@@ -67,9 +67,22 @@ class ReportesView extends UbigeoView {
 
     consultarReporte() {
         let url = this.armarUrl();
-        console.log(url);
         this.reporteService.reporteDinamico(url).done((data: any) => {
-            console.log(data);
+            let html: string = '';
+            let campos: Array<string> = this.reporte_selected.campos.split(',')
+            data.map((datareporte: any, index: number) => {
+                html += `<tr><td>${index + 1}</td>`
+                campos.map((field: string) => {
+                    if (field in datareporte) {
+                        html += `<td>${datareporte[field] == null ? '-' : datareporte[field]}</td>`
+                    } else {
+                        html += `<td>-</td>`
+                    }
+                });
+                html += `</tr>`
+            })
+            console.log(html);
+            $('#tabla_reporte').find('tbody').html(html);
         })
     }
 

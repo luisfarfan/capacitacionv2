@@ -9,5 +9,6 @@ export interface IReportes {
     slug: string,
     template_html: string,
     url_service: string,
-    codigo: string
+    codigo: string,
+    campos: string
 }

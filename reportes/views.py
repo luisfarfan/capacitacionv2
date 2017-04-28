@@ -34,37 +34,30 @@ Reporte N° 1
 
 class NumeroaulasCoberturadas(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
-        filter = {'curso_id': curso}
+        filter = {}
         if ccdd is not None:
-            filter['local__ubigeo__ccdd'] = ccdd
+            filter['ccdd'] = ccdd
+            annotate = ('ccpp',)
         if ccpp is not None:
-            filter['local__ubigeo__ccpp'] = ccpp
+            filter['ccpp'] = ccpp
+            annotate = ('ccdi',)
         if ccdi is not None:
-            filter['local__ubigeo__ccdi'] = ccdi
+            filter['ccdi'] = ccdi
+            annotate = ('zona',)
         if zona is not None:
-            filter['local__ubigeo__zona'] = zona
+            filter['zona'] = zona
 
-        localcursogroup = LocalCurso.objects.filter(**filter).values('local__ubigeo_id', 'local__ubigeo__departamento',
-                                                                     'local__ubigeo__provincia',
-                                                                     'local__ubigeo__distrito').annotate(
-            dcount=Count('local__ubigeo_id'))
         response = []
-        for locales in localcursogroup:
+        print(filter)
+        metaUbigeos = MetaAula.objects.filter(**filter).values(*annotate).annotate(dcount=Count(*annotate))
+        print(metaUbigeos)
+        for meta in metaUbigeos:
             data = {'departamento': '', 'provincia': '', 'distrito': '', 'totalaulas_meta': 0, 'aulas_disponible': 0,
                     'aulas_usar': 0}
-            filterAula = {'curso': curso}
-            filterAula['ubigeo'] = locales['local__ubigeo_id']
-            meta = MetaAula.objects.filter(**filterAula).aggregate(total=Sum('meta'))
-
-            data['departamento'] = locales['local__ubigeo__departamento']
-            data['provincia'] = locales['local__ubigeo__provincia']
-            data['distrito'] = locales['local__ubigeo__distrito']
-            data['totalaulas_meta'] = meta
-            data['aulas_disponible'] = meta
 
             response.append(data)
 
-        return JsonResponse({'msg': True}, safe=False)
+        return JsonResponse(response, safe=False)
 
 
 """

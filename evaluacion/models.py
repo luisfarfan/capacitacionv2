@@ -37,3 +37,5 @@ class Ficha177(models.Model):
     class Meta:
         managed = False
         db_table = 'ficha_177'
+
+
