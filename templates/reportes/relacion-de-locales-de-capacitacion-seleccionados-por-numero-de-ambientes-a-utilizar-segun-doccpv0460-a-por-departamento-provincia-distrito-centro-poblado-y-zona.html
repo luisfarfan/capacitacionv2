@@ -27,11 +27,8 @@
             <div class="heading-elements">
                 <ul class="icons-list">
                     <li>
-                        <a id="btn_exportar" href="#" download="" data-popup="tooltip"
-                           title="Exportar"
-                           class="btn btn-success btn-icon legitRipple"><i
-                                class="icon-file-excel"></i>
-                        </a>
+                        <button type="button" class="btn btn-primary btn-raised legitRipple" id="btn_reporte">Consultar
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -79,7 +76,10 @@
                     class="icon-more"></i></a></h6>
             <div class="heading-elements">
                 <div class="heading-btn">
-                    <a type="button" class="btn btn-success btn-icon legitRipple"><i class="icon-file-excel"></i>
+                    <a id="btn_exportar" href="#" download="" data-popup="tooltip"
+                       title="Exportar"
+                       class="btn btn-success btn-icon legitRipple"><i
+                            class="icon-file-excel"></i>
                     </a>
                 </div>
             </div>
@@ -119,10 +119,9 @@
                 <table id="tabla_reporte" class="table table-bordered">
                     <thead>
                     <tr>
-                        <th colspan="3" rowspan="3">N°</th>
-                        <th colspan="3" rowspan="3">Centro Poblado</th>
-                        <th colspan="3" rowspan="3">Zona</th>
-                        <th colspan="13">
+                        <th rowspan="3">N°</th>
+                        <th rowspan="3">Zona</th>
+                        <th colspan="12">
                             <center>LOCAL DE CAPACITACIÓN</center>
                         </th>
                         <th colspan="2">
@@ -130,8 +129,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <th colspan="2" rowspan="2">Nombre</th>
-                        <th colspan="8">
+                        <th rowspan="2">Nombre</th>
+                        <th colspan="7">
                             <center>Dirección</center>
                         </th>
                         <th colspan="2">Teléfono</th>
@@ -144,7 +143,6 @@
                         <th>Nombre de la vía</th>
                         <th>N°</th>
                         <th>Piso</th>
-                        <th>Int</th>
                         <th>Mz</th>
                         <th>Lote</th>
                         <th>Km</th>

@@ -6,17 +6,26 @@ import {IReportes} from 'reportes.interface';
 import UbigeoView from '../ubigeo/ubigeo.view';
 import {IUbigeo} from "../ubigeo/ubigeo.view";
 import {CursoInyection} from '../comun.utils';
+import {DistribucionService} from '../distribucion/distribucion.service';
+import {EvaluacionView} from '../evaluacion/evaluacion.view';
+import {AsistenciaService} from '../asistencia/asistencia.service';
 import * as utils from '../core/utils';
+import {AsistenciaView} from "../asistencia/asistencia.view";
 declare var $: any;
 declare var ubigeo: IUbigeo;
 declare var BASEURL: string;
 class ReportesView extends UbigeoView {
     private reporteService: ReporteService = new ReporteService();
+    private distribucionService: DistribucionService = new DistribucionService();
+    private asistenciaService: AsistenciaService = new AsistenciaService();
+    private asistenciaView: AsistenciaView = null;
+    private evaluacionView: EvaluacionView = null
     private reportes: IReportes[] = [];
     private reporte_selected: IReportes = null;
     private curso: number;
     private urlParams: string = '';
     private cursoinyection: CursoInyection = null;
+    private local_selected: number = null;
 
     constructor() {
         super('departamentos', 'provincias', 'distritos', 'zona', {
@@ -33,8 +42,8 @@ class ReportesView extends UbigeoView {
         }
         this.cursoinyection = new CursoInyection();
         this.getReportes();
-        this.setEvents();
         this.getReporteSelectedSession();
+        this.setEvents();
     }
 
     setEvents() {
@@ -54,6 +63,64 @@ class ReportesView extends UbigeoView {
                 window.location.replace(`${BASEURL}/reporte/${this.reporte_selected.slug}/`);
             }
         });
+
+        $('#zona').change(() => {
+            this.getLocales();
+        })
+        console.log(this.reporte_selected)
+        if (this.reporte_selected.id == 4) {
+            this.evaluacionView = new EvaluacionView(false);
+            $('#locales').change(() => {
+                let localvalue = $('#locales').val();
+                this.local_selected = localvalue;
+                this.getAulas();
+            });
+            $('#aulas').change(() => {
+                let aulavalue = $('#aulas').val();
+                this.evaluacionView.getCriterios(this.curso);
+                this.evaluacionView.getCargosFuncionales(this.curso);
+            });
+        } else if (this.reporte_selected.id == 3) {
+            this.asistenciaView = new AsistenciaView();
+            $('#locales').change(() => {
+                let localvalue = $('#locales').val();
+                this.local_selected = localvalue;
+                this.getAulasAsistencia();
+            });
+        }
+    }
+
+    getLocales() {
+        this.reporteService.getLocales(this.curso, this.ubigeo, this.zona).done((locales) => {
+            utils.setDropdown(locales, {id: 'id_local', text: ['nombre_local']}, {
+                id_element: 'locales',
+                bootstrap_multiselect: false,
+                select2: false
+            });
+        })
+    }
+
+    getAulas() {
+        this.distribucionService.filterLocalAmbientes(this.local_selected).done((aulas) => {
+            let html: string = '';
+            html += `<option value="">Seleccione Aula</option>`
+            aulas.map((value: any, index: number) => {
+                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
+            });
+            $('#aulas').html(html);
+        });
+    }
+
+    getAulasAsistencia() {
+        this.distribucionService.filterLocalAmbientes(this.local_selected).done((aulas) => {
+            this.asistenciaView.localesAmbientes = aulas;
+            let html: string = '';
+            html += `<option value="">Seleccione Aula</option>`
+            aulas.map((value: any, index: number) => {
+                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
+            });
+            $('#select_aulas_asignadas').html(html);
+        });
     }
 
     setReporteSelectedSession(data: any) {
@@ -67,23 +134,36 @@ class ReportesView extends UbigeoView {
 
     consultarReporte() {
         let url = this.armarUrl();
-        this.reporteService.reporteDinamico(url).done((data: any) => {
-            let html: string = '';
-            let campos: Array<string> = this.reporte_selected.campos.split(',')
-            data.map((datareporte: any, index: number) => {
-                html += `<tr><td>${index + 1}</td>`
-                campos.map((field: string) => {
-                    if (field in datareporte) {
-                        html += `<td>${datareporte[field] == null ? '-' : datareporte[field]}</td>`
+        $('#span_curso').text($('#cursos :selected').text());
+        if (this.reporte_selected.id == 3 || this.reporte_selected.id == 4) {
+            this.asistenciaService.getPersonalAsistenciaDetalle($('#aulas').val()).done((personal) => {
+                this.evaluacionView.personal = personal;
+                this.evaluacionView.drawTbody();
+            });
+        } else {
+            this.reporteService.reporteDinamico(url).done((data: any) => {
+                let html: string = '';
+                let campos: Array<string> = this.reporte_selected.campos.split(',')
+                data.map((datareporte: any, index: number) => {
+                    html += `<tr><td>${index + 1}</td>`;
+                    if (typeof datareporte['ambito'] === "object") {
+                        html += `<td>${datareporte['ambito'].departamento} - ${datareporte['ambito'].provincia} - ${datareporte['ambito'].distrito}</td>`
                     } else {
-                        html += `<td>-</td>`
+                        html += `<td>${datareporte['ambito']}</td>`
                     }
-                });
-                html += `</tr>`
+                    campos.map((field: string) => {
+                        if (field in datareporte) {
+                            html += `<td>${datareporte[field] == null ? '-' : datareporte[field]}</td>`
+                        } else {
+                            html += `<td>-</td>`
+                        }
+                    });
+                    html += `</tr>`
+                })
+                $('#tabla_reporte').find('tbody').html(html);
             })
-            console.log(html);
-            $('#tabla_reporte').find('tbody').html(html);
-        })
+        }
+
     }
 
     armarFieldsData(data: any) {

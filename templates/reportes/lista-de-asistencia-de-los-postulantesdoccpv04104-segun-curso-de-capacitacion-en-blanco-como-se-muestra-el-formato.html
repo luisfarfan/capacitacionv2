@@ -27,11 +27,8 @@
             <div class="heading-elements">
                 <ul class="icons-list">
                     <li>
-                        <a id="btn_exportar" href="#" download="" data-popup="tooltip"
-                           title="Exportar"
-                           class="btn btn-success btn-icon legitRipple"><i
-                                class="icon-file-excel"></i>
-                        </a>
+                        <button type="button" class="btn btn-primary btn-raised legitRipple" id="btn_reporte">Consultar
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -70,12 +67,64 @@
                         <option value="">Seleccione zona</option>
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label>Locales</label>
+                    <select id="locales" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione Local</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Aulas</label>
+                    <select id="select_aulas_asignadas" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione Aula</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
     <div class="panel panel-flat panel-inei">
         <div class="panel-body">
-            <span class="text-black">EN CONSTRUCCIÓN</span>
+            <div id="div_tabla_asistencia" class="table-responsive">
+                <table style="width: 100%;max-width: 100%;" id="tabla_asistencia"
+                       class="table-responsive table table-striped table-hover table-bordered">
+                    <caption>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">CENSOS
+                            NACIONALES 2017: XII DE
+                            POBLACIÓN, VII DE
+                            VIVIENDA Y III DE
+                            COMUNIDADES INDÍGENAS</p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">- III DE
+                            COMUNIDADES NATIVAS
+                            DE LA AMAZONÍA PERUANA Y I DE
+                            COMUNIDADES CAMPESINAS</p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">II CENSO
+                            EXPERIMENTAL</p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">LISTA DE
+                            ASISTENCIA</p>
+                        <p id="p_curso_actual"
+                           style="color: #2196F3 !important;font-weight: 700;text-align: center;"></p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">NOMBRE DE
+                            LOCAL: <span
+                                    id="span_nombre_local"></span></p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">DIRECCIÓN:
+                            <span id="span_direccion"></span>
+                        </p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">FECHA DE
+                            CAPACITACIÓN: <span
+                                    id="span_fecha_inicio"></span></p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">AULA: <span
+                                id="span_aula"></span></p>
+                        <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">INSTRUCTOR:
+                            <span
+                                    id="span_nombre_instructor"></span>
+                        </p>
+                    </caption>
+                    <thead>
+
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 

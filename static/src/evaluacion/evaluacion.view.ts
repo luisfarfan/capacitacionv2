@@ -2,7 +2,7 @@
  * Created by Administrador on 16/03/2017.
  */
 import * as utils from '../core/utils';
-import {EvaluacionService} from 'evaluacion.service';
+import {EvaluacionService} from '../evaluacion/evaluacion.service';
 import {AsistenciaService} from '../asistencia/asistencia.service';
 import UbigeoService from '../ubigeo/ubigeo.service';
 import {
@@ -24,32 +24,28 @@ declare var ubigeo: IUbigeo;
 declare var $: any;
 
 
-class EvaluacionView {
-    private cursoInyection: CursoInyection;
-    private ubigeoService: UbigeoService;
-    private evaluacionService: EvaluacionService;
-    private asistenciaService: AsistenciaService;
-    private criteriosCurso: ICursoCriterios;
-    private detalleCriterios: IDetalleCriterio[] = [];
-    private localesAmbientes: ILocalAmbienteAsignados[] = [];
-    private localAmbienteSelected: ILocalAmbienteAsignados;
-    private personal: IPersonalAsistenciaDetalle[];
-    private zonasRankeo: IZona[] = [];
-    private cargosFuncionales: ICargoFuncionalDetalle[] = [];
-    private personalNotaFinal: IPeaNotaFinal[] = [];
-    private ambitos: any = {};
-    private ambitoDetalle: any = {};
-    private _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
+export class EvaluacionView {
+    public cursoInyection: CursoInyection;
+    public ubigeoService: UbigeoService;
+    public evaluacionService: EvaluacionService;
+    public asistenciaService: AsistenciaService;
+    public criteriosCurso: ICursoCriterios;
+    public detalleCriterios: IDetalleCriterio[] = [];
+    public localesAmbientes: ILocalAmbienteAsignados[] = [];
+    public localAmbienteSelected: ILocalAmbienteAsignados;
+    public personal: IPersonalAsistenciaDetalle[];
+    public zonasRankeo: IZona[] = [];
+    public cargosFuncionales: ICargoFuncionalDetalle[] = [];
+    public personalNotaFinal: IPeaNotaFinal[] = [];
+    public ambitos: any = {};
+    public ambitoDetalle: any = {};
+    public _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
 
-    constructor() {
-        this.cursoInyection = new CursoInyection();
+    constructor(init: boolean = false) {
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
         this.ubigeoService = new UbigeoService();
-        $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
-        this.setearUbigeo();
-        this.setEvents();
-        this.getAmbitos();
+        this.setEvents(init);
     }
 
     setearUbigeo() {
@@ -82,56 +78,62 @@ class EvaluacionView {
         });
     }
 
-    setEvents() {
-        $('#cursos').on('change', (element: JQueryEventObject) => {
-            let curso_id = $(element.currentTarget).val();
-            $('#p_curso_actual').text($('#cursos :selected').text());
-            this.getAulas(curso_id);
-            this.getCriterios(curso_id);
-            this.getCargosFuncionales(curso_id);
-        });
+    setEvents(init: boolean = false) {
+        if (init) {
+            this.cursoInyection = new CursoInyection();
+            $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
+            this.setearUbigeo();
+            $('#cursos').on('change', (element: JQueryEventObject) => {
+                let curso_id = $(element.currentTarget).val();
+                $('#p_curso_actual').text($('#cursos :selected').text());
+                this.getAulas(curso_id);
+                this.getCriterios(curso_id);
+                this.getCargosFuncionales(curso_id);
+            });
 
-        $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
-            let selected = $(element.currentTarget).val();
-            if (selected == '') {
-                this.localAmbienteSelected = null;
-            } else {
-                this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
-                $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`)
-                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via}`)
-                $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
-                $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
-                this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personal) => {
-                    this.personal = personal;
-                    this.drawTbody();
-                });
-            }
-        });
-        $('#btn_save_asistencia').on('click', () => {
-            this.saveNotas();
-        });
-        $('#btn_ver_personal').on('click', () => {
-            this.getPersonalNotaFinal();
-        });
-        $('#btn_rankeo_temporal').on('click', () => {
-            this.rankear();
-        });
-        $('#btn_exportar').on('click', () => {
-            this.exportar();
-        });
+            $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
+                let selected = $(element.currentTarget).val();
+                if (selected == '') {
+                    this.localAmbienteSelected = null;
+                } else {
+                    this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
+                    $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`)
+                    $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via}`)
+                    $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
+                    $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
+                    this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personal) => {
+                        this.personal = personal;
+                        this.drawTbody();
+                    });
+                }
+            });
+            $('#btn_save_asistencia').on('click', () => {
+                this.saveNotas();
+            });
+            $('#btn_ver_personal').on('click', () => {
+                this.getPersonalNotaFinal();
+            });
+            $('#btn_rankeo_temporal').on('click', () => {
+                this.rankear();
+            });
+            $('#btn_exportar').on('click', () => {
+                this.exportar();
+            });
 
-        $('#select_cargos_funcionales').on('change', () => {
-            this.getMeta();
-        });
-        $('#select_zonas').on('change', () => {
-            this.getMeta();
-        });
-        $('#btn_cierre_curso').on('click', () => {
-            utils.alert_confirm(() => {
-                this.cerrarCursoConInternet();
-            }, 'Esta seguro de Cerrar el curso?');
-        });
+            $('#select_cargos_funcionales').on('change', () => {
+                this.getMeta();
+            });
+            $('#select_zonas').on('change', () => {
+                this.getMeta();
+            });
+            $('#btn_cierre_curso').on('click', () => {
+                utils.alert_confirm(() => {
+                    this.cerrarCursoConInternet();
+                }, 'Esta seguro de Cerrar el curso?');
+            });
 
+            this.getAmbitos();
+        }
     }
 
     getCriterios(id_curso: number) {
@@ -571,4 +573,4 @@ class EvaluacionView {
 
 }
 
-new EvaluacionView();
+new EvaluacionView(true);

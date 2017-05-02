@@ -1,7 +1,7 @@
 /**
  * Created by Administrador on 13/03/2017.
  */
-import {AsistenciaService, PersonalService} from 'asistencia.service';
+import {AsistenciaService, PersonalService} from '../asistencia/asistencia.service';
 import {DistribucionService} from '../distribucion/distribucion.service'
 import {CursoInyection} from '../comun.utils';
 import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from './asistencia.interface';
@@ -22,20 +22,20 @@ interface ModelDivAsistencia {
     alta: number
 }
 
-class AsistenciaView {
-    private asistenciaService: AsistenciaService;
-    private personalService: PersonalService;
-    private distribucionService: DistribucionService;
-    private cursoInyection: CursoInyection;
-    private localesAmbientes: ILocalAmbienteAsignados[] = [];
-    private localAmbienteSelected: ILocalAmbienteAsignados = null;
-    private rangoFechas: Array<string> = [];
-    private personalAsistencia: IPersonalAsistenciaDetalle[];
-    private personalparaBaja: IPersonal[] = [];
-    private personaldadadeBaja: IPersonal[] = [];
-    private personalContingencia: IPersonal[] = [];
-    private pea_id: number = null;
-    private cursoSelected: number;
+export class AsistenciaView {
+    public asistenciaService: AsistenciaService;
+    public personalService: PersonalService;
+    public distribucionService: DistribucionService;
+    public cursoInyection: CursoInyection;
+    public localesAmbientes: ILocalAmbienteAsignados[] = [];
+    public localAmbienteSelected: ILocalAmbienteAsignados = null;
+    public rangoFechas: Array<string> = [];
+    public personalAsistencia: IPersonalAsistenciaDetalle[];
+    public personalparaBaja: IPersonal[] = [];
+    public personaldadadeBaja: IPersonal[] = [];
+    public personalContingencia: IPersonal[] = [];
+    public pea_id: number = null;
+    public cursoSelected: number;
 
     constructor() {
         this.asistenciaService = new AsistenciaService();
@@ -210,6 +210,7 @@ class AsistenciaView {
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
             colspan = 2;
         }
+        console.log(this.cursoSelected);
         if (this.cursoSelected == 4) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
@@ -218,8 +219,11 @@ class AsistenciaView {
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
         } else {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>`;
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
+
         }
 
 

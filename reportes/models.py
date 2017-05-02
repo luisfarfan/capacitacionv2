@@ -22,6 +22,7 @@ class Inscritos(models.Model):
     ccdd_i = models.CharField(max_length=2)
     ccpp_i = models.CharField(max_length=2)
     ccdi_i = models.CharField(max_length=2)
+    ubigeo_i = models.CharField(max_length=2)
 
     class Meta:
         managed = False

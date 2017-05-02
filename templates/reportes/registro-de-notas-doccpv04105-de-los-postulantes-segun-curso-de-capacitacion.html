@@ -66,12 +66,70 @@
                         <option value="">Seleccione zona</option>
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label>Locales</label>
+                    <select id="locales" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione Local</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Aulas</label>
+                    <select id="aulas" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione Aula</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
     <div class="panel panel-flat panel-inei">
         <div class="panel-body">
-            <span class="text-black">EN CONSTRUCCIÓN</span>
+            <div class="col-md-12">
+                <div class="table-responsive">
+
+                    <table id="tabla_evaluacion"
+                           class="table table-striped table-hover table-bordered">
+                        <caption>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">
+                                CENSOS NACIONALES
+                                2017: XII DE
+                                POBLACIÓN, VII DE
+                                VIVIENDA Y III DE
+                                COMUNIDADES INDÍGENAS</p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">
+                                - III DE
+                                COMUNIDADES NATIVAS
+                                DE LA AMAZONÍA PERUANA Y I DE
+                                COMUNIDADES CAMPESINAS</p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">
+                                II CENSO
+                                EXPERIMENTAL</p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">
+                                REGISTRO DE NOTAS</p>
+                            <p id="p_curso_actual"
+                               class="text-primary text-center text-bold"></p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">
+                                NOMBRE DE LOCAL:
+                                <span id="span_nombre_local"></span></p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">
+                                DIRECCIÓN: <span id="span_direccion"></span>
+                            </p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">
+                                FECHA DE CAPACITACIÓN: <span
+                                    id="span_fecha_inicio"></span>
+                            </p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: left;"></span>
+                            </p>
+                            <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">
+                                INSTRUCTOR: <span id="span_nombre_instructor"></span>
+                            </p>
+                        </caption>
+                        <thead>
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
