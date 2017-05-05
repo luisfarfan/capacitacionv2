@@ -20,6 +20,14 @@ class LocalAmbientebyInstructorViewSet(generics.ListAPIView):
         return LocalAmbiente.objects.filter(localcurso__curso=curso, id_instructor=id_instructor)
 
 
+class LocalAmbientebyLocal(generics.ListAPIView):
+    serializer_class = LocalAmbienteInstructorSerializer
+
+    def get_queryset(self):
+        id_local = self.kwargs['id_local']
+        return LocalAmbiente.objects.filter(localcurso__local_id=id_local)
+
+
 class LocalCursoDetallebyLocalAmbienteViewSet(viewsets.ModelViewSet):
     queryset = LocalCurso.objects.all()
     serializer_class = LocalCursoDetalleSerializer

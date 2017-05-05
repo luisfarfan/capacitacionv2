@@ -2,13 +2,13 @@ import urllib.request, json
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView
 from reportes.models import Reportes
+from django.conf import settings
 
 # URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 # URL_USERDATASESSION = 'http://localhost:81/seguridad/getUserData/?key={}'
 URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
 
-
-# URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
+URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
 
 
 def setSession(request):
@@ -52,6 +52,7 @@ class RenderTemplate(TemplateView):
                 if modulo['slug'] == slug:
                     context['breadcumbs'] = modulo['descripcion']
                     context['session_key'] = self.request.session.session_key
+                    context['modeenv'] = renderENVDB()
             return context
         except:
             return redirect('http://cpv.inei.gob.pe')
@@ -77,10 +78,21 @@ class RenderReportes(TemplateView):
             if slug == 'main':
                 context['breadcumbs'] = 'Reportes'
                 context['session_key'] = self.request.session.session_key
+                context['modeenv'] = renderENVDB()
             else:
                 reporte = Reportes.objects.get(slug=slug)
                 context['breadcumbs'] = reporte.nombre
                 context['session_key'] = self.request.session.session_key
+                context['modeenv'] = renderENVDB()
             return context
         except:
             return redirect('localhost:8001/reportes/main')
+
+
+def renderENVDB():
+    if settings.ENV == 'LOCAL':
+        return '<span class="label label-success">MODO DESARROLLO - SE PUEDE EDITAR!</span>'
+    elif settings.ENV == 'PROD':
+        return '<span class="label label-danger">MODO PRODUCCIÓN - NO SE PUEDE EDITAR!</span>'
+    elif settings.ENV == 'SQLITE':
+        return '<span class="label label-success">MODO DESARROLLO - SE PUEDE EDITAR!</span>'

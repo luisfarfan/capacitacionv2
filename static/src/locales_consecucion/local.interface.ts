@@ -49,6 +49,9 @@ export interface ILocal {
     cantidad_disponible_computo: number;
     cantidad_usar_computo: number;
     id_directoriolocal: number;
+    total_aulas: number,
+    total_disponibles: number,
+    usar: number
 }
 
 export interface ILocalCurso {

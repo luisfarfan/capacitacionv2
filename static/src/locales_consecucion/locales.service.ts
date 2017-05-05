@@ -13,6 +13,8 @@ export class LocalService {
     private urlAmbito: string = `${BASEURL}/locales/localcurso_filter/`;
     private urldirectoriolocal_ambiente: string = `${BASEURL}/locales/directoriolocalambientes_detalle/`;
     private urlLocalAmbientes: string = `${BASEURL}/locales/localambiente/`;
+    private url_seleccionarLocalDisponible: string = `${BASEURL}/locales/seleccionarLocalDisponible/`;
+    private url_deseleccionarLocalDisponible: string = `${BASEURL}/locales/deseleccionarLocalDisponible/`;
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -75,6 +77,7 @@ export class LocalService {
             type: 'DELETE',
         });
     }
+
 }
 
 export class LocalCurso {

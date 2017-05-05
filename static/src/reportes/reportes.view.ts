@@ -67,7 +67,6 @@ class ReportesView extends UbigeoView {
         $('#zona').change(() => {
             this.getLocales();
         })
-        console.log(this.reporte_selected)
         if (this.reporte_selected.id == 4) {
             this.evaluacionView = new EvaluacionView(false);
             $('#locales').change(() => {
@@ -88,6 +87,25 @@ class ReportesView extends UbigeoView {
                 this.getAulasAsistencia();
             });
         }
+        $('#select_aulas_asignadas2').on('change', (element: JQueryEventObject) => {
+            let selected = $(element.currentTarget).val();
+            if (selected == '') {
+                this.asistenciaView.localAmbienteSelected = null;
+            } else {
+                console.log(this.asistenciaView.localesAmbientes)
+                this.asistenciaView.localesAmbientes.map((value: any, index: number) => value.id_localambiente == selected ? this.asistenciaView.localAmbienteSelected = value : '');
+                $('#span_nombre_local').text(`${this.asistenciaView.localAmbienteSelected.localcurso.local.nombre_local}`)
+                $('#span_direccion').text(`${this.asistenciaView.localAmbienteSelected.localcurso.local.nombre_via} - ${this.asistenciaView.localAmbienteSelected.localcurso.local.n_direccion}`)
+                $('#span_fecha_inicio').text(`${this.asistenciaView.localAmbienteSelected.localcurso.local.fecha_inicio}`)
+                $('#span_aula').text(`${this.asistenciaView.localAmbienteSelected.numero}`);
+
+                this.asistenciaService.getRangoFechas(this.asistenciaView.localAmbienteSelected.localcurso.local.fecha_inicio, this.asistenciaView.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
+                    this.asistenciaView.rangoFechas = fechasRango;
+                    this.asistenciaView.drawHeaderFechas();
+                    this.asistenciaView.cargarPersonalAsistenciaPorAula();
+                });
+            }
+        });
     }
 
     getLocales() {
@@ -112,14 +130,14 @@ class ReportesView extends UbigeoView {
     }
 
     getAulasAsistencia() {
-        this.distribucionService.filterLocalAmbientes(this.local_selected).done((aulas) => {
+        this.asistenciaService.getAulasbyLocal(this.local_selected).done((aulas) => {
             this.asistenciaView.localesAmbientes = aulas;
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
             aulas.map((value: any, index: number) => {
                 html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
             });
-            $('#select_aulas_asignadas').html(html);
+            $('#select_aulas_asignadas2').html(html);
         });
     }
 
@@ -135,12 +153,18 @@ class ReportesView extends UbigeoView {
     consultarReporte() {
         let url = this.armarUrl();
         $('#span_curso').text($('#cursos :selected').text());
-        if (this.reporte_selected.id == 3 || this.reporte_selected.id == 4) {
+        if (this.reporte_selected.id == 3) {
             this.asistenciaService.getPersonalAsistenciaDetalle($('#aulas').val()).done((personal) => {
                 this.evaluacionView.personal = personal;
                 this.evaluacionView.drawTbody();
             });
-        } else {
+        } else if (this.reporte_selected.id == 4) {
+            this.asistenciaService.getPersonalAsistenciaDetalle($('#select_aulas_asignadas').val()).done((personal) => {
+                this.evaluacionView.personal = personal;
+                this.evaluacionView.drawTbody();
+            });
+        }
+        else {
             this.reporteService.reporteDinamico(url).done((data: any) => {
                 let html: string = '';
                 let campos: Array<string> = this.reporte_selected.campos.split(',')

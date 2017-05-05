@@ -9,7 +9,7 @@ export class PersonalAsistenciaService extends ModelService {
     get(pk: number = null): JQueryXHR {
         return $.ajax({
             url: this.url_personalAsistencia,
-            type: 'PUT'
+            type: 'GET'
         })
     }
 
@@ -37,6 +37,7 @@ export class PersonalAsistenciaService extends ModelService {
 
 export class AsistenciaService {
     private url_localambienteInstructor: string = `${BASEURL}/asistencia/localambientes_instructor/`;
+    private url_localambientes_bylocal: string = `${BASEURL}/asistencia/localambientes_bylocal/`;
     private url_localcurso: string = `${BASEURL}/asistencia/localcurso/`;
     private url_getrangofechas: string = `${BASEURL}/asistencia/getrangofechas/`;
     private url_personalaula: string = `${BASEURL}/asistencia/personalaula_bylocalambiente/`;
@@ -49,6 +50,12 @@ export class AsistenciaService {
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_localambienteInstructor}${id_instructor}/${curso}/`
+        })
+    }
+
+    getAulasbyLocal(id_local: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_localambientes_bylocal}${id_local}/`
         })
     }
 

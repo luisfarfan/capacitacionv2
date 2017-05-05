@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'saveAsistencia/$', saveAsistencia),
     url(r'saveAsistenciaEmpadronadorUrbano/$', saveAsistenciaEmpadronadorUrbano),
     url(r'darAlta/$', darAlta),
+    url(r'localambientes_bylocal/(?P<id_local>[0-9]+)/$',
+        LocalAmbientebyLocal.as_view()),
 
 ]

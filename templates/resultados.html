@@ -1,0 +1,122 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="row col-lg-offset-8 col-md-offset-8 col-sm-offset-6 col-xs-offset-6">
+        <table class="table table-bordered" style="margin-left: -18px">
+            <tbody>
+            <tr class="bg-primary">
+                <th style="width: 100px;">Meta Contratar</th>
+                <th style="width: 100px;"><span id="meta"></span></th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="tab-pane" id="mini-justified-tab2">
+                    <div class="row">
+                        <div class="panel panel-flat panel-inei">
+                            <div class="panel-heading">
+                                <h6 class="panel-title text-inei">Filtro<a
+                                        class="heading-elements-toggle"><i
+                                        class="icon-more"></i></a>
+                                </h6>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="col-md-5">
+                                    <label>Cargos Funcionales: </label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <select id="select_cargos_funcionales" class="form-control">
+                                                    <option value="">Seleccione cargo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label>Ámbito: </label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <select id="select_zonas" class="form-control">
+                                                    <option value="">Seleccione ambitos</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" id="btn_ver_personal"
+                                            class="btn btn-primary heading-btn legitRipple">
+                                        Ver Personal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="panel panel-flat panel-inei">
+                            <div class="panel-heading">
+                                <h5 class="panel-title text-inei">Tabla de Rankeo</h5>
+                                <div class="heading-elements">
+                                    <div class="heading-btn">
+                                        {#                                                <button id="btn_rankeo_temporal" type="button"#}
+                                        {#                                                        class="btn btn-primary btn-raised legitRipple">#}
+                                        {#                                                    Rankeo Temporal#}
+                                        {#                                                </button>#}
+                                        <button id="btn_cierre_curso" type="button"
+                                                class="btn btn-danger btn-raised legitRipple">
+                                            Cerrar Ámbito
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table id="table_personalnotafinal"
+                                           class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>N°</th>
+                                            <th>Apellidos y Nombres</th>
+                                            <th>DNI</th>
+                                            <th>Nota Final</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="clone" class="hide"></div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/jquery.battatech.excelexport.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/evaluacion/evaluacion.view.js" %}"></script>
+{% endblock %}

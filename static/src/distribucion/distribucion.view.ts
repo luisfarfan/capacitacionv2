@@ -62,7 +62,8 @@ class DistribucionView {
             }
         });
         $('#select_locales_seleccionados_asignacion').on('change', () => {
-            let local_selected: any = $('#select_locales_seleccionados_asignacion').val();
+            let local_selected: any = $('#select_locales_seleccionados_asignacion :selected').val();
+            console.log(local_selected);
             this.getLocalZonas(local_selected);
         });
         $('#select_locales_seleccionados').on('change', () => {
@@ -162,6 +163,7 @@ class DistribucionView {
                 id: 'id_local',
                 text: ['nombre_local']
             }, {id_element: 'select_locales_seleccionados', bootstrap_multiselect: true, select2: false});
+            console.log(this.locales, this.localesCurso);
             utils.setDropdown(this.locales, {
                 id: 'id_local',
                 text: ['nombre_local']
@@ -192,7 +194,7 @@ class DistribucionView {
     }
 
     asignarZonas() {
-        let local_selected: any = $('#select_locales_seleccionados_asignacion').val();
+        let local_selected: any = this.localCursoSelected.id;
         let ambitosAsignar: Array<string> = $('#select_zonas_por_asignar').val();
         let data: any;
         let request: Array<any> = [];
@@ -237,6 +239,7 @@ class DistribucionView {
         this.setLocalCurso(localselected);
         if (this.localCursoSelected) {
             this.distribucionService.filterLocalZona(this.localCursoSelected.id).done((localzonas: IUbigeo[]) => {
+                //this.distribucionService.filterLocalZona(localselected).done((localzonas: IUbigeo[]) => {
                 this.clearZonasRepetidas(localzonas);
                 console.log(localzonas);
                 utils.drawTable(localzonas, ['nombre_local', 'departamento', 'provincia', 'distrito', 'zona'], 'localambito_id', {
@@ -310,10 +313,10 @@ class DistribucionView {
             this.personal.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
-                             <td>${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
+                             <td>${value.dni}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
                              <td>${value.zona}</td>
                          </tr>`

@@ -63,6 +63,7 @@ export class AsistenciaView {
                 $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`)
                 $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
                 $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
+
                 this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
                     this.rangoFechas = fechasRango;
                     this.drawHeaderFechas();
@@ -169,6 +170,8 @@ export class AsistenciaView {
                 id: 'id_pea',
                 text: ['dni', 'ape_paterno', 'ape_materno', 'nombre']
             }, {id_element: 'select_personal_para_alta', bootstrap_multiselect: false, select2: true});
+        }).fail((error) => {
+            console.log(error)
         });
     }
 
@@ -213,14 +216,14 @@ export class AsistenciaView {
         console.log(this.cursoSelected);
         if (this.cursoSelected == 4) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
         } else {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
 
@@ -256,8 +259,8 @@ export class AsistenciaView {
                 tbody += `<tr>`;
             }
             tbody += `<td>${index + 1}</td>
-                      <td>${value.id_pea.dni}</td>
                       <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
+                      <td>${value.id_pea.dni}</td>
                       <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>
                       <td>${value.id_pea.zona}</td>`
             this.rangoFechas.map((fecha: string, ind: number) => {

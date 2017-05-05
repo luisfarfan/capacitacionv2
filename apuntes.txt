@@ -1,2 +1,1 @@
-python manage.py dumpdata --exclude auth.permission --exclude contenttypes --exclude locales_consecucion.GISLimiteDis --exclude locales_consecucion.GisLimiteProv --exclude locales_consecucion.GisLimiteDep --exclude evaluacion.Ficha177 --exclude reportes.Insc
-ritos --exclude apirest_establecimientos > dataActual.json
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --exclude locales_consecucion.GISLimiteDis --exclude locales_consecucion.GisLimiteProv --exclude locales_consecucion.GisLimiteDep --exclude evaluacion.Ficha177 --exclude reportes.Inscritos --exclude apirest_establecimientos > dataActual.json

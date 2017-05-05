@@ -168,12 +168,16 @@
             <br>
             <div class="row">
                 <div class="text-left">
-                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocalmarco" class="btn btn-primary">
-                        Buscar Local Marco <i
-                            class="icon-arrow-right14 position-right"></i></button>
-                    <button type="button" class="btn btn-primary btn-sm" id="buscarlocal" class="btn btn-primary">
-                        Buscar Local Seleccionado <i
-                            class="icon-arrow-right14 position-right"></i></button>
+                    <button type="button" class="btn btn-primary btn-raised legitRipple" id="buscarlocalmarco"
+                            class="btn btn-primary" data-popup="tooltip" title="Locales del Doc.CPV. 04.87.">
+                        DIRECTORIO DE LOCALES
+                    </button>
+                    <button type="button" class="btn btn-primary btn-raised legitRipple" id="reset">NUEVO LOCAL <i
+                            class="icon-home4 position-right"></i></button>
+                    <button type="button" class="btn btn-primary btn-raised legitRipple pull-right" id="buscarlocal"
+                            class="btn btn-primary">
+                        LOCALES DISPONIBLES
+                    </button>
 
                 </div>
             </div>
@@ -277,14 +281,14 @@
                             <div class="col-md-2">
                                 <label>Teléfono Fijo</label>
                                 <div class="form-group">
-                                    <input type="number" name="telefono_local_fijo"
+                                    <input type="text" name="telefono_local_fijo" maxlength="9"
                                            class="form-control" placeholder=" Digite N° Fijo">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <label>Teléfono Celular</label>
                                 <div class="form-group">
-                                    <input type="number" name="telefono_local_celular"
+                                    <input type="text" name="telefono_local_celular" maxlength="9"
                                            class="form-control" placeholder=" Digite N° Celular">
                                 </div>
                             </div>
@@ -319,14 +323,14 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Teléfono Fijo</label>
-                                <input type="number" name="responsable_telefono"
+                                <input type="number" min="0" name="responsable_telefono"
                                        class="form-control" placeholder=" Digite teléfono fijo">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Teléfono Celular</label>
-                                <input type="number" name="responsable_celular"
+                                <input type="number" min="0" name="responsable_celular"
                                        class="form-control" placeholder=" Digite teléfono celular">
                             </div>
                         </div>
@@ -336,7 +340,7 @@
         </div>
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title text-inei">PERIODO DE CAPACITACIÓN Y TURNO</h5>
+                <h5 class="panel-title text-inei">PERIODO Y TURNO DE CAPACITACIÓN</h5>
             </div>
             <div class="panel-body">
                 <fieldset class="content-group">
@@ -402,94 +406,94 @@
                                     <tbody>
                                     <tr>
                                         <td>Aula</td>
-                                        <td><input type="number" name="cantidad_total_aulas"
+                                        <td><input type="number" min="0" name="cantidad_total_aulas"
                                                    id="cantidad_total_aulas"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_aulas"
+                                        <td><input type="number" min="0" name="cantidad_disponible_aulas"
                                                    id="cantidad_disponible_aulas"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_aulas"
+                                        <td><input type="number" min="0" name="cantidad_usar_aulas"
                                                    id="cantidad_usar_aulas"
                                                    class="form-control" value="">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Auditorio</td>
-                                        <td><input type="number" name="cantidad_total_auditorios"
+                                        <td><input type="number" min="0" name="cantidad_total_auditorios"
                                                    id="cantidad_total_auditorios"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_auditorios"
+                                        <td><input type="number" min="0" name="cantidad_disponible_auditorios"
                                                    id="cantidad_disponible_auditorios"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_auditorios"
+                                        <td><input type="number" min="0" name="cantidad_usar_auditorios"
                                                    id="cantidad_usar_auditorios"
                                                    class="form-control" value="">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Sala de Reuniones</td>
-                                        <td><input type="number" name="cantidad_total_sala"
+                                        <td><input type="number" min="0" name="cantidad_total_sala"
                                                    id="cantidad_total_sala"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_sala"
+                                        <td><input type="number" min="0" name="cantidad_disponible_sala"
                                                    id="cantidad_disponible_sala"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_sala"
+                                        <td><input type="number" min="0" name="cantidad_usar_sala"
                                                    id="cantidad_usar_sala"
                                                    class="form-control" value="">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Oficina Administrativa</td>
-                                        <td><input type="number" name="cantidad_total_oficina"
+                                        <td><input type="number" min="0" name="cantidad_total_oficina"
                                                    id="cantidad_total_oficina"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_oficina"
+                                        <td><input type="number" min="0" name="cantidad_disponible_oficina"
                                                    id="cantidad_disponible_oficina"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_oficina"
+                                        <td><input type="number" min="0" name="cantidad_usar_oficina"
                                                    id="cantidad_usar_oficina"
                                                    class="form-control" value="">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Sala de Cómputo</td>
-                                        <td><input type="number" name="cantidad_total_computo"
+                                        <td><input type="number" min="0" name="cantidad_total_computo"
                                                    id="cantidad_total_computo"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_computo"
+                                        <td><input type="number" min="0" name="cantidad_disponible_computo"
                                                    id="cantidad_disponible_computo"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_computo"
+                                        <td><input type="number" min="0" name="cantidad_usar_computo"
                                                    id="cantidad_usar_computo"
                                                    class="form-control" value="">
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><input type="number" name="especifique_otros"
+                                        <td><input type="text" name="especifique_otros" pattern="[A-Za-z]"
                                                    id="especifique_otros"
                                                    class="form-control"
                                                    style="border-top:none;border-left:none;border-right:none;border-bottom-color: #ddd;"
                                                    value="" placeholder="Otro (Especifique):"></td>
-                                        <td><input type="number" name="cantidad_total_otros"
+                                        <td><input type="number" min="0" name="cantidad_total_otros"
                                                    id="cantidad_total_otros"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_disponible_otros"
+                                        <td><input type="number" min="0" name="cantidad_disponible_otros"
                                                    id="cantidad_disponible_otros"
                                                    class="form-control" value="">
                                         </td>
-                                        <td><input type="number" name="cantidad_usar_otros"
+                                        <td><input type="number" min="0" name="cantidad_usar_otros"
                                                    id="cantidad_usar_otros"
                                                    class="form-control" value="">
                                         </td>
@@ -511,7 +515,10 @@
         </div>
         <div class="panel panel-flat panel-inei">
             <div class="panel-heading">
-                <h5 class="panel-title text-inei">REGISTRO DE AULA/S</h5>
+                <h5 class="panel-title text-inei">REGISTRO DE AULA/S Y/O AMBIENTE/S A USAR <span
+                        style="font-size: 11px">(1] Tener presente información
+                    de
+                    Anexo N°3 del Doc.CPV.04.29)</span></h5>
 
             </div>
             <div class="panel-body">
@@ -534,7 +541,9 @@
                                         <center>N° Ambiente</center>
                                     </th>
                                     <th>
-                                        <center>Capacidad</center>
+                                        <center>Capacidad <span
+                                                style="font-size: 11px">1]</span>
+                                        </center>
                                     </th>
                                     <th>
                                         <center>Piso</center>
@@ -604,7 +613,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Teléfono Celular</label>
-                                <input type="number" name="funcionario_celular"
+                                <input type="number" min="0" name="funcionario_celular"
                                        class="form-control" placeholder="Digite Teléfono Celular">
                             </div>
                         </div>
@@ -626,28 +635,37 @@
     <div class="footer text-muted">
     </div>
     <div id="modal_localesbyubigeo" class="modal fade">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-full">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">LOCALES SELECCIONADOS PARA CURSO</h6>
+                    <h6 class="modal-title">LOCALES DISPONIBLES PARA CURSO</h6>
                 </div>
 
                 <div class="modal-body">
-                    <table class="table datatable-basic table-bordered" id="tabla_locales_filter">
-                        <thead>
-                        <tr class="bg-blue">
-                            <th>Nombre Local</th>
-                            <th>Zona</th>
-                            <th>Nombre de Via</th>
-                            <th>N° de Puerta</th>
-                            <th>Referencia</th>
-                            <th>Acción</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table datatable-basic table-bordered" id="tabla_locales_filter">
+                            <thead>
+                            <tr class="bg-blue">
+                                <th>Nombre Local</th>
+                                <th>Zona</th>
+                                <th>Nombre de Via</th>
+                                <th>N° de Puerta</th>
+                                <th>Referencia</th>
+                                <th>Número de ambientes disponibles</th>
+                                <th>Acción</th>
+                                <th>Seleccionar local para capacitación</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-raised legitRipple"><i
+                            class="icon-file-excel position-left"></i> EXPORTAR
+                    </button>
                 </div>
             </div>
         </div>
@@ -658,12 +676,10 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">LOCALES DEL MARCO</h6>
+                    <h6 class="modal-title">LOCALES DEL DIRECTORIO</h6>
                 </div>
 
                 <div class="modal-body">
-                    <button type="button" class="btn btn-primary" id="reset">NUEVO LOCAL <i
-                            class="icon-home4 position-right"></i></button>
                     <table class="table datatable-basic table-bordered" id="tabla_directorio_locales_filter">
                         <thead>
                         <tr class="bg-blue">

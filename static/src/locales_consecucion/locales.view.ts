@@ -402,6 +402,9 @@ class LocalController {
                     isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('Se agrego el Local al Directorio!', 'Exito!', 'success');
                     this.form_local_validate.resetForm();
                     this.generarAmbientes();
+                    this.directoriolocalService.seleccionarDirectorio(this.directorioLocal.id_local, $('#cursos').val()).done(() => {
+
+                    });
                 }).fail()
             }).fail(() => {
                 utils.showSwalAlert('Errorrrr!!', 'Error', 'error');
@@ -411,6 +414,9 @@ class LocalController {
                 this.directorioLocal = directoriolocal;
                 isgenerar ? utils.showSwalAlert(texto, 'Exito', 'success') : utils.showSwalAlert('El Local del Directorio se ha editado con éxito!', 'Exito!', 'success');
                 this.generarAmbientes();
+                this.directoriolocalService.seleccionarDirectorio(this.directorioLocal.id_local, $('#cursos').val()).done(() => {
+
+                });
             });
         } else if (this.local) {
             this.localService.update(this.local.id_local, this.form_local_serializado).done((local) => {
@@ -433,7 +439,6 @@ class LocalController {
 
     generarAmbientes() {
         let object: Object = {}
-        debugger
         if (this.directorioLocal) {
             object = {
                 'local': this.directorioLocal.id_local,
@@ -484,6 +489,30 @@ class LocalController {
         }
     }
 
+    printLocalesDisponibles() {
+        let html = '';
+        this.locales.map((local: ILocal, index: number) => {
+            html += `<tr ${local.usar == 1 ? 'style="background-color: rgb(214, 241, 184);"' : ''}>`
+            html += `<td>${local.nombre_local}</td><td>${local.zona_ubicacion_local}</td>
+                     <td>${local.nombre_via}</td><td>${local.n_direccion}</td>
+                     <td>${local.referencia}</td><td>${local.total_aulas}</td>`
+            html += `<td><ul class="icons-list">
+                            <li data-popup="tooltip" title="Editar" name="local_edit" data-value=${local.id_local} style="color: #8bc34a"><a><i class="icon-pencil"></i></a></li>
+                            <li style="margin-left: 20px;" data-popup="tooltip" title="Eliminar" name="local_delete" data-value="${local.id_local}" class="text-danger-600"><a><i class="icon-trash"></i></a></li>
+                         </ul>
+                     </td>`;
+            if (local.usar == 0) {
+                html += `<td><button name="btn_seleccionar_local" data-value="${local.id_local}" type="button" class="btn bg-primary btn-raised active legitRipple btn-xs">
+                                                               Seleccionar</button></td>`
+            } else {
+                html += `<td><button name="btn_seleccionar_local" data-value="${local.id_local}" type="button" disabled class="btn bg-primary btn-raised disabled legitRipple btn-xs">
+                                                               Seleccionado</button></td>`
+            }
+            html += `</tr>`
+        });
+        utils.drawDataTable('tabla_locales_filter', html)
+    }
+
     filterLocal() {
         let curso: number = $('#cursos').val();
         this.setAmbito();
@@ -491,15 +520,9 @@ class LocalController {
             this.localesCurso = localcurso
             this.locales = [];
             this.localesCurso.map((value: ILocalCurso, index: number) => this.locales.push(value.local));
-            utils.drawTable(this.locales, ['nombre_local', 'zona_ubicacion_local', 'nombre_via', 'n_direccion', 'referencia'], 'id_local', {
-                edit_name: 'local_edit',
-                delete_name: 'local_delete',
-                enumerar: false,
-                table_id: 'tabla_locales_filter',
-                datatable: true,
-                checkbox: '',
-                checked: false
-            });
+
+            this.printLocalesDisponibles();
+
             $('[name="local_edit"]').on('click', (element: JQueryEventObject) => {
                 this.setDirectorioLocal($(element.currentTarget).data('value'), false);
                 this.directorioLocal = null;
@@ -507,8 +530,7 @@ class LocalController {
                 $('#modal_localesbyubigeo').modal('hide');
             });
             $('[name="local_delete"]').on('click', (element: JQueryEventObject) => {
-                utils.alert_confirm(() => this.deleteLocal($(element.currentTarget).data('value')), 'Esta seguro de quitar este local de los locales seleccionados?', 'error');
-
+                utils.alert_confirm(() => this.deleteLocal($(element.currentTarget).data('value')), 'Esta seguro de quitar este local de los locales disponibles?', 'error');
             });
         });
     }
@@ -531,7 +553,7 @@ class LocalController {
                     enumerar: true,
                     table_id: 'tabla_directorio_locales_filter',
                     datatable: true,
-                    checkbox: 'chk_directoriolocal_seleccionado',
+                    checkbox: '',
                     checked: false,
                 });
                 $('[name="directoriolocal_edit"]').off('click')
@@ -552,7 +574,7 @@ class LocalController {
                 let chk_directoriolocal: any = $('[name="chk_directoriolocal_seleccionado"]');
                 chk_directoriolocal.map((index: number, value: any) => {
                     directoriolocales_ids.indexOf(parseInt(value.value)) != -1 ? $(value).prop('checked', true) && $(value).prop('disabled', true) : '';
-                })
+                });
             });
         })
     }

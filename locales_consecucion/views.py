@@ -4,9 +4,10 @@ from builtins import filter
 from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
-from .utils import restar
+from .utils import restar, sumarDisponiblesUsar
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, Min, Sum, Avg
+from rest_framework.views import APIView
 
 
 def agregarDirectorioCurso(request):
@@ -213,39 +214,80 @@ def generar_ambientes(request):
 def directorioSeleccionado(request, id_directoriolocal, id_curso):
     directorio = DirectorioLocal.objects.get(pk=id_directoriolocal)
     directoriolocalcurso = DirectorioLocalCurso.objects.get(local_id=id_directoriolocal, curso_id=id_curso)
-
-    local = Local(nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
-                  zona_ubicacion_local=directorio.zona_ubicacion_local,
-                  mz_direccion=directorio.mz_direccion, tipo_via=directorio.tipo_via, referencia=directorio.referencia,
-                  n_direccion=directorio.n_direccion, km_direccion=directorio.km_direccion,
-                  lote_direccion=directorio.lote_direccion, piso_direccion=directorio.piso_direccion,
-                  telefono_local_fijo=directorio.telefono_local_fijo,
-                  telefono_local_celular=directorio.telefono_local_celular,
-                  funcionario_nombre=directorio.funcionario_nombre, funcionario_email=directorio.funcionario_email,
-                  funcionario_cargo=directorio.funcionario_cargo, responsable_nombre=directorio.responsable_nombre,
-                  responsable_email=directorio.responsable_email, responsable_telefono=directorio.responsable_telefono,
-                  responsable_celular=directorio.responsable_celular, ubigeo_id=directorio.ubigeo_id,
-                  fecha_inicio=directorio.fecha_inicio, fecha_fin=directorio.fecha_fin,
-                  cantidad_total_aulas=directorio.cantidad_total_aulas,
-                  cantidad_disponible_aulas=directorio.cantidad_disponible_aulas,
-                  cantidad_usar_aulas=directorio.cantidad_usar_aulas,
-                  cantidad_total_auditorios=directorio.cantidad_total_auditorios,
-                  cantidad_disponible_auditorios=directorio.cantidad_disponible_auditorios,
-                  cantidad_usar_auditorios=directorio.cantidad_usar_auditorios,
-                  cantidad_total_sala=directorio.cantidad_total_sala,
-                  cantidad_disponible_sala=directorio.cantidad_disponible_sala,
-                  cantidad_usar_sala=directorio.cantidad_usar_sala,
-                  cantidad_total_oficina=directorio.cantidad_total_oficina,
-                  cantidad_disponible_oficina=directorio.cantidad_disponible_oficina,
-                  cantidad_usar_oficina=directorio.cantidad_usar_oficina,
-                  cantidad_total_otros=directorio.cantidad_total_otros,
-                  cantidad_disponible_otros=directorio.cantidad_disponible_otros,
-                  cantidad_usar_otros=directorio.cantidad_usar_otros,
-                  especifique_otros=directorio.especifique_otros,
-                  cantidad_total_computo=directorio.cantidad_total_computo,
-                  cantidad_disponible_computo=directorio.cantidad_disponible_computo,
-                  cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local)
-    local.save()
+    sumarDisponiblesUsar(id_directoriolocal, True)
+    if Local.objects.filter(id_directoriolocal_id=id_directoriolocal).count():
+        localseleccionado = Local.objects.filter(id_directoriolocal_id=id_directoriolocal).update(
+            nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
+            zona_ubicacion_local=directorio.zona_ubicacion_local,
+            mz_direccion=directorio.mz_direccion, tipo_via=directorio.tipo_via,
+            referencia=directorio.referencia,
+            n_direccion=directorio.n_direccion, km_direccion=directorio.km_direccion,
+            lote_direccion=directorio.lote_direccion, piso_direccion=directorio.piso_direccion,
+            telefono_local_fijo=directorio.telefono_local_fijo,
+            telefono_local_celular=directorio.telefono_local_celular,
+            funcionario_nombre=directorio.funcionario_nombre, funcionario_email=directorio.funcionario_email,
+            funcionario_cargo=directorio.funcionario_cargo, responsable_nombre=directorio.responsable_nombre,
+            responsable_email=directorio.responsable_email,
+            responsable_telefono=directorio.responsable_telefono,
+            responsable_celular=directorio.responsable_celular, ubigeo_id=directorio.ubigeo_id,
+            fecha_inicio=directorio.fecha_inicio, fecha_fin=directorio.fecha_fin,
+            cantidad_total_aulas=directorio.cantidad_total_aulas,
+            cantidad_disponible_aulas=directorio.cantidad_disponible_aulas,
+            cantidad_usar_aulas=directorio.cantidad_usar_aulas,
+            cantidad_total_auditorios=directorio.cantidad_total_auditorios,
+            cantidad_disponible_auditorios=directorio.cantidad_disponible_auditorios,
+            cantidad_usar_auditorios=directorio.cantidad_usar_auditorios,
+            cantidad_total_sala=directorio.cantidad_total_sala,
+            cantidad_disponible_sala=directorio.cantidad_disponible_sala,
+            cantidad_usar_sala=directorio.cantidad_usar_sala,
+            cantidad_total_oficina=directorio.cantidad_total_oficina,
+            cantidad_disponible_oficina=directorio.cantidad_disponible_oficina,
+            cantidad_usar_oficina=directorio.cantidad_usar_oficina,
+            cantidad_total_otros=directorio.cantidad_total_otros,
+            cantidad_disponible_otros=directorio.cantidad_disponible_otros,
+            cantidad_usar_otros=directorio.cantidad_usar_otros,
+            especifique_otros=directorio.especifique_otros,
+            cantidad_total_computo=directorio.cantidad_total_computo,
+            cantidad_disponible_computo=directorio.cantidad_disponible_computo,
+            cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local,
+            total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles)
+        local = Local.objects.get(id_directoriolocal_id=id_directoriolocal)
+    else:
+        local = Local(nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
+                      zona_ubicacion_local=directorio.zona_ubicacion_local,
+                      mz_direccion=directorio.mz_direccion, tipo_via=directorio.tipo_via,
+                      referencia=directorio.referencia,
+                      n_direccion=directorio.n_direccion, km_direccion=directorio.km_direccion,
+                      lote_direccion=directorio.lote_direccion, piso_direccion=directorio.piso_direccion,
+                      telefono_local_fijo=directorio.telefono_local_fijo,
+                      telefono_local_celular=directorio.telefono_local_celular,
+                      funcionario_nombre=directorio.funcionario_nombre, funcionario_email=directorio.funcionario_email,
+                      funcionario_cargo=directorio.funcionario_cargo, responsable_nombre=directorio.responsable_nombre,
+                      responsable_email=directorio.responsable_email,
+                      responsable_telefono=directorio.responsable_telefono,
+                      responsable_celular=directorio.responsable_celular, ubigeo_id=directorio.ubigeo_id,
+                      fecha_inicio=directorio.fecha_inicio, fecha_fin=directorio.fecha_fin,
+                      cantidad_total_aulas=directorio.cantidad_total_aulas,
+                      cantidad_disponible_aulas=directorio.cantidad_disponible_aulas,
+                      cantidad_usar_aulas=directorio.cantidad_usar_aulas,
+                      cantidad_total_auditorios=directorio.cantidad_total_auditorios,
+                      cantidad_disponible_auditorios=directorio.cantidad_disponible_auditorios,
+                      cantidad_usar_auditorios=directorio.cantidad_usar_auditorios,
+                      cantidad_total_sala=directorio.cantidad_total_sala,
+                      cantidad_disponible_sala=directorio.cantidad_disponible_sala,
+                      cantidad_usar_sala=directorio.cantidad_usar_sala,
+                      cantidad_total_oficina=directorio.cantidad_total_oficina,
+                      cantidad_disponible_oficina=directorio.cantidad_disponible_oficina,
+                      cantidad_usar_oficina=directorio.cantidad_usar_oficina,
+                      cantidad_total_otros=directorio.cantidad_total_otros,
+                      cantidad_disponible_otros=directorio.cantidad_disponible_otros,
+                      cantidad_usar_otros=directorio.cantidad_usar_otros,
+                      especifique_otros=directorio.especifique_otros,
+                      cantidad_total_computo=directorio.cantidad_total_computo,
+                      cantidad_disponible_computo=directorio.cantidad_disponible_computo,
+                      cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local,
+                      total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles)
+        local.save()
 
     localcurso = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
     localcurso.save()
@@ -258,6 +300,24 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
             ambientes.save()
 
     return JsonResponse({'msg': True}, safe=False)
+
+
+class seleccionarLocalDisponible(APIView):
+    def post(self, request):
+        id_local = request.data['id_local']
+        local = Local.objects.get(pk=id_local)
+        local.usar = 1
+        local.save()
+        return JsonResponse({'msg': 'Local cambiado a local a usar'})
+
+
+class deseleccionarLocalDisponible(APIView):
+    def post(self, request):
+        id_local = request.data['id_local']
+        local = Local.objects.get(pk=id_local)
+        local.usar = 0
+        local.save()
+        return JsonResponse({'msg': 'Local cambiado a local a usar'})
 
 
 def addLocalesCurso():

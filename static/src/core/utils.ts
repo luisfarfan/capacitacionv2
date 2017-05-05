@@ -206,11 +206,11 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
             html += `<td><ul class="icons-list">
                             ${options.edit_name !== '' ? `<li data-popup="tooltip" title="Editar" name="${options.edit_name}" data-value=${value[pk]} style="color: #8bc34a"><a><i class="icon-pencil"></i></a></li>` : ''}
                             ${options.delete_name !== '' ? `<li style="margin-left: 20px;" data-popup="tooltip" title="Eliminar" name="${options.delete_name}" data-value=${value[pk]} class="text-danger-600"><a><i class="icon-trash"></i></a></li>` : ''}
-                            ${options.checkbox !== '' ? `<li data-popup="tooltip" title="Seleccionar Local" style="margin-left: 20px;"><div class="pure-checkbox">
-                                                            <input id="${options.checkbox}${value[pk]}" name="${options.checkbox}" value="${value[pk]}" type="checkbox">
-                                                            <label class="checkbox-inline" for="${options.checkbox}${value[pk]}"></label>
-                                                         </div></li>` : ''}
-						  </ul></td>`;
+						                                 </ul></td>`;
+            if (options.checkbox !== '') {
+                html += `<td>${options.checkbox !== '' ? `<button name="${options.checkbox}" data-value="${value[pk]}" type="button" class="btn bg-primary btn-raised active legitRipple btn-xs">
+                                                               Seleccionar</button>` : ''}</td>`
+            }
         }
         html += `</tr>`;
     });
@@ -230,6 +230,25 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
         }
     } else {
         $(`#${options.table_id}`).find('tbody').html(html);
+    }
+}
+export function drawDataTable(table_id: string, html: string, datatable: boolean = true) {
+    if (datatable) {
+        let table = $(`#${table_id}`).DataTable();
+        if ($.fn.DataTable.isDataTable(`#${table_id}`)) {
+            table.destroy();
+            $(`#${table_id}`).find('tbody').html(html);
+            table = $(`#${table_id}`).DataTable({
+                bPaginate: false
+            });
+            $('.dataTables_length select').select2({
+                minimumResultsForSearch: Infinity,
+                width: 'auto',
+            });
+        }
+    }
+    else {
+        $(`#${table_id}`).find('tbody').html(html);
     }
 }
 

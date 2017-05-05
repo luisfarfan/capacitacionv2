@@ -11,7 +11,7 @@
                     <h5 class="panel-title text-inei">Distribución</h5>
                     <div class="heading-elements">
                         <button type="button" id="btn_asignacion_zonas" class="btn btn-primary heading-btn legitRipple">
-                            Asignar Zonas por Local
+                            Asignar Ambitos por Local
                         </button>
                     </div>
                 </div>
@@ -25,9 +25,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" id="btn_pea_capacitar" class="btn btn-primary">Personal seleccionado
+                        <button type="button" id="btn_pea_capacitar" class="btn btn-primary">Distribución de<br>
+                            personal
+                            seleccionado
                         </button>
-                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary">Personal de reserva
+                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary pull-right">Personal de
+                            reserva
                         </button>
                     </div>
                 </div>
@@ -86,18 +89,19 @@
                                         POBLACIÓN, VII DE
                                         VIVIENDA Y III DE
                                         COMUNIDADES INDÍGENAS</p>
-                                    <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">- III DE
+                                    <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">- III
+                                        CENSO DE
                                         COMUNIDADES NATIVAS DE LA
-                                        AMAZONÍA PERUANA Y I DE
+                                        AMAZONÍA PERUANA Y I CENSO DE
                                         COMUNIDADES CAMPESINAS</p>
                                     <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">CENSO
                                         EXPERIMENTAL</p>
-                                    <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">RELACIÓN
-                                        DE PARTICIPANTES</p>
                                     <p id="p_curso_actual"
                                        style="color: #2196F3 !important;font-weight: 700;text-align: center;">CURSO DE
                                         JEFES DE
                                         ZONA</p>
+                                    <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">RELACIÓN
+                                        DE PARTICIPANTES</p>
                                     <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">NOMBRE DE
                                         LOCAL: <span
                                                 id="span_nombre_local"></span></p>
@@ -122,10 +126,10 @@
                                 <thead>
                                 <tr class="bg-table-inei1">
                                     <th>N°</th>
-                                    <th>DNI</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th>Nombres</th>
+                                    <th>DNI</th>
                                     <th>Cargo</th>
                                     <th>Zona</th>
                                 </tr>
@@ -147,7 +151,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">Detalle de personal</h6>
+                    <h6 class="modal-title">Detalle de personal a distribuir</h6>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -226,7 +230,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h6 class="modal-title">Asignación de zonas por local</h6>
+                    <h6 class="modal-title">Asignación de ambitos por local</h6>
                 </div>
 
                 <div class="modal-body">
@@ -243,7 +247,7 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="col-md-8">
-                                <label class="text-bold">Seleccione zonas para asignar:</label>
+                                <label class="text-bold">Seleccione ámbito para asignar:</label>
                                 <select id="select_zonas_por_asignar" multiple="multiple" class="select form-control">
 
                                 </select>

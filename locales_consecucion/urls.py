@@ -41,7 +41,8 @@ urlpatterns = [
     url(r'directoriolocalambientes_detalle/(?P<localcurso>[0-9]+)/(?P<is_directorio>[0-9]+)/$',
         DirectorioLocalAmbienteFilterViewSet.as_view()),
     url(r'directorioSeleccionado/(?P<id_directoriolocal>[0-9]+)/(?P<id_curso>[0-9]+)/$', directorioSeleccionado),
-
+    url(r'seleccionarLocalDisponible/$', seleccionarLocalDisponible),
+    url(r'deseleccionarLocalDisponible/$', deseleccionarLocalDisponible),
     # Agregar directorio a locales
     url(r'agregarDirectorioCurso/$', agregarDirectorioCurso),
     url(r'agregarPeatoNotaFinalSinInternet/$', agregarPeatoNotaFinalSinInternet),

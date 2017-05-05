@@ -174,6 +174,8 @@ class Local(models.Model):
     cantidad_usar_computo = models.IntegerField(blank=True, null=True)
     total_aulas = models.IntegerField(blank=True, null=True)
     id_directoriolocal = models.ForeignKey('DirectorioLocal', blank=True, null=True)
+    usar = models.IntegerField(default=0)
+    total_disponibles = models.IntegerField(default=0, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -258,6 +260,8 @@ class DirectorioLocal(models.Model):
     cantidad_total_computo = models.IntegerField(blank=True, null=True)
     cantidad_disponible_computo = models.IntegerField(blank=True, null=True)
     cantidad_usar_computo = models.IntegerField(blank=True, null=True)
+    total_aulas = models.IntegerField(blank=True, null=True)
+    total_disponibles = models.IntegerField(default=0, blank=True, null=True)
 
     class Meta:
         managed = True
