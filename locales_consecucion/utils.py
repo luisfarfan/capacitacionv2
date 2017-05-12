@@ -26,7 +26,7 @@ def sumarDisponiblesUsar(id_local, isdirectorio=False):
         local.cantidad_usar_computo or 0) + int(
         local.cantidad_usar_oficina or 0) + int(
         local.cantidad_usar_otros or 0)
-    print(disponible_total, disponible_usar)
+    # print(disponible_total, disponible_usar)
     local.total_aulas = disponible_usar
     local.total_disponibles = disponible_total
     local.save()

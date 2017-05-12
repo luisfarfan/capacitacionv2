@@ -108,7 +108,7 @@ export class EvaluacionView {
                 }
             });
             $('#btn_save_asistencia').on('click', () => {
-                this.saveNotas();
+                this.saveNotas()
             });
             $('#btn_ver_personal').on('click', () => {
                 this.getPersonalNotaFinal();
@@ -118,6 +118,15 @@ export class EvaluacionView {
             });
             $('#btn_exportar').on('click', () => {
                 this.exportar();
+            });
+            $('#btn_exportar_rankeo').on('click', () => {
+                utils.exportarTable({
+                    buttonName: 'btn_exportar_rankeo',
+                    contenedor: 'div_export',
+                    fileName: 'resultados.xls',
+                    table: 'div_table_personalnotafinal',
+                    columnsDelete: []
+                });
             });
 
             $('#select_cargos_funcionales').on('change', () => {
@@ -147,9 +156,19 @@ export class EvaluacionView {
 
     exportar() {
         $('#clone').html($('#tabla_evaluacion').clone());
+        let td = $('#clone').find('table').find('td')
+        let theadtr = $('#clone').find('table').find('thead').find('th')
+        td.map((index: number, domElement: Element) => {
+            $(domElement).css('border', '1px solid #0065a9');
+        });
+        theadtr.map((index: number, domElement: Element) => {
+            $(domElement).css('background-color', '#03A9F4');
+            $(domElement).css('border-color', '#03A9F4');
+            $(domElement).css('color', '#fff');
+        });
         let select_instructor = $('#clone').find('select :selected').text();
         $('#clone').find('#a_save_instructor').remove()
-        let inputs = $('#clone').find('input[type="number"]')
+        let inputs = $('#clone').find('input[type="number"]');
         inputs.map((index: number, element: Element) => {
             let val = $(element).val();
             $(element).replaceWith(`<span>${val}</span>`);
@@ -209,7 +228,7 @@ export class EvaluacionView {
                         <td>${index + 1}</td>
                         <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
                         <td>${pea.id_pea.dni}</td>
-                        <td><input name="nota_final2" value="${pea.personalaula_notafinal[0].nota_final}" type="number"></td>
+                        <td>${pea.personalaula_notafinal[0].nota_final}</td>
                         <td>${estado}</td>
                      </tr>`;
             }
@@ -337,7 +356,7 @@ export class EvaluacionView {
 
     drawHeader() {
         let thead = `<tr>`
-        thead += `<th>N°</th><th>Nombre Completo</th><th>DNI</th><th>Cargo</th><th>Zona</th>`
+        thead += `<th>N°</th><th>Apellidos y Nombres</th><th>DNI</th><th>Cargo</th><th>Zona</th>`
         this.criteriosCurso.criterios.map((value: ICriterio, index: number) => {
             thead += `<th>${value.nombre_criterio}</th>`
         });
@@ -412,7 +431,12 @@ export class EvaluacionView {
                 if (persona.id_pea.baja_estado == 1) {
                     tbody += `<td></td>`
                 } else {
-                    tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
+                    if (nota == null) {
+                        tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
+                    } else {
+                        tbody += `<td><input ${disabled} data-value=${objCriterio} disabled value="${nota}" min="0" max="20" type="number"></td>`
+                    }
+
                 }
             });
             nota_final = Math.round(nota_final * 100) / 100;
@@ -473,7 +497,7 @@ export class EvaluacionView {
                 utils.showSwalAlert('Se ha guardado las notas!', 'Exito!', 'success');
                 this.saveNotaFinal();
             });
-        }, 'Esta seguro de guardar las notas de estas personas?')
+        }, 'Después de guardar las notas no se va tener opción a editar', 'error')
     }
 
     saveNotaFinal() {

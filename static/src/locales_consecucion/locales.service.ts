@@ -13,8 +13,8 @@ export class LocalService {
     private urlAmbito: string = `${BASEURL}/locales/localcurso_filter/`;
     private urldirectoriolocal_ambiente: string = `${BASEURL}/locales/directoriolocalambientes_detalle/`;
     private urlLocalAmbientes: string = `${BASEURL}/locales/localambiente/`;
-    private url_seleccionarLocalDisponible: string = `${BASEURL}/locales/seleccionarLocalDisponible/`;
-    private url_deseleccionarLocalDisponible: string = `${BASEURL}/locales/deseleccionarLocalDisponible/`;
+    private url_seleccionarLocal: string = `${BASEURL}/locales/seleccionar_local/`;
+    private url_deseleccionarLocal: string = `${BASEURL}/locales/deseleccionar_local/`;
 
     get(pk: number = null): JQueryXHR {
         return $.ajax({
@@ -76,6 +76,22 @@ export class LocalService {
             url: `${this.url.local}${pk}/`,
             type: 'DELETE',
         });
+    }
+
+    seleccionarLocal(id_local: number): JQueryXHR {
+        return $.ajax({
+            url: this.url_seleccionarLocal,
+            data: {id_local: id_local},
+            type: 'POST',
+        })
+    }
+
+    deseleccionarLocal(id_local: number): JQueryXHR {
+        return $.ajax({
+            url: this.url_deseleccionarLocal,
+            data: {id_local: id_local},
+            type: 'POST',
+        })
     }
 
 }

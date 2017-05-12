@@ -1,12 +1,6 @@
 {% load staticfiles %}
-<div class="navbar navbar-inverse navbar-fixed-top bg-indigo-inei">
-    <h5 style="
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    font-size: 25px;
-">SISTEMA DE CAPACITACIÓN</h5>
+<div class="navbar navbar-inverse navbar-fixed-top navbar-lg bg-indigo-inei">
+
     <div class="navbar-header">
         <ul class="nav navbar-nav pull-right visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
@@ -17,11 +11,6 @@
     <div class="navbar-collapse collapse" id="navbar-mobile">
         <ul class="nav navbar-nav">
             <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a>
-            </li>
-            <li class="dropdown">
-                {% autoescape off %}
-                    {{ modeenv }}
-                {% endautoescape %}
             </li>
         </ul>
 
@@ -44,7 +33,7 @@
 
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="#"><i class="icon-user-plus"></i> Mi perfil</a></li>
-                    <li><a href="http://192.168.200.123:8000"><i class="icon-switch2"></i>Cerrar Sesión</a></li>
+                    <li><a href="#"><i class="icon-switch2"></i>Cerrar Sesión</a></li>
                 </ul>
             </li>
         </ul>

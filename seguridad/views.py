@@ -17,7 +17,7 @@ def setSession(request):
     data = json.loads(response.read().decode('utf-8'))
     request.session['user_session'] = data['data']
 
-    return redirect('/modulos/registro-local/')
+    return redirect('/bienvenido/')
 
 
 def setSessionPrueba(request):

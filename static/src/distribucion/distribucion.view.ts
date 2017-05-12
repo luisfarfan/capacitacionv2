@@ -115,6 +115,16 @@ class DistribucionView {
         let select_instructor = $('#tabla_pea').find('select :selected').text();
         $('#clone').find('#a_save_instructor').remove()
         $('#clone').find('select').replaceWith(`<span>${select_instructor}</span>`);
+        let td = $('#clone').find('table').find('td')
+        let theadtr = $('#clone').find('table').find('thead').find('th')
+        td.map((index: number, domElement: Element) => {
+            $(domElement).css('border', '1px solid #0065a9');
+        });
+        theadtr.map((index: number, domElement: Element) => {
+            $(domElement).css('background-color', '#03A9F4');
+            $(domElement).css('border-color', '#03A9F4');
+            $(domElement).css('color', '#fff');
+        });
         var uri = $("#clone").battatech_excelexport({
             containerid: "clone",
             datatype: 'table',
@@ -128,7 +138,7 @@ class DistribucionView {
             this.instructores = instructores;
             let html = '<option value="">Seleccione Instructor</option>';
             this.instructores.map((instructor: IUsuario) => {
-                html += `<option value="${instructor.id}">${instructor.rol.nombre} ${instructor.dni} - ${instructor.ape_pat} ${instructor.ape_mat} ${instructor.nombre}</option>`
+                html += `<option value="${instructor.id}">${instructor.ape_pat} ${instructor.ape_mat} ${instructor.nombre} - ${instructor.rol.nombre} ${instructor.dni}</option>`
             });
             $('#select_instructor').html(html);
         });
@@ -285,11 +295,12 @@ class DistribucionView {
                             <td>${value.id_ambiente.nombre_ambiente}</td>
                             <td>${value.numero}</td>
                             <td>${value.capacidad}</td>
+                            <td><button type="button" class="btn btn-primary btn-raised legitRipple">Enviar SMS y Correo</button></td>
                          </tr>`
             });
             $('#tabla_detalle_ambientes').find('tbody').html(html);
             $('#tabla_detalle_ambientes').find('tbody').find('tr').off();
-            $('#tabla_detalle_ambientes').find('tbody').find('tr').on('click', (element: JQueryEventObject) => {
+            $('#tabla_detalle_ambientes').find('tbody').find('tr:not([type="button"])').on('click', (element: JQueryEventObject) => {
                 let localambiente_id: number = $(element.currentTarget).data('value');
                 this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
                     if (value.id_localambiente == localambiente_id) {
@@ -335,12 +346,14 @@ class DistribucionView {
             this.personalContingencia.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
-                             <td>${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
+                             <td>${value.dni}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
                              <td>${value.zona}</td>
+                             <td>${value.celular}</td>
+                             <td>${value.correo}</td>
                          </tr>`
             });
             table_personal_capacitar.destroy();

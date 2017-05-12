@@ -22,8 +22,10 @@ from asistencia.urls import routerAsistencia
 from evaluacion.urls import routerEvaluacion
 from seguridad.views import *
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import TemplateView
 
 urlpatterns = [
+    url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html")),
     url(r'^admin/', admin.site.urls),
     url(r'reporte/(?P<slug>.+)/$', ensure_csrf_cookie(RenderReportes.as_view())),
     url(r'modulos/(?P<slug>.+)/$', ensure_csrf_cookie(RenderTemplate.as_view())),
@@ -41,4 +43,5 @@ urlpatterns = [
     url('^setSessionPrueba/$', setSessionPrueba),
     url(r'^monitoreo/', include('monitoreo.urls')),
     url(r'^apirest_establecimientos/', include('apirest_establecimientos.urls')),
+
 ]

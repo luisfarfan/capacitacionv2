@@ -126,3 +126,18 @@ def darAlta(request):
     peaaula.save()
 
     return JsonResponse({'msg': True})
+
+
+def deshacerBaja(request):
+    id_pea = request.POST['id_pea']
+    personal_baja = Personal.objects.get(pk=id_pea)
+    personal_baja.baja_estado = 0
+    if personal_baja.id_pea_reemplazo_id is not None:
+        personal_alta = Personal.objects.get(pk=personal_baja.id_pea_reemplazo_id)
+        personal_alta.alta_estado = 0
+        personal_alta.contingencia = 1
+        personal_alta.save()
+    personal_baja.id_pea_reemplazo_id = None
+    personal_baja.save()
+
+    return JsonResponse({'msg': 'Hecho'})

@@ -311,3 +311,35 @@ export function upgradeTooltip() {
 export function isDataTable(id: string) {
     return $.fn.DataTable.fnIsDataTable(id);
 }
+interface IExportarParams {
+    buttonName: string,
+    contenedor: string,
+    fileName: string,
+    table: string,
+    columnsDelete: Array<number>
+}
+export function exportarTable(exportarParams: IExportarParams) {
+    $(`#${exportarParams.contenedor}`).html($(`#${exportarParams.table}`).html());
+    exportarParams.columnsDelete.map((columns: number) => {
+        $(`#${exportarParams.contenedor} table tr`).find(`th:eq(${columns})`).remove();
+        $(`#${exportarParams.contenedor} table tr`).find(`td:eq(${columns})`).remove();
+    });
+    $(`#${exportarParams.contenedor}`).find('table').attr('id', '_tabla_exportar')
+    let td = $(`#${exportarParams.contenedor}`).find('table').find('td')
+    let theadtr = $(`#${exportarParams.contenedor}`).find('table').find('thead').find('th')
+    td.map((index: number, domElement: Element) => {
+        $(domElement).css('border', '1px solid #0065a9');
+    });
+    theadtr.map((index: number, domElement: Element) => {
+        $(domElement).css('background-color', '#03A9F4');
+        $(domElement).css('border-color', '#03A9F4');
+        $(domElement).css('color', '#fff');
+    });
+    var uri = $(`#${exportarParams.contenedor}`).battatech_excelexport({
+        containerid: `${exportarParams.contenedor}`,
+        datatype: 'table',
+        returnUri: true
+    });
+    $(`#${exportarParams.buttonName}`).attr('download', `${exportarParams.fileName}`).attr('href', uri).attr('target', '_blank');
+
+}

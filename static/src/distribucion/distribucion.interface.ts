@@ -23,6 +23,8 @@ export interface IPersonal {
     baja_estado: number,
     alta_estado: number,
     id_pea_reemplazo: IPersonal,
+    celular: string,
+    correo: string,
 }
 
 export interface ICargoFuncional {

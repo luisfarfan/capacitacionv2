@@ -11,7 +11,7 @@
                     <h5 class="panel-title text-inei">Distribución</h5>
                     <div class="heading-elements">
                         <button type="button" id="btn_asignacion_zonas" class="btn btn-primary heading-btn legitRipple">
-                            Asignar Ambitos por Local
+                            Asignar Ámbito Geográfico por Local
                         </button>
                     </div>
                 </div>
@@ -29,8 +29,8 @@
                             personal
                             seleccionado
                         </button>
-                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary pull-right">Personal de
-                            reserva
+                        <button type="button" id="btn_pea_contingencia" class="btn btn-primary pull-right">DETALLE DE
+                            PERSONAL DE RESERVA
                         </button>
                     </div>
                 </div>
@@ -53,6 +53,7 @@
                                     <th>Ambiente</th>
                                     <th>Número de ambiente</th>
                                     <th>Capacidad</th>
+                                    <th>Acción</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -147,7 +148,7 @@
 
 
     <div id="modal_personal_capacitar_no_distribuido" class="modal fade">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-full">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -194,7 +195,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h6 class="modal-title">Personal de reserva</h6>
+                    <h6 class="modal-title">DETALLE DE PERSONAL DE RESERVA</h6>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -203,12 +204,14 @@
                                 <thead>
                                 <tr class="bg-table-inei1">
                                     <th>N°</th>
-                                    <th>Dni</th>
                                     <th>Apellido Paterno</th>
                                     <th>Apellido Materno</th>
                                     <th>Nombre</th>
+                                    <th>Dni</th>
                                     <th>Cargo</th>
                                     <th>Zona</th>
+                                    <th>Celular</th>
+                                    <th>Correo</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -230,7 +233,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h6 class="modal-title">Asignación de ambitos por local</h6>
+                    <h6 class="modal-title">Asignación de ambitos geográficos por local</h6>
                 </div>
 
                 <div class="modal-body">
@@ -247,7 +250,7 @@
                     <div class="row">
                         <div class="form-group">
                             <div class="col-md-8">
-                                <label class="text-bold">Seleccione ámbito para asignar:</label>
+                                <label class="text-bold">Seleccione ámbito geográfico para asignar:</label>
                                 <select id="select_zonas_por_asignar" multiple="multiple" class="select form-control">
 
                                 </select>

@@ -44,6 +44,9 @@ class Etapa(models.Model):
         managed = True
         db_table = 'ETAPA'
 
+    def __str__(self):
+        return '{} - {}'.format(self.id_etapa, self.nombre_etapa)
+
 
 class Curso(models.Model):
     id_curso = models.AutoField(primary_key=True)
@@ -55,6 +58,8 @@ class Curso(models.Model):
     # funcionarios = models.ManyToManyField('Funcionario', through='CursoFuncionario')
     criterios = models.ManyToManyField('Criterio', through='CursoCriterio')
     nota_minima = models.IntegerField(blank=True, null=True)
+    fecha_inicio = models.CharField(max_length=255, blank=True, null=True)
+    fecha_fin = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -66,7 +71,7 @@ class Curso(models.Model):
 
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('etapa__nombre_etapa',)
 
 
 class Criterio(models.Model):
@@ -77,6 +82,14 @@ class Criterio(models.Model):
     class Meta:
         managed = True
         db_table = 'CRITERIO'
+
+    def __str__(self):
+        return '{}'.format(self.nombre_criterio)
+
+
+@admin.register(Criterio)
+class CriterioAdmin(admin.ModelAdmin):
+    pass
 
 
 class CursoCriterio(models.Model):
@@ -89,6 +102,14 @@ class CursoCriterio(models.Model):
         managed = True
         unique_together = ('curso', 'cursocriterio',)
         db_table = 'CURSO_CRITERIO'
+
+    def __str__(self):
+        return '{} - {}'.format(self.curso.nombre_curso, self.criterio.nombre_criterio)
+
+
+@admin.register(CursoCriterio)
+class CursoCriterioAdmin(admin.ModelAdmin):
+    list_filter = ('curso__etapa__nombre_etapa',)
 
 
 class LocalCurso(models.Model):
@@ -298,6 +319,9 @@ class CargoFuncional(models.Model):
         managed = True
         db_table = 'CARGO_FUNCIONAL'
 
+    def __str__(self):
+        return '{}'.format(self.nombre_funcionario)
+
 
 class CursoCargoFuncional(models.Model):
     id_cursocargofuncional = models.AutoField(primary_key=True)
@@ -307,6 +331,15 @@ class CursoCargoFuncional(models.Model):
     class Meta:
         managed = True
         db_table = 'CURSO_CARGO_FUNIONAL'
+        unique_together = ("id_cargofuncional", "id_curso")
+
+    def __str__(self):
+        return '{} - {}'.format(self.id_cargofuncional.nombre_funcionario, self.id_curso.nombre_curso)
+
+
+@admin.register(CursoCargoFuncional)
+class CursoCargoFuncionalAdmin(admin.ModelAdmin):
+    list_filter = ('id_curso__etapa__nombre_etapa',)
 
 
 class Personal(models.Model):
@@ -330,6 +363,7 @@ class Personal(models.Model):
     alta_estado = models.IntegerField(null=True, blank=True, default=0)
     id_pea_reemplazo = models.ForeignKey('Personal', null=True, blank=True)
     edad = models.IntegerField(blank=True, null=True)
+    correo = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = True

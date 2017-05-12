@@ -16,10 +16,11 @@ def agregarDirectorioCurso(request):
 
     for directorio in directorios:
         for curso in cursos:
-            directoriocurso = DirectorioLocalCurso()
-            directoriocurso.local_id = directorio.id_local
-            directoriocurso.curso_id = curso.id_curso
-            directoriocurso.save()
+            if DirectorioLocalCurso.objects.filter(local_id=directorio.id_local, curso_id=curso.id_curso).count() == 0:
+                directoriocurso = DirectorioLocalCurso()
+                directoriocurso.local_id = directorio.id_local
+                directoriocurso.curso_id = curso.id_curso
+                directoriocurso.save()
 
     return JsonResponse(list(DirectorioLocalCurso.objects.all().values()), safe=False)
 
@@ -302,7 +303,7 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
     return JsonResponse({'msg': True}, safe=False)
 
 
-class seleccionarLocalDisponible(APIView):
+class SeleccionarLocalDisponible(APIView):
     def post(self, request):
         id_local = request.data['id_local']
         local = Local.objects.get(pk=id_local)
@@ -311,13 +312,14 @@ class seleccionarLocalDisponible(APIView):
         return JsonResponse({'msg': 'Local cambiado a local a usar'})
 
 
-class deseleccionarLocalDisponible(APIView):
+class DeseleccionarLocalDisponible(APIView):
     def post(self, request):
         id_local = request.data['id_local']
+        print(id_local)
         local = Local.objects.get(pk=id_local)
         local.usar = 0
         local.save()
-        return JsonResponse({'msg': 'Local cambiado a local a usar'})
+        return JsonResponse({'usar': local.usar})
 
 
 def addLocalesCurso():

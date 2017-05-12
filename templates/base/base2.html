@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {{ title }} {% endblock %}</title>
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="{% static "assets/css/icons/icomoon/styles.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/bootstrap.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/core.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/components.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "assets/css/colors.css" %}" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+
+    <!-- own styles -->
+    {% block css %}
+    {% endblock %}
+    <!--/ -->
+</head>
+
+
+<body class="navbar-top">
+<!-- navbar -->
+{% include 'layout/navbar2.html' %}
+<!-- /main navbar -->
+<!-- Page container -->
+<div class="page-container">
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Main sidebar -->
+        {% include 'layout/sidebar.html' %}
+        <!-- /main sidebar -->
+        <!-- Main content -->
+        <div class="content-wrapper">
+            <div style="background-image: url(/static/assets/images/cabecera.jpg);background-position: 10% 40%;background-size: cover;height: 150px;">
+                <div class="col-md-2"><img src="/static/assets/images/logo_inei.png"
+                                           style="float:left; left:0; width:160px;margin-left: 20px;margin-top: 18px;">
+                </div>
+
+                <div>
+
+                    <div class="col-md-8">
+                        <div style="text-align:center; color:#0065b8; font-weight: bold; font-size: 30px; padding: 15px;">
+                            SISTEMA DE CAPACITACIÓN
+                        </div>
+
+                        <div style="text-align:center; color:red; font-weight: bold; font-size: 20px;margin-top: -15px;">
+                            Censos Nacionales 2017: XII de Población, VII de Vivienda y III de Comunidades Indígenas<br>(III
+                            de Comunidades de la Amazonia Peruana y I de Comunidades Campesinas)
+                        </div>
+                    </div>
+                    <div class="col-md-2"><img src="http://monitoreo.inei.gob.pe/monitoreo_cpv/assets/images/logo.png"
+                                               style="float:right; right:0;width:140px;margin-left: 20px;margin-top: 18px;">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Content area -->
+            <div class="content">
+                <div style="display:none">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                </div>
+                {% block content %}
+                {% endblock %}
+            </div>
+            <!-- /content area -->
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+</div>
+<!-- /page container -->
+
+</body>
+<!-- Core JS files -->
+<script type="text/javascript" src="{% static "assets/js/core/libraries/jquery.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/core/libraries/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/loaders/blockui.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/ui/nicescroll.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/loaders/pace.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/layout_fixed_custom.js" %}"></script>
+<script type="text/javascript">
+    /** GLOBAL VARIABLES */
+    var pathArray = location.href.split('/');
+    var protocol = pathArray[0];
+    var host = pathArray[2];
+    BASEURL = protocol + '//' + host;
+</script>
+
+<!-- Utils Js files -->
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/selects/select2.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/forms/styling/uniform.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/pnotify.min.js" %}"></script>
+<script type="text/javascript" src="{% static "assets/js/plugins/notifications/sweet_alert.min.js" %}"></script>
+
+<!-- /core JS files -->
+{% block js %}
+{% endblock %}
+
+<script type="text/javascript" src="{% static "assets/js/core/app.min.js" %}"></script>
+<script type="text/javascript" src="{% static "build/core/extends.js" %}"></script>
+</html>

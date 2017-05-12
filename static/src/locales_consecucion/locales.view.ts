@@ -180,6 +180,19 @@ class LocalController {
             }
             this.saveUbigeo()
         });
+        $('#cursos').on('change', () => {
+            let curso_id = $('#cursos').val();
+            this.cursoService.get($('#etapa').val()).done((cursos) => {
+                cursos.map((curso: ICurso) => {
+                    if (curso.id_curso == curso_id) {
+                        console.log(curso);
+                        $('[name="fecha_inicio"]').val(`${curso.fecha_inicio}`)
+                        $('[name="fecha_fin"]').val(`${curso.fecha_fin}`)
+                    }
+                })
+            })
+
+        })
     }
 
     setUbigeo() {
@@ -202,6 +215,49 @@ class LocalController {
     }
 
     setEvents() {
+        $('#ambientes_esconder').find('input[type="number"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 9999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('input[name="telefono_local_fijo"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 9999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('input[name="telefono_local_celular"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('input[name="responsable_telefono"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 9999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('input[name="responsable_celular"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('input[name="funcionario_celular"]').on('keydown', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget)
+            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+                ev.preventDefault();
+            }
+        })
+        $('#ambientes_esconder').find('input[type="text"]').on('keyup', (ev: JQueryEventObject) => {
+            let current = $(ev.currentTarget).val()
+            let numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+            if (numbers.indexOf(current[current.length - 1]) != -1) {
+                $(ev.currentTarget).val(current.slice(0, -1))
+            }
+        })
         $('input[type="text"]').on('keyup', (ev: JQueryEventObject) => {
             let texto: string = `${$(ev.target).val()}`.toUpperCase();
             $(ev.target).val(texto);
@@ -304,6 +360,47 @@ class LocalController {
         }, function (chosen_date: any) {
             $('input[name="fecha_fin"]').val(chosen_date.format('DD/MM/YYYY'));
         });
+        $('#tabla_locales_filter').on('click', '[name="local_edit"]', (element: JQueryEventObject) => {
+            this.setDirectorioLocal($(element.currentTarget).data('value'), false);
+            this.directorioLocal = null;
+            this.directoriolocalCurso = null;
+            $('#modal_localesbyubigeo').modal('hide');
+        });
+        $('#tabla_locales_filter').on('click', '[name="local_delete"]', (element: JQueryEventObject) => {
+            utils.alert_confirm(() => this.deleteLocal($(element.currentTarget).data('value')), 'Esta seguro de quitar este local de los locales disponibles?', 'error');
+        });
+
+        $('#tabla_locales_filter').on('click', '[name="btn_seleccionar_local"]', (ev: JQueryEventObject) => {
+            let id = $(ev.currentTarget).data('value')
+            utils.alert_confirm(() => this.seleccionarLocal(id), 'Está seguro de seleccionar el local?', 'info');
+        });
+        $('#tabla_locales_filter').on('click', '[name="btn_deseleccionar_local"]', (ev: JQueryEventObject) => {
+            let id = $(ev.currentTarget).data('value')
+            utils.alert_confirm(() => this.seleccionarLocal(id, false), 'Está seguro de deseleccionar el local?', 'error');
+        });
+        $('#btn_exportar').on('click', () => {
+            utils.exportarTable({
+                buttonName: 'btn_exportar',
+                contenedor: 'div_export',
+                fileName: 'locales_disponibles_para_curso.xls',
+                table: 'div_tabla_locales_filter',
+                columnsDelete: [7, 6]
+            })
+        })
+
+    }
+
+    seleccionarLocal(id_local: number, seleccionar: boolean = true) {
+        if (seleccionar) {
+            this.localService.seleccionarLocal(id_local).done((response) => {
+                this.filterLocal();
+            })
+        } else {
+            this.localService.deseleccionarLocal(id_local).done((response) => {
+                this.filterLocal();
+            })
+        }
+
     }
 
     addMethodJqueryValidator() {
@@ -377,7 +474,7 @@ class LocalController {
                 id_element: 'cursos',
                 bootstrap_multiselect: true,
                 select2: false
-            })
+            });
         })
     }
 
@@ -505,12 +602,12 @@ class LocalController {
                 html += `<td><button name="btn_seleccionar_local" data-value="${local.id_local}" type="button" class="btn bg-primary btn-raised active legitRipple btn-xs">
                                                                Seleccionar</button></td>`
             } else {
-                html += `<td><button name="btn_seleccionar_local" data-value="${local.id_local}" type="button" disabled class="btn bg-primary btn-raised disabled legitRipple btn-xs">
-                                                               Seleccionado</button></td>`
+                html += `<td><button name="btn_deseleccionar_local" data-value="${local.id_local}" type="button" class="btn bg-success btn-raised legitRipple btn-xs">
+                                                               Deseleecionar</button></td>`
             }
             html += `</tr>`
         });
-        utils.drawDataTable('tabla_locales_filter', html)
+        utils.drawDataTable('tabla_locales_filter', html, false)
     }
 
     filterLocal() {
@@ -522,16 +619,6 @@ class LocalController {
             this.localesCurso.map((value: ILocalCurso, index: number) => this.locales.push(value.local));
 
             this.printLocalesDisponibles();
-
-            $('[name="local_edit"]').on('click', (element: JQueryEventObject) => {
-                this.setDirectorioLocal($(element.currentTarget).data('value'), false);
-                this.directorioLocal = null;
-                this.directoriolocalCurso = null;
-                $('#modal_localesbyubigeo').modal('hide');
-            });
-            $('[name="local_delete"]').on('click', (element: JQueryEventObject) => {
-                utils.alert_confirm(() => this.deleteLocal($(element.currentTarget).data('value')), 'Esta seguro de quitar este local de los locales disponibles?', 'error');
-            });
         });
     }
 

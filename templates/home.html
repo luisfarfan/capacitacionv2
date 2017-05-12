@@ -1,0 +1,24 @@
+{% extends 'base/base2.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <h5 class="text-center text-inei no-border-bottom">El Sistema Capacitación para los Censos Nacionales 2017:
+                XII de Población, VII de Vivienda y III de Comunidades Indígenas - III Censo de Comunidades Nativas de
+                la
+                Amazonía Peruana y I Censo de Comunidades Campesinas, permite registrar la información de los locales y
+                ambientes destinados al proceso de capacitación de los funcionarios censales a participar en las etapas
+                de Censo Experimental y Empadronamiento a nivel nacional, realizar la distribución del personal
+                seleccionado a capacitar, así como registrar la asistencia, evaluaciones y bajas y sus respectivas altas
+                por renuncia u otros motivos, producidas durante el proceso de capacitación, para finalmente obtener el
+                listado de personal aprobado.</h5>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+{% endblock %}

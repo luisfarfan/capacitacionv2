@@ -74,7 +74,9 @@ export interface ICurso {
     id_curso: number,
     nombre_curso: string,
     nota_minima: number,
-    etapa: number
+    etapa: number,
+    fecha_inicio: string,
+    fecha_fin: string,
 }
 
 export interface ILocalAmbienteDetail {

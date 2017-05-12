@@ -8,6 +8,7 @@ import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from
 
 import * as utils from '../core/utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
+import {alert_confirm} from "../core/utils";
 
 declare var IDUSUARIO: number;
 declare var $: any;
@@ -47,10 +48,10 @@ export class AsistenciaView {
             this.cursoSelected = curso_id;
             $('#p_curso_actual').text($('#cursos :selected').text());
             this.getAulas(curso_id);
-            if (this.cursoSelected != 4) {
-                $('#btn_cierre_curso').hide()
-            } else {
+            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
                 $('#btn_cierre_curso').show()
+            } else {
+                $('#btn_cierre_curso').hide()
             }
         });
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
@@ -73,7 +74,7 @@ export class AsistenciaView {
         });
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
-            if (this.cursoSelected == 4) {
+            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
                 if (utils.isDataTable('#tabla_asistencia')) {
                     $('#tabla_asistencia').dataTable().fnFilterClear()
                 }
@@ -98,6 +99,24 @@ export class AsistenciaView {
             }, 'Esta seguro de Cerrar el curso?');
         });
         this.disabledChecks();
+        $('#btn_exportar_bajas_altas').on('click', () => {
+            utils.exportarTable({
+                table: 'div_tabla_altasbajas',
+                fileName: 'bajas_y_altas.xls',
+                contenedor: 'div_export',
+                columnsDelete: [7],
+                buttonName: 'btn_exportar_bajas_altas'
+            })
+        });
+
+        $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_baja"]', (ev: JQueryEventObject) => {
+            let id = $(ev.currentTarget).data('value')
+            alert_confirm(() => {
+                this.asistenciaService.deshacerBaja(id).done(() => {
+                    $('#select_aulas_asignadas').trigger('change');
+                });
+            }, 'Esta seguro de deshacer la baja?', 'error')
+        })
     }
 
     cargarPersonalAsistenciaPorAula() {
@@ -124,13 +143,30 @@ export class AsistenciaView {
             utils.setDropdown(this.personalparaBaja, {
                 id: 'id_pea',
                 text: ['dni', 'ape_paterno', 'ape_materno', 'nombre']
-            }, {id_element: 'select_personal_para_baja', bootstrap_multiselect: false, select2: true});
+            }, {
+                id_element: 'select_personal_para_baja',
+                bootstrap_multiselect: false,
+                select2: true
+            }, false, 'Digitar');
             let html: string = '';
             this.personaldadadeBaja.map((value: IPersonal, index: number) => {
                 let alta: string = `<td>-</td><td>-</td><td>-</td><td>-</td><td>
-                                    <button type="button" data-popup="tooltip" title="Dar de alta" name="btn_dar_alta"
-                                    data-value="${value.id_pea}"
-                                    class="btn btn-primary active btn-icon btn-rounded legitRipple"><i class="icon-thumbs-up2"></i></button>
+                                    <ul class="icons-list">
+                                        <li>
+                                            <a type="button" data-popup="tooltip" title="Dar de alta" name="btn_dar_alta"
+                                                    data-value="${value.id_pea}"
+                                                    class="btn btn-success active btn-icon btn-rounded legitRipple">
+                                                    <i class="icon-thumbs-up2"></i>
+                                            </a>    
+                                        </li>
+                                        <li>
+                                            <a type="button" data-popup="tooltip" title="Deshacer alta" name="btn_deshacer_alta"
+                                                    data-value="${value.id_pea}"
+                                                    class="btn btn-primary active btn-icon btn-rounded legitRipple">
+                                                    <i class="icon-reload-alt"></i>
+                                            </a>    
+                                        </li>
+                                    </ul>
                                     </td>`;
                 if (value.id_pea_reemplazo) {
                     alta = `<td>${value.id_pea_reemplazo.ape_paterno}</td>
@@ -147,7 +183,10 @@ export class AsistenciaView {
                            <td>${value.ape_materno}</td>
                            <td>${value.nombre}</td>
                            <td>${value.dni}</td>
-                           <td></td>
+                           <td><button type="button" data-popup="tooltip" title="Deshacer baja" name="btn_deshacer_baja" data-value="${value.id_pea}"
+                                    class="btn btn-primary active btn-icon btn-rounded legitRipple"><i class="icon-cancel-circle2"></i>
+                                </button>
+                           </td>
                          </tr>
                          <tr>
                             <td style="background-color:#96e638">ALTA</td>
@@ -214,15 +253,15 @@ export class AsistenciaView {
             colspan = 2;
         }
         console.log(this.cursoSelected);
-        if (this.cursoSelected == 4) {
+        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
         } else {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Nombre Completo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
@@ -231,7 +270,7 @@ export class AsistenciaView {
 
 
         this.rangoFechas.map((fecha: string, index: number) => {
-            if (this.cursoSelected == 4) {
+            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
                 spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
             }
             header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="${colspan}"><center>${fecha} ${spanEmpadronadorUrbano}</center></th>`;
@@ -279,18 +318,24 @@ export class AsistenciaView {
                     }
                 });
                 if (value.id_pea.baja_estado == 1) {
-                    tbody += `<td></td><td></td>`;
+                    tbody += `<td></td>`;
                 } else {
-                    if (this.cursoSelected == 4) {
+                    if (this.cursoSelected == 4 || this.cursoSelected == 20) {
                         tbody += this.drawDivAsistenciaEmpadronadorUrbano(divParams, ind);
                     } else {
-                        tbody += this.drawDivAsistencia(divParams);
+                        if (divParams.turno_manana != null || divParams.turno_tarde != null) {
+                            tbody += this.drawDivAsistencia(divParams, true);
+                        } else {
+                            tbody += this.drawDivAsistencia(divParams);
+                        }
+
+                        console.log(divParams)
                     }
                 }
             });
             tbody += `</tr>`
         });
-        if (this.cursoSelected == 4) {
+        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
             if (utils.isDataTable('#tabla_asistencia')) {
                 $('#tabla_asistencia').DataTable().destroy();
             }
@@ -309,16 +354,17 @@ export class AsistenciaView {
         });
     }
 
-    drawDivAsistencia(divParams: ModelDivAsistencia) {
+    drawDivAsistencia(divParams: ModelDivAsistencia, disabled: boolean = false) {
         let turno_uso_local: number = this.localAmbienteSelected.localcurso.local.turno_uso_local;
         let json: String = JSON.stringify({fecha: divParams.fecha, id_personalaula: divParams.id_personalaula});
         let silverBrackground: string = `style="background-color: #dedede"`;
+        let bloquear = disabled ? 'disabled' : '';
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 0) {
             return `<td ${turno_uso_local == 1 ? silverBrackground : ''}>
                     <div name="divTurnosManana" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                             ${divParams.turno_manana == 0 ? 'checked' : ''} value="0">
                             Puntual
@@ -326,7 +372,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_manana == 1 ? 'checked' : ''} value="1">
                             Tardanza
@@ -334,7 +380,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_manana == 2 ? 'checked' : ''} value="2">
                             Falta
@@ -345,7 +391,7 @@ export class AsistenciaView {
             return `<td ${turno_uso_local == 0 ? silverBrackground : ''}><div name="divTurnosTarde" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
                              name="turno_tarde${divParams.fecha}${divParams.id_personalaula}" 
                             ${divParams.turno_tarde == 0 ? 'checked' : ''} value="0">
                             Puntual
@@ -353,7 +399,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''} 
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''} 
                             name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_tarde == 1 ? 'checked' : ''} value="1">
                             Tardanza
@@ -361,7 +407,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
                              name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_tarde == 2 ? 'checked' : ''} value="2">
                             Falta
@@ -372,7 +418,7 @@ export class AsistenciaView {
             return `<td ${turno_uso_local == 1 ? silverBrackground : ''}><div name="divTurnosManana" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                             ${divParams.turno_manana == 0 ? 'checked' : ''} value="0">
                             Puntual
@@ -380,7 +426,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_manana == 1 ? 'checked' : ''} value="1">
                             Tardanza
@@ -388,7 +434,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: table;">
-                            <input type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 1 ? 'disabled' : ''}
                              name="turno_manana${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_manana == 2 ? 'checked' : ''} value="2">
                             Falta
@@ -398,7 +444,7 @@ export class AsistenciaView {
 				<td ${turno_uso_local == 0 ? silverBrackground : ''}><div name="divTurnosTarde" data-value=${json} class="form-group">
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
                              name="turno_tarde${divParams.fecha}${divParams.id_personalaula}" 
                             ${divParams.turno_tarde == 0 ? 'checked' : ''} value="0">
                             Puntual
@@ -406,7 +452,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''} 
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''} 
                             name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_tarde == 1 ? 'checked' : ''} value="1">
                             Tardanza
@@ -414,7 +460,7 @@ export class AsistenciaView {
                     </div>
                     <div class="checkbox checkbox-right">
                         <label style="display: flex;">
-                            <input type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
+                            <input ${bloquear} type="radio" ${turno_uso_local == 0 ? 'disabled' : ''}
                              name="turno_tarde${divParams.fecha}${divParams.id_personalaula}"
                              ${divParams.turno_tarde == 2 ? 'checked' : ''} value="2">
                             Falta
@@ -596,8 +642,9 @@ export class AsistenciaView {
         utils.alert_confirm(() => {
             this.asistenciaService.saveAsistencia(request).done((response) => {
                 utils.showSwalAlert('La asistencia fue guardad con éxito!', 'Exito', 'success');
+                $('#select_aulas_asignadas').trigger('change');
             });
-        }, 'Esta seguro de guardar la asistencia?', 'success');
+        }, 'Después de guardar la asistencia, no se va tener opción a editar!', 'success');
     }
 
     getAulas(curso_id: number) {
@@ -646,7 +693,7 @@ export class AsistenciaView {
             } else {
                 $(domElement).replaceWith(`<span></span>`)
             }
-        })
+        });
         divsTarde.map((index: number, domElement: Element) => {
             let name = $(domElement).find('input[type="radio"]').attr('name')
             let selected = $(`[name="${name}"]:checked`);
@@ -679,11 +726,21 @@ export class AsistenciaView {
 
     exportar() {
         $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
-        if (this.cursoSelected == 4) {
+        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
             this.exportarEmpadronadorUrbano();
         } else {
             this._exportarGeneral();
         }
+        let td = $('#asistenciaclone').find('table').find('td')
+        let theadtr = $('#asistenciaclone').find('table').find('thead').find('th')
+        td.map((index: number, domElement: Element) => {
+            $(domElement).css('border', '1px solid #0065a9');
+        });
+        theadtr.map((index: number, domElement: Element) => {
+            $(domElement).css('background-color', '#03A9F4');
+            $(domElement).css('border-color', '#03A9F4');
+            $(domElement).css('color', '#fff');
+        });
         var uri = $("#asistenciaclone").battatech_excelexport({
             containerid: "asistenciaclone",
             datatype: 'table',
