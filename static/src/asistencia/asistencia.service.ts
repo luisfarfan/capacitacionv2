@@ -46,6 +46,8 @@ export class AsistenciaService {
     private url_darAlta: string = `${BASEURL}/asistencia/darAlta/`;
     private url_cerrarCursoEmpadronador: string = `${BASEURL}/evaluacion/cerrarCursoEmpadronador/`;
     private url_deshacerBaja: string = `${BASEURL}/asistencia/deshacerBaja/`;
+    private url_deshacerAlta: string = `${BASEURL}/asistencia/deshacerAlta/`;
+
 
 
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
@@ -119,6 +121,15 @@ export class AsistenciaService {
             data: {id_pea: id_pea}
         })
     }
+
+    deshacerAlta(id_pea: number): JQueryXHR {
+        return $.ajax({
+            url: this.url_deshacerAlta,
+            type: 'POST',
+            data: {id_pea: id_pea}
+        })
+    }
+
 }
 
 export class PersonalService extends ModelService {

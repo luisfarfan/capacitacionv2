@@ -52,7 +52,8 @@ class FilterPersonalAulaDetalleViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         id_localambiente = self.kwargs['id_localambiente']
-        return PersonalAula.objects.filter(id_localambiente_id=id_localambiente)
+        return PersonalAula.objects.filter(id_localambiente_id=id_localambiente).order_by('id_pea__baja_estado',
+                                                                                          'id_pea__ape_paterno')
 
 
 def saveAsistencia(request):
@@ -140,4 +141,11 @@ def deshacerBaja(request):
     personal_baja.id_pea_reemplazo_id = None
     personal_baja.save()
 
+    return JsonResponse({'msg': 'Hecho'})
+
+
+def deshacerAlta(request):
+    id_pea = request.POST['id_pea']
+    Personal.objects.filter(id_pea_reemplazo_id=id_pea).update(id_pea_reemplazo_id=None)
+    Personal.objects.filter(id_pea=id_pea).update(contingencia=1, alta_estado=0)
     return JsonResponse({'msg': 'Hecho'})

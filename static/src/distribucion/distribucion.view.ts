@@ -108,6 +108,18 @@ class DistribucionView {
             this.exportar();
         });
         this.getInstructores();
+
+        $('#btn_exportar_personal_reserva').on('click', () => {
+            $('#tabla_personal_reserva').DataTable().destroy()
+            utils.exportarTable({
+                buttonName: 'btn_exportar_personal_reserva',
+                contenedor: 'div_export',
+                fileName: 'personal_reserva.xls',
+                table: 'div_tabla_personal_reserva',
+                columnsDelete: []
+            }, 'tabla_pea');
+            $('#tabla_personal_reserva').DataTable()
+        })
     }
 
     exportar() {
@@ -324,10 +336,10 @@ class DistribucionView {
             this.personal.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
+                             <td>${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
-                             <td>${value.dni}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
                              <td>${value.zona}</td>
                          </tr>`
@@ -392,10 +404,10 @@ class DistribucionView {
             this.personalAula.map((personal: IPersonalAula, index: number) => {
                 html += `<tr>
                             <td>${index + 1}</td>
-                            <td>${personal.id_pea.dni}</td>
                             <td>${personal.id_pea.ape_paterno}</td>
                             <td>${personal.id_pea.ape_materno}</td>
                             <td>${personal.id_pea.nombre}</td>
+                            <td>${personal.id_pea.dni}</td>
                             <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
                             <td>${personal.id_pea.zona}</td>
                          </tr>`;

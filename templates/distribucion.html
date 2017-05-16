@@ -101,7 +101,8 @@
                                        style="color: #2196F3 !important;font-weight: 700;text-align: center;">CURSO DE
                                         JEFES DE
                                         ZONA</p>
-                                    <p style="color: #2196F3 !important;font-weight: 700;text-align: center;">RELACIÓN
+                                    <p name="titulo"
+                                       style="color: #2196F3 !important;font-weight: 700;text-align: center;">RELACIÓN
                                         DE PARTICIPANTES</p>
                                     <p style="color: #2196F3 !important;font-weight: 700;text-align: left;">NOMBRE DE
                                         LOCAL: <span
@@ -191,7 +192,7 @@
         </div>
     </div>
     <div id="modal_personal_reserva" class="modal fade">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-full">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -199,8 +200,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="table table-responsive">
+                        <div id="div_tabla_personal_reserva" class="table table-responsive">
                             <table id="tabla_personal_reserva" class="table table-responsive table-bordered">
+                                <caption></caption>
                                 <thead>
                                 <tr class="bg-table-inei1">
                                     <th>N°</th>
@@ -223,7 +225,10 @@
 
                 </div>
                 <div class="modal-footer">
-
+                    <a type="button" id="btn_exportar_personal_reserva"
+                       class="btn btn-success btn-raised legitRipple" download><i
+                            class="icon-file-excel position-left"></i> EXPORTAR
+                    </a>
                 </div>
             </div>
         </div>

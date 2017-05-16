@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'localambientes_bylocal/(?P<id_local>[0-9]+)/$',
         LocalAmbientebyLocal.as_view()),
     url(r'deshacerBaja/$', deshacerBaja),
+    url(r'deshacerAlta/$', deshacerAlta),
 
 ]

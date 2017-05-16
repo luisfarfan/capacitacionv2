@@ -37,6 +37,8 @@ export class AsistenciaView {
     public personalContingencia: IPersonal[] = [];
     public pea_id: number = null;
     public cursoSelected: number;
+    public hoy: string = '';
+    public hoystamp: number = 0;
 
     constructor() {
         this.asistenciaService = new AsistenciaService();
@@ -106,7 +108,7 @@ export class AsistenciaView {
                 contenedor: 'div_export',
                 columnsDelete: [7],
                 buttonName: 'btn_exportar_bajas_altas'
-            })
+            }, 'tabla_asistencia', true)
         });
 
         $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_baja"]', (ev: JQueryEventObject) => {
@@ -117,6 +119,33 @@ export class AsistenciaView {
                 });
             }, 'Esta seguro de deshacer la baja?', 'error')
         })
+
+        $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_alta"]', (ev: JQueryEventObject) => {
+            let id = $(ev.currentTarget).data('value')
+            alert_confirm(() => {
+                this.asistenciaService.deshacerAlta(id).done(() => {
+                    $('#select_aulas_asignadas').trigger('change');
+                });
+            }, 'Esta seguro de deshacer la alta?', 'error')
+        });
+        this.getDate();
+    }
+
+    getDate() {
+        var today = <any>new Date();
+        var dd = <any>today.getDate();
+        var mm = <any>today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        this.hoy = dd + '/' + mm + '/' + yyyy;
+        this.hoystamp = Date.parse(mm + '/' + dd + '/' + yyyy);
     }
 
     cargarPersonalAsistenciaPorAula() {
@@ -153,17 +182,10 @@ export class AsistenciaView {
                 let alta: string = `<td>-</td><td>-</td><td>-</td><td>-</td><td>
                                     <ul class="icons-list">
                                         <li>
-                                            <a type="button" data-popup="tooltip" title="Dar de alta" name="btn_dar_alta"
+                                            <a data-popup="tooltip" title="Dar de alta" name="btn_dar_alta"
                                                     data-value="${value.id_pea}"
                                                     class="btn btn-success active btn-icon btn-rounded legitRipple">
                                                     <i class="icon-thumbs-up2"></i>
-                                            </a>    
-                                        </li>
-                                        <li>
-                                            <a type="button" data-popup="tooltip" title="Deshacer alta" name="btn_deshacer_alta"
-                                                    data-value="${value.id_pea}"
-                                                    class="btn btn-primary active btn-icon btn-rounded legitRipple">
-                                                    <i class="icon-reload-alt"></i>
                                             </a>    
                                         </li>
                                     </ul>
@@ -173,7 +195,13 @@ export class AsistenciaView {
                             <td>${value.id_pea_reemplazo.ape_materno}</td>
                             <td>${value.id_pea_reemplazo.nombre}</td>
                             <td>${value.id_pea_reemplazo.dni}</td>
-                            <td></td>`;
+                            <td><ul class="icons-list"><li>
+                                            <a data-popup="tooltip" title="Deshacer alta" name="btn_deshacer_alta"
+                                                    data-value="${value.id_pea_reemplazo.id_pea}"
+                                                    class="btn btn-primary active btn-icon btn-rounded legitRipple">
+                                                    <i class="icon-reload-alt"></i>
+                                            </a>    
+                                        </li></ul></td>`;
                 }
                 html += `<tr>
                            <td rowspan="2">${index + 1}</td>
@@ -183,9 +211,9 @@ export class AsistenciaView {
                            <td>${value.ape_materno}</td>
                            <td>${value.nombre}</td>
                            <td>${value.dni}</td>
-                           <td><button type="button" data-popup="tooltip" title="Deshacer baja" name="btn_deshacer_baja" data-value="${value.id_pea}"
+                           <td><ul class="icons-list"><li><a data-popup="tooltip" title="Deshacer baja" name="btn_deshacer_baja" data-value="${value.id_pea}"
                                     class="btn btn-primary active btn-icon btn-rounded legitRipple"><i class="icon-cancel-circle2"></i>
-                                </button>
+                                </a></li></ul>
                            </td>
                          </tr>
                          <tr>
@@ -252,7 +280,6 @@ export class AsistenciaView {
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
             colspan = 2;
         }
-        console.log(this.cursoSelected);
         if (this.cursoSelected == 4 || this.cursoSelected == 20) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
@@ -347,6 +374,7 @@ export class AsistenciaView {
             this.countAsistenciaTotalPorFecha();
         } else {
             $('#tabla_asistencia').find('tbody').html(tbody);
+            this.validarFechasDiv();
         }
         $('#btn_exportar').off();
         $('#btn_exportar').on('click', () => {
@@ -468,6 +496,44 @@ export class AsistenciaView {
                     </div>
 				</div></td>`;
         }
+    }
+
+    validarFechasDiv() {
+        let divs = $('[name="divTurnosManana"]')
+        $(divs).map((index: number, domElement: Element) => {
+            let fecha = $(domElement).data('value').fecha.split('/')
+            let f = `${fecha[1]}/${fecha[0]}/${fecha[2]}`
+            let fechastamp: number = Date.parse(`${fecha[1]}/${fecha[0]}/${fecha[2]}`);
+            let inputs = $('[name="divTurnosManana"]').find('input')
+            if (this.hoystamp < fechastamp) {
+                inputs.map((ind: number, domele: Element) => {
+                    let fecha_div = $(domele).parent().parent().parent().data('value').fecha.split('/')
+                    if (`${fecha_div[1]}/${fecha_div[0]}/${fecha_div[2]}` == f) {
+                        if ($(domele).is(":not(:disabled)")) {
+                            $(domele).prop('disabled', true);
+                        }
+                    }
+                })
+            }
+        })
+        let divsT = $('[name="divTurnosTarde"]')
+        $(divsT).map((index: number, domElement: Element) => {
+            let fecha = $(domElement).data('value').fecha.split('/')
+            let f = `${fecha[1]}/${fecha[0]}/${fecha[2]}`
+            let fechastamp: number = Date.parse(`${fecha[1]}/${fecha[0]}/${fecha[2]}`);
+            if (this.hoystamp < fechastamp) {
+                let inputs = $('[name="divTurnosTarde"]').find('input')
+                inputs.map((ind: number, domele: Element) => {
+                    let fecha_div = $(domele).parent().parent().parent().data('value').fecha.split('/')
+                    if (`${fecha_div[1]}/${fecha_div[0]}/${fecha_div[2]}` == f) {
+                        if ($(domele).is(":not(:disabled)")) {
+                            $(domele).prop('disabled', true);
+                        }
+                    }
+
+                })
+            }
+        })
     }
 
     drawDivAsistenciaEmpadronadorUrbano(checkParams: ModelDivAsistencia, ind: number) {
@@ -599,6 +665,14 @@ export class AsistenciaView {
     }
 
     saveAsistencia() {
+        let inputsValidar = $('input[name^="turno"]:not(:disabled):checked').length
+        let inputsValidarTotal = $('input[name^="turno"]:not(:disabled)').length / 3
+
+        if (inputsValidar != inputsValidarTotal) {
+            utils.showInfo('Aún le falta llenar la asistencia');
+            return false;
+        }
+
         let divsManana = $('[name="divTurnosManana"]')
         let divsTarde = $('[name="divTurnosTarde"]')
         let request: Array<any> = []

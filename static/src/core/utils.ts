@@ -316,13 +316,23 @@ interface IExportarParams {
     contenedor: string,
     fileName: string,
     table: string,
-    columnsDelete: Array<number>
+    columnsDelete: Array<number>,
 }
-export function exportarTable(exportarParams: IExportarParams) {
+export function exportarTable(exportarParams: IExportarParams, caption: string = '', temp: boolean = false) {
     $(`#${exportarParams.contenedor}`).html($(`#${exportarParams.table}`).html());
+    if (caption != '') {
+        $(`#${exportarParams.contenedor}`).find('caption').html($(`#${caption}`).find('caption').html());
+        $(`#${exportarParams.contenedor}`).find('caption').find('[name="p_altas_bajas"]').text('RELACIÓN DE BAJAS Y ALTAS')
+        $(`#${exportarParams.contenedor}`).find('caption').find('[id="select_instructor"]').parent().remove()
+        $(`#${exportarParams.contenedor}`).find('caption').find('[name="titulo"]').text('RELACIÓN DE PERSONAL DE RESERVA')
+    }
     exportarParams.columnsDelete.map((columns: number) => {
         $(`#${exportarParams.contenedor} table tr`).find(`th:eq(${columns})`).remove();
-        $(`#${exportarParams.contenedor} table tr`).find(`td:eq(${columns})`).remove();
+
+        let buttons$ = $(`#${exportarParams.contenedor} table tr`).find('td').find('a')
+        buttons$.map((index: number, domElement: Element) => {
+            $(domElement).parent().parent().parent().remove();
+        })
     });
     $(`#${exportarParams.contenedor}`).find('table').attr('id', '_tabla_exportar')
     let td = $(`#${exportarParams.contenedor}`).find('table').find('td')

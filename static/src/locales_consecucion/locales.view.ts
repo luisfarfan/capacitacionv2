@@ -278,6 +278,18 @@ class LocalController {
             this.getCursos();
         });
         $('#btn_save_local').on('click', () => {
+            let inputsambientes = $('#ambientes_esconder').find('input[type="number"]')
+            let count = 0;
+            inputsambientes.map((index: number, domElement: Element) => {
+                if ($(domElement).val() == '') {
+                    count++;
+                }
+            })
+            if (count > 0) {
+                utils.showInfo('Existe omisión en los ambientes!');
+                return false
+            }
+
             this.form_local_validate.form();
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
                 utils.showInfo('Por favor, seleccione un curso');
