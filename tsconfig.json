@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es3",
+    "target": "ES5",
     "module": "amd",
     "noEmitOnError": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "preserveConstEnums": true,
     "sourceMap": true,
     "rootDir": "static/src",
     "outDir": "static/build"

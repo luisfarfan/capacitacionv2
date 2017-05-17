@@ -9,7 +9,6 @@ import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from
 import * as utils from '../core/utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
 import {alert_confirm} from "../core/utils";
-
 declare var IDUSUARIO: number;
 declare var $: any;
 
@@ -39,6 +38,7 @@ export class AsistenciaView {
     public cursoSelected: number;
     public hoy: string = '';
     public hoystamp: number = 0;
+    public cursosEmpadronador: Array<number> = [4, 19, 20]
 
     constructor() {
         this.asistenciaService = new AsistenciaService();
@@ -47,13 +47,13 @@ export class AsistenciaView {
         this.distribucionService = new DistribucionService();
         $('#cursos').on('change', (element: JQueryEventObject) => {
             let curso_id = $(element.currentTarget).val();
-            this.cursoSelected = curso_id;
+            this.cursoSelected = curso_id != "-1" && curso_id != "" ? parseInt(curso_id) : curso_id;
             $('#p_curso_actual').text($('#cursos :selected').text());
             this.getAulas(curso_id);
-            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
-                $('#btn_cierre_curso').show()
+            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+                $('#btn_cierre_curso').show();
             } else {
-                $('#btn_cierre_curso').hide()
+                $('#btn_cierre_curso').hide();
             }
         });
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
@@ -76,7 +76,7 @@ export class AsistenciaView {
         });
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
-            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                 if (utils.isDataTable('#tabla_asistencia')) {
                     $('#tabla_asistencia').dataTable().fnFilterClear()
                 }
@@ -112,16 +112,22 @@ export class AsistenciaView {
         });
 
         $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_baja"]', (ev: JQueryEventObject) => {
+            if (this.disableAltasBajas() == false) {
+                return false
+            }
             let id = $(ev.currentTarget).data('value')
             alert_confirm(() => {
                 this.asistenciaService.deshacerBaja(id).done(() => {
                     $('#select_aulas_asignadas').trigger('change');
                 });
             }, 'Esta seguro de deshacer la baja?', 'error')
-        })
+        });
 
         $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_alta"]', (ev: JQueryEventObject) => {
-            let id = $(ev.currentTarget).data('value')
+            let id = $(ev.currentTarget).data('value');
+            if (this.disableAltasBajas() == false) {
+                return false
+            }
             alert_confirm(() => {
                 this.asistenciaService.deshacerAlta(id).done(() => {
                     $('#select_aulas_asignadas').trigger('change');
@@ -243,6 +249,9 @@ export class AsistenciaView {
     }
 
     darAlta(id_pea: number) {
+        if (this.disableAltasBajas() == false) {
+            return false
+        }
         let peaAltaSelected: number = $('#select_personal_para_alta').val();
         if (peaAltaSelected == -1) {
             utils.showInfo('Para dar de alta, tiene que seleccionar a alguna persona!');
@@ -280,7 +289,7 @@ export class AsistenciaView {
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
             colspan = 2;
         }
-        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
@@ -297,7 +306,8 @@ export class AsistenciaView {
 
 
         this.rangoFechas.map((fecha: string, index: number) => {
-            if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+            debugger
+            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                 spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
             }
             header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="${colspan}"><center>${fecha} ${spanEmpadronadorUrbano}</center></th>`;
@@ -347,7 +357,7 @@ export class AsistenciaView {
                 if (value.id_pea.baja_estado == 1) {
                     tbody += `<td></td>`;
                 } else {
-                    if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+                    if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                         tbody += this.drawDivAsistenciaEmpadronadorUrbano(divParams, ind);
                     } else {
                         if (divParams.turno_manana != null || divParams.turno_tarde != null) {
@@ -362,7 +372,7 @@ export class AsistenciaView {
             });
             tbody += `</tr>`
         });
-        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
             if (utils.isDataTable('#tabla_asistencia')) {
                 $('#tabla_asistencia').DataTable().destroy();
             }
@@ -734,6 +744,9 @@ export class AsistenciaView {
     }
 
     darBaja() {
+        if (this.disableAltasBajas() == false) {
+            return false
+        }
         let peaBajaSelected: number = $('#select_personal_para_baja').val();
         if (peaBajaSelected == -1) {
             utils.showInfo('Para dar de baja, tiene que seleccionar a alguna persona!');
@@ -800,7 +813,7 @@ export class AsistenciaView {
 
     exportar() {
         $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
-        if (this.cursoSelected == 4 || this.cursoSelected == 20) {
+        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
             this.exportarEmpadronadorUrbano();
         } else {
             this._exportarGeneral();
@@ -821,6 +834,16 @@ export class AsistenciaView {
             returnUri: true
         });
         $('#btn_exportar').attr('download', 'reporte_asistencia.xls').attr('href', uri).attr('target', '_blank');
+    }
+
+    disableAltasBajas() {
+        let inputs = $('#div_tabla_asistencia').find('input:not(:disabled)').length
+        debugger
+        if (inputs == 0) {
+            utils.showInfo('Ya no tiene acceso a bajas y altas!');
+            return false;
+        }
+        return true;
     }
 }
 new AsistenciaView();

@@ -117,7 +117,7 @@ class DistribucionView {
                 fileName: 'personal_reserva.xls',
                 table: 'div_tabla_personal_reserva',
                 columnsDelete: []
-            }, 'tabla_pea');
+            });
             $('#tabla_personal_reserva').DataTable()
         })
     }
