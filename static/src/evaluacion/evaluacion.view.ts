@@ -368,7 +368,6 @@ export class EvaluacionView {
     calcularAsistencia(peaaula: IPersonalAula[]) {
         let asistencia: number = 18;
         peaaula.map((value: IPersonalAula, index: number) => {
-            console.log(value);
             if (value.turno_manana == 1) {
                 asistencia = asistencia - 0.5;
             }
@@ -383,7 +382,6 @@ export class EvaluacionView {
             if (value.turno_tarde == 1) {
                 asistencia = asistencia - 0.5;
             }
-
         })
         return asistencia
     }

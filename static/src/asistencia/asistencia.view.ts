@@ -49,6 +49,7 @@ export class AsistenciaView {
             let curso_id = $(element.currentTarget).val();
             this.cursoSelected = curso_id != "-1" && curso_id != "" ? parseInt(curso_id) : curso_id;
             $('#p_curso_actual').text($('#cursos :selected').text());
+            $('[name="p_etapa"]').text($('#etapa :selected').text());
             this.getAulas(curso_id);
             if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                 $('#btn_cierre_curso').show();
@@ -66,6 +67,7 @@ export class AsistenciaView {
                 $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`)
                 $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
                 $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
+                $('[name="p_etapa"]').text($('#etapa :selected').text());
 
                 this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
                     this.rangoFechas = fechasRango;

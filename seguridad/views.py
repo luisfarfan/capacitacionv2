@@ -31,6 +31,13 @@ def setSessionPrueba(request):
 
 
 class RenderTemplate(TemplateView):
+    user = None
+
+    def get(self, request, *args, **kwargs):
+        if self.user:
+            return redirect('http://{}'.format(request.META['HTTP_HOST']))
+        return super(RenderTemplate, self).get(request, *args, **kwargs)
+
     def get_template_names(self):
         try:
             modulos = self.request.session['user_session']['modulos']['CPV']['modulos_individuales']
@@ -53,9 +60,10 @@ class RenderTemplate(TemplateView):
                     context['breadcumbs'] = modulo['descripcion']
                     context['session_key'] = self.request.session.session_key
                     context['modeenv'] = renderENVDB()
+                self.user = True
             return context
         except:
-            return redirect('http://cpv.inei.gob.pe')
+            return context
 
 
 class RenderReportes(TemplateView):
