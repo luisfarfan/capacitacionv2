@@ -185,7 +185,8 @@ def personasLibres(localcurso, exclude=[]):
 
 
 def distribuir_byLocalCurso(request, localcurso_id):
-    localAmbientes = LocalAmbiente.objects.filter(localcurso_id=localcurso_id).order_by('-capacidad')
+    localAmbientes = LocalAmbiente.objects.filter(localcurso_id=localcurso_id, localcurso__local__usar=1).order_by(
+        '-capacidad')
     for localAmbiente in localAmbientes:
         bulk = []
         capacidadDistribuir = localAmbienteValid(localAmbiente.id_localambiente)

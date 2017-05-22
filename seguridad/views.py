@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView
 from reportes.models import Reportes
 from django.conf import settings
+from django.http import JsonResponse
 
 # URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
 # URL_USERDATASESSION = 'http://localhost:81/seguridad/getUserData/?key={}'
@@ -13,9 +14,17 @@ URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=
 
 def setSession(request):
     key = request.GET['key']
-    response = urllib.request.urlopen(URL_USERDATASESSION.format(key))
+    seguridadurl = request.GET['urlbase']
+    response = urllib.request.urlopen(
+        '{}{}'.format(seguridadurl, '/services/menubyproyectosistema/cpvcapacitacion/?key={}'.format(key)))
+    userData = urllib.request.urlopen(
+        '{}{}'.format(seguridadurl, '/services/getAuthData?key={}'.format(key)))
     data = json.loads(response.read().decode('utf-8'))
-    request.session['user_session'] = data['data']
+    userDataDecode = json.loads(userData.read().decode('utf-8'))
+    request.session['user_session'] = data
+    request.session['user_data'] = userDataDecode
+
+    # return JsonResponse(data, safe=False)
 
     return redirect('/bienvenido/')
 
@@ -40,7 +49,8 @@ class RenderTemplate(TemplateView):
 
     def get_template_names(self):
         try:
-            modulos = self.request.session['user_session']['modulos']['CPV']['modulos_individuales']
+            print(self.request.session['user_session'])
+            modulos = self.request.session['user_session']['routes']
             slug = 'modulos/{}'.format(self.kwargs.get('slug'))
             for modulo in modulos:
                 if modulo['slug'] == slug:
@@ -53,7 +63,7 @@ class RenderTemplate(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(RenderTemplate, self).get_context_data(**kwargs)
         try:
-            modulos = self.request.session['user_session']['modulos']['CPV']['modulos_individuales']
+            modulos = self.request.session['user_session']['routes']
             slug = 'modulos/{}'.format(self.kwargs.get('slug'))
             for modulo in modulos:
                 if modulo['slug'] == slug:

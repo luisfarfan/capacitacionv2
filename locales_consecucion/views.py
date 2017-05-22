@@ -114,7 +114,7 @@ class LocalCursoFilter(generics.ListAPIView):
             filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
             filter['local__zona_ubicacion_local'] = self.kwargs['zona']
 
-        return LocalCurso.objects.filter(**filter)
+        return LocalCurso.objects.filter(**filter, local__usar=1)
 
 
 class DirectorioLocalbyUbigeo(generics.ListAPIView):

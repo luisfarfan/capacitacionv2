@@ -185,13 +185,11 @@ class LocalController {
             this.cursoService.get($('#etapa').val()).done((cursos) => {
                 cursos.map((curso: ICurso) => {
                     if (curso.id_curso == curso_id) {
-                        console.log(curso);
                         $('[name="fecha_inicio"]').val(`${curso.fecha_inicio}`)
                         $('[name="fecha_fin"]').val(`${curso.fecha_fin}`)
                     }
                 })
             })
-
         })
     }
 

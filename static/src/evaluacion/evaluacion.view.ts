@@ -464,6 +464,7 @@ export class EvaluacionView {
         let request: Array<any> = [];
         let error: number = 0;
         let input: any;
+        let vacio: number = 0;
         registrosNotas.map((index: number, domElement: Element) => {
             let peaaula: number = $(domElement).data('value');
             let inputs: any = $(domElement).find('input');
@@ -474,6 +475,9 @@ export class EvaluacionView {
                     if (error == 1) {
                         input = $(inputElement);
                     }
+                }
+                if (nota == "") {
+                    vacio++
                 }
                 if ($(inputElement).val() != '' && !$(inputElement).is(':disabled')) {
                     request.push({
@@ -487,6 +491,10 @@ export class EvaluacionView {
         if (error > 0) {
             utils.showInfo('La nota no puede ser mayor a 20, por favor corrijalo');
             input.focus();
+            return false;
+        }
+        if (vacio > 0) {
+            utils.showInfo('Debe de llenar todos los campos por favor!');
             return false;
         }
         utils.alert_confirm(() => {

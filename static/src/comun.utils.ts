@@ -4,6 +4,7 @@
 import {CursoService} from './locales_consecucion/locales.service';
 import {ICurso} from './locales_consecucion/local.interface';
 import * as utils from './core/utils';
+declare var BASEURL: string;
 export class CursoInyection {
     curso_id: number;
     cursoService = new CursoService();
@@ -27,6 +28,11 @@ export class CursoInyection {
             curso_val == "-1" ? this.curso_selected = null : '';
         });
         this.triggerCurso();
+        $('#btn_actualizar_menu').on('click', () => {
+            if ($('#cursos').val() != "-1" && $('#cursos').val() != "") {
+                utils.insertParam('curso', $('#cursos').val())
+            }
+        })
     }
 
     saveCursoSession(curso_id: number) {

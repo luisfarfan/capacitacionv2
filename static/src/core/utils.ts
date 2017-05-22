@@ -273,9 +273,9 @@ export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: Ex
     $(`#${extra.id_element}`).html(html);
     let bgcolor = {}
     bgColor ? bgcolor = {
-            dropdownCssClass: 'border-primary',
-            containerCssClass: 'border-primary text-primary-700'
-        } : ''
+        dropdownCssClass: 'border-primary',
+        containerCssClass: 'border-primary text-primary-700'
+    } : ''
     extra.select2 ? $(`#${extra.id_element}`).select2(bgcolor) : '';
 }
 
@@ -352,4 +352,30 @@ export function exportarTable(exportarParams: IExportarParams, caption: string =
     });
     $(`#${exportarParams.buttonName}`).attr('download', `${exportarParams.fileName}`).attr('href', uri).attr('target', '_blank');
 
+}
+
+export function insertParam(key: string, value: any) {
+    key = encodeURI(key);
+    value = encodeURI(value);
+
+    var kvp = document.location.search.substr(1).split('&');
+
+    var i = kvp.length;
+    var x: any;
+    while (i--) {
+        x = kvp[i].split('=');
+
+        if (x[0] == key) {
+            x[1] = value;
+            kvp[i] = x.join('=');
+            break;
+        }
+    }
+
+    if (i < 0) {
+        kvp[kvp.length] = [key, value].join('=');
+    }
+
+    //this will reload the page, it's likely better to store this until finished
+    document.location.search = kvp.join('&');
 }

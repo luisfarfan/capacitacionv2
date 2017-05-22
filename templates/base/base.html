@@ -99,10 +99,10 @@
     BASEURL = protocol + '//' + host;
     IDUSUARIO = '{{ request.session.user_session.user_data.id }}';
     ubigeo = {
-        ccdd: '{{ request.session.user_session.user_data.ccdd }}' == 'None' ? '' : '{{ request.session.user_session.user_data.ccdd }}',
-        ccpp: '{{ request.session.user_session.user_data.ccpp }}' == 'None' ? '' : '{{ request.session.user_session.user_data.ccpp }}',
-        ccdi: '{{ request.session.user_session.user_data.ccdi }}' == 'None' ? '' : '{{ request.session.user_session.user_data.ccdi }}',
-        zona: '{{ request.session.user_session.user_data.zona }}' == 'None' ? '' : '{{ request.session.user_session.user_data.zona }}'
+        ccdd: '{{ request.session.user_data.user.ccdd }}' == 'None' ? '' : '{{ request.session.user_data.user.ccdd }}',
+        ccpp: '{{ request.session.user_data.user.ccpp }}' == 'None' ? '' : '{{ request.session.user_data.user.ccpp }}',
+        ccdi: '{{ request.session.user_data.user.ccdi }}' == 'None' ? '' : '{{ request.session.user_data.user.ccdi }}',
+        zona: '{{ request.session.user_data.user.zona }}' == 'None' ? '' : '{{ request.session.user_data.user.zona }}'
     }
     SESSION_KEY = '{{ session_key }}'
     SEGURIDADBASEURL = 'http://cpv.inei.gob.pe/'
