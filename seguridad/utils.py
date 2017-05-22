@@ -51,6 +51,12 @@ def _recursiveMenu(hijos, base_url, module_id, modulos_permitidos):
                                                                          base_url + '/' + child['slug'] + '/',
                                                                          child['icon'],
                                                                          child['descripcion'])
+                        else:
+                            html += """<li {}><a href="{}"><i class ="{}">
+                                                    </i>{}</a>""".format(css_class,
+                                                                         base_url + '/' + child['slug'] + '/',
+                                                                         child['icon'],
+                                                                         child['descripcion'])
             html += """</ul>"""
         else:
             if module_id == menu['id']:
@@ -60,6 +66,11 @@ def _recursiveMenu(hijos, base_url, module_id, modulos_permitidos):
 
             if menu['codigo'] in modulos_permitidos:
                 html += """<li {}><a href="{}"> 
+                        <i class="{}"></i><span>{}</span></a></li>""".format(css_class,
+                                                                             base_url + '/' + menu['slug'] + '/',
+                                                                             menu['icon'], menu['descripcion'])
+            else:
+                html += """<li {}><a href="{}">
                         <i class="{}"></i><span>{}</span></a></li>""".format(css_class,
                                                                              base_url + '/' + menu['slug'] + '/',
                                                                              menu['icon'], menu['descripcion'])

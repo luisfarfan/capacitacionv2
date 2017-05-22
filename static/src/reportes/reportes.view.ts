@@ -66,7 +66,7 @@ class ReportesView extends UbigeoView {
 
         $('#zona').change(() => {
             this.getLocales();
-        })
+        });
         if (this.reporte_selected.id == 4) {
             this.evaluacionView = new EvaluacionView(false);
             $('#locales').change(() => {

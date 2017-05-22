@@ -114,6 +114,31 @@ class LocalCursoFilter(generics.ListAPIView):
             filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
             filter['local__zona_ubicacion_local'] = self.kwargs['zona']
 
+        return LocalCurso.objects.filter(**filter)
+
+
+class LocalCursoFilterUsar(generics.ListAPIView):
+    serializer_class = LocalCursoDetalleSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        filter = {}
+        filter['curso_id'] = curso
+        if 'ccdd' in self.kwargs:
+            filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
+        if 'ccpp' in self.kwargs:
+            filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
+        if 'ccdi' in self.kwargs:
+            filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
+        if 'zona' in self.kwargs:
+            filter['local__ubigeo__ccdd'] = self.kwargs['ccdd']
+            filter['local__ubigeo__ccpp'] = self.kwargs['ccpp']
+            filter['local__ubigeo__ccdi'] = self.kwargs['ccdi']
+            filter['local__zona_ubicacion_local'] = self.kwargs['zona']
+
         return LocalCurso.objects.filter(**filter, local__usar=1)
 
 

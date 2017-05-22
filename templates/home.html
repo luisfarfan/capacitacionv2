@@ -21,4 +21,6 @@
 
 {% block js %}
     <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/home.js" %}"></script>
 {% endblock %}

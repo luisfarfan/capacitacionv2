@@ -1,5 +1,5 @@
 from django.db import models
-from locales_consecucion.models import Curso, LocalAmbiente
+from locales_consecucion.models import Curso, LocalAmbiente, CargoFuncional
 
 
 # Create your models here.
@@ -9,6 +9,25 @@ class EtapasControlCalidad(models.Model):
     class Meta:
         managed = True
         db_table = 'ETAPAS_CONTROLCALIDAD'
+
+
+class TipoDocumento(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        managed = True
+        db_table = 'TIPO_DOCUMENTO'
+
+
+class Documentos(models.Model):
+    curso = models.ForeignKey(Curso)
+    nombre = models.CharField(max_length=100)
+    tipodocumento = models.ForeignKey(TipoDocumento)
+    formato = models.ForeignKey(Formatos)
+
+    class Meta:
+        managed = True
+        db_table = 'DOCUMENTOS'
 
 
 class Formatos(models.Model):
@@ -24,6 +43,7 @@ class Formatos(models.Model):
 class GrupoPreguntas(models.Model):
     titulo1 = models.CharField(max_length=100, blank=True, null=True)
     titulo2 = models.CharField(max_length=100, blank=True, null=True)
+    formato = models.ForeignKey(Formatos, null=True)
 
     class Meta:
         managed = True
@@ -33,6 +53,8 @@ class GrupoPreguntas(models.Model):
 class Preguntas(models.Model):
     nombre = models.CharField(max_length=100)
     order = models.IntegerField()
+    grupo = models.ForeignKey(GrupoPreguntas, null=True)
+    tipo = models.ForeignKey('TipoPregunta', null=True)
 
     class Meta:
         managed = True

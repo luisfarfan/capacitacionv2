@@ -308,7 +308,6 @@ export class AsistenciaView {
 
 
         this.rangoFechas.map((fecha: string, index: number) => {
-            debugger
             if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                 spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
             }

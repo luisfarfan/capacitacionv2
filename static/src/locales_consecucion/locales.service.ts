@@ -11,6 +11,7 @@ interface urls {
 export class LocalService {
     private url: urls = {local: `${BASEURL}/locales/local/`}
     private urlAmbito: string = `${BASEURL}/locales/localcurso_filter/`;
+    private urlAmbitoUsar: string = `${BASEURL}/locales/localcurso_filterusar/`;
     private urldirectoriolocal_ambiente: string = `${BASEURL}/locales/directoriolocalambientes_detalle/`;
     private urlLocalAmbientes: string = `${BASEURL}/locales/localambiente/`;
     private url_seleccionarLocal: string = `${BASEURL}/locales/seleccionar_local/`;
@@ -22,8 +23,14 @@ export class LocalService {
         });
     }
 
-    getbyAmbienteGeografico(curso: number, ambito: any = {}): JQueryXHR {
-        let url = `${this.urlAmbito}${curso}/`;
+    getbyAmbienteGeografico(curso: number, ambito: any = {}, usar: boolean = false): JQueryXHR {
+        let url = '';
+        if (usar) {
+            url = `${this.urlAmbitoUsar}${curso}/`;
+        } else {
+            url = `${this.urlAmbito}${curso}/`;
+        }
+
         if ('ccdd' in ambito) {
             url += `${ambito['ccdd']}/`;
         }

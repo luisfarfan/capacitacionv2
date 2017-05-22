@@ -397,7 +397,6 @@ class LocalController {
                 columnsDelete: [7, 6]
             })
         })
-
     }
 
     seleccionarLocal(id_local: number, seleccionar: boolean = true) {

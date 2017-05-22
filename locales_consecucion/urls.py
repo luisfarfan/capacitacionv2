@@ -36,6 +36,17 @@ urlpatterns = [
         LocalCursoFilter.as_view()),
     # Fin ubigeo locales marco segun ubigeo
 
+    # Locales Marco segun ubigeo
+    url(r'localcurso_filterusar/(?P<curso>[0-9]+)/$', LocalCursoFilterUsar.as_view()),
+    url(r'localcurso_filterusar/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$', LocalCursoFilterUsar.as_view()),
+    url(r'localcurso_filterusar/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        LocalCursoFilterUsar.as_view()),
+    url(r'localcurso_filterusar/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        LocalCursoFilterUsar.as_view()),
+    url(
+        r'localcurso_filterusar/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        LocalCursoFilterUsar.as_view()),
+
     url(r'generar_ambientes/$', generar_ambientes),
     url(r'directoriolocal_ambientes/(?P<curso>[0-9]+)/(?P<local>[0-9]+)/$', DirectorioLocalCursoFilter.as_view()),
     url(r'directoriolocalambientes_detalle/(?P<localcurso>[0-9]+)/(?P<is_directorio>[0-9]+)/$',

@@ -5,12 +5,6 @@ from reportes.models import Reportes
 from django.conf import settings
 from django.http import JsonResponse
 
-# URL_USERDATASESSION = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key={}'
-# URL_USERDATASESSION = 'http://localhost:81/seguridad/getUserData/?key={}'
-URL_USERDATASESSION = 'http://192.168.200.123:8000/seguridad/getUserData/?key={}'
-
-URL_USERDATASESSION_PRUEBA = 'http://cpv.inei.gob.pe/seguridad/getUserData/?key=x7rsdzt0c4s9kkav6rsdzratqubgz3uv'
-
 
 def setSession(request):
     key = request.GET['key']
@@ -29,14 +23,14 @@ def setSession(request):
     return redirect('/bienvenido/')
 
 
-def setSessionPrueba(request):
-    response = urllib.request.urlopen(URL_USERDATASESSION_PRUEBA)
-    data = json.loads(response.read().decode('utf-8'))
-    request.session['user_session'] = data['data']
-    if not request.session.session_key:
-        request.session.save()
-
-    return redirect('/modulos/registro-local/')
+# def setSessionPrueba(request):
+#     response = urllib.request.urlopen(URL_USERDATASESSION_PRUEBA)
+#     data = json.loads(response.read().decode('utf-8'))
+#     request.session['user_session'] = data['data']
+#     if not request.session.session_key:
+#         request.session.save()
+#
+#     return redirect('/modulos/registro-local/')
 
 
 class RenderTemplate(TemplateView):
