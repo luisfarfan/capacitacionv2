@@ -23,7 +23,7 @@ class Documentos(models.Model):
     curso = models.ForeignKey(Curso)
     nombre = models.CharField(max_length=100)
     tipodocumento = models.ForeignKey(TipoDocumento)
-    formato = models.ForeignKey(Formatos)
+    formato = models.ForeignKey('Formatos')
 
     class Meta:
         managed = True

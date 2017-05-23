@@ -22,12 +22,11 @@ def recursive_menu(request):
         modulo_id = request.session['modulo_id']
 
     context = {
-        "menu": drawSidebar(menu, base_url, modulo_id, modulos),
+        "menu": drawSidebar(menu, base_url, modulo_id, modulos, request),
     }
 
     return {'CLIENT_MENU': context}
 
 
 def getModulosbyRol(rol, curso):
-    return []
-    # return list(RolCursoModulosSeguridad.objects.filter(rol=rol, curso=curso).values_list('modulo', flat=True))
+    return list(RolCursoModulosSeguridad.objects.filter(rol=rol, curso=curso).values_list('modulo', flat=True))

@@ -46,9 +46,10 @@ class NumeroaulasCoberturadas(APIView):
             annotate = ('ubigeo',)
         if ccdi is not None:
             filter['ccdi'] = ccdi
-            annotate = ('zona', 'ubigeo')
+            annotate = ('ccdi', 'ubigeo')
         if zona is not None:
-            filter['zona'] = zona
+            filter['ccdi'] = ccdi
+            annotate = ('zona', 'ubigeo')
         ubigeos = MetaAula.objects.filter(**filter).values(*annotate).annotate(
             dcount=Count(*annotate))
         response = []
@@ -109,27 +110,31 @@ class postulantesSeleccionadosporCurso(APIView):
 
         ubigeos = MetaCapacitacionPersonal.objects.filter(**filter).values(*annotate).annotate(dcount=Count(*annotate))
         response = []
+        zonan = None
         for ubigeo in ubigeos:
             if ccdi is None:
                 meta = MetaCapacitacionPersonal.objects.filter(ubigeo=ubigeo['ubigeo'],
                                                                id_cargofuncional__in=cargos).aggregate(
                     sum=Sum('meta_campo'))
-                ambito = Ubigeo.objects.filter(ubigeo=ubigeo['ubigeo']).values()[0]
+                ambito = Ubigeo.objects.filter(ubigeo=ubigeo['ubigeo']).values('departamento', 'provincia', 'distrito')[
+                    0]
 
             else:
                 meta = MetaCapacitacionPersonal.objects.filter(ubigeo=ubigeo['ubigeo'], zona=ubigeo['zona'],
                                                                id_cargofuncional__in=cargos).aggregate(
                     sum=Sum('meta_campo'))
-                ambito = ubigeo['zona']
+                zonan = ubigeo['zona']
+                ambito = Ubigeo.objects.filter(ubigeo=ubigeo['ubigeo']).values()[0]
 
             inscritos = Inscritos.objects.using('consecucion').filter(ubigeo_i=ubigeo['ubigeo']).count()
             seleccionados = Personal.objects.filter(id_cargofuncional__in=cargos,
                                                     ubigeo_id=ubigeo['ubigeo']).count()
 
             response.append(
-                {'metacampo': meta['sum'], 'inscritos': inscritos, 'inscritos_percent': calcPocentaje(inscritos, meta),
-                 'seleccionados': seleccionados, 'seleccionados_percent': calcPocentaje(seleccionados, meta),
-                 'ambito': ambito})
+                {'metacampo': meta['sum'], 'inscritos': inscritos,
+                 'inscritos_percent': calcPocentaje(inscritos, meta['sum']),
+                 'seleccionados': seleccionados, 'seleccionados_percent': calcPocentaje(seleccionados, meta['sum']),
+                 'ambito': ambito, 'zona': zonan})
 
         return JsonResponse(response, safe=False)
 

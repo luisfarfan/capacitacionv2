@@ -173,7 +173,9 @@ class ReportesView extends UbigeoView {
                     if (typeof datareporte['ambito'] === "object") {
                         html += `<td>${datareporte['ambito'].departamento} - ${datareporte['ambito'].provincia} - ${datareporte['ambito'].distrito}</td>`
                     } else {
-                        html += `<td>${datareporte['ambito']}</td>`
+                        if ('ambito' in datareporte) {
+                            html += `<td>${datareporte['ambito']}</td>`
+                        }
                     }
                     campos.map((field: string) => {
                         if (field in datareporte) {

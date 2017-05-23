@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'seguridad',
     'reportes',
     'monitoreo',
-    'apirest_establecimientos'
+    'apirest_establecimientos',
+    'controlcalidad'
 ]
 
 MIDDLEWARE = [
@@ -200,6 +201,17 @@ elif ENV == 'SQLITE':
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
+            'USER': 'us_inei_bdrrhh_consecucion',
+            'PASSWORD': 'nU6&beTRi',
+            'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
         },
     }
 DATABASES = _DATABASECONF
