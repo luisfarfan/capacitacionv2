@@ -23,6 +23,7 @@ from evaluacion.urls import routerEvaluacion
 from seguridad.views import *
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
+from controlcalidad.urls import routerControlcalidad
 
 urlpatterns = [
     url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html")),
@@ -39,6 +40,7 @@ urlpatterns = [
     url(r'^evaluacion/', include('evaluacion.urls')),
     url(r'^reportes/', include('reportes.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
+    url(r'^controlcalidad/', include(routerControlcalidad.urls)),
     url('^setSession/$', setSession),
     # url('^setSessionPrueba/$', setSessionPrueba),
     url(r'^monitoreo/', include('monitoreo.urls')),

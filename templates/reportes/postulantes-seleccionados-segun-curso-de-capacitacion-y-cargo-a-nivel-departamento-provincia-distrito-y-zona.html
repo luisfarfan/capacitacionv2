@@ -1,0 +1,132 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h5 class="panel-title text-inei">Seleccione reporte a visualizar</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <select id="select_reportes" class="selectbox-bootstrap border-primary text-inei btn-flat">
+                    <option value="">Seleccione</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h5 class="panel-title text-inei">UBICACIÓN GEOGRÁFICA</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li>
+                        <button type="button" class="btn btn-primary btn-raised legitRipple" id="btn_reporte">Consultar
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Departamento</label>
+
+                    <select id="departamentos" class="form-control bg-white text-grey-400">
+
+                        <option value="">Seleccione departamento</option>
+                    </select>
+
+                </div>
+                <div class="col-md-4">
+
+                    <label>Provincia</label>
+                    <select id="provincias" class="form-control bg-white text-grey-400">
+
+                        <option value="">Seleccione provincia</option>
+                    </select>
+
+                </div>
+                <div class="col-md-4">
+                    <label>Distrito</label>
+                    <select id="distritos" class=" form-control bg-white text-grey-400">
+
+                        <option value="">Seleccione distrito</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h6 class="panel-title"><a class="heading-elements-toggle"><i
+                    class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+                <div class="heading-btn">
+                    <a id="btn_exportar" href="#" download="" data-popup="tooltip" title="Exportar"
+                       class="btn btn-success btn-icon legitRipple"><i class="icon-file-excel"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table id="header_reporte" style="width: 40%" class="table table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <th class="bg-primary" style="width: 10%">CURSO</th>
+                    <th style="width: 50%"><span id="span_curso"></span></th>
+                </tr>
+                </thead>
+
+            </table>
+            <table id="tabla_reporte" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th rowspan="2">#</th>
+                    <th rowspan="2">DEPARTAMENTO</th>
+                    <th rowspan="2">PROVINCIA</th>
+                    <th rowspan="2">DISTRITO</th>
+                    <th rowspan="2">ZONA</th>
+                    <th rowspan="2">META DE CAMPO</th>
+                    <th colspan="2">PERSONAL TITULAR</th>
+                    <th colspan="2">PERSONAL DE RESERVA</th>
+                    <th colspan="2">PERSONAL NO SELECCIONADO /<br> DESAPROBADO</th>
+                </tr>
+                <tr>
+                    <th>Absoluto</th>
+                    <th>%</th>
+                    <th>Absoluto</th>
+                    <th>%</th>
+                    <th>Absoluto</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- /.modal -->
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/core/libraries/jquery_ui/interactions.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/forms/selects/selectboxit.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/reportes/reportes.view.js" %}"></script>
+{% endblock %}

@@ -27,3 +27,19 @@ class Inscritos(models.Model):
     class Meta:
         managed = False
         db_table = 'v_inscritos_censos'
+
+
+class MetaSeleccion(models.Model):
+    ccdd = models.CharField(max_length=2)
+    ccpp = models.CharField(max_length=2)
+    ccdi = models.CharField(max_length=2)
+    ubigeo = models.CharField(max_length=2)
+    id_convocatoriacargo = models.IntegerField()
+    id_cargofuncional = models.IntegerField()
+    meta_campo = models.IntegerField()
+    meta_capa = models.IntegerField()
+    desc_censo = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'meta_seleccion'

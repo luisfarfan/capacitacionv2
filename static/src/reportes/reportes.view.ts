@@ -168,28 +168,98 @@ class ReportesView extends UbigeoView {
             this.reporteService.reporteDinamico(url).done((data: any) => {
                 let html: string = '';
                 let campos: Array<string> = this.reporte_selected.campos.split(',')
-                data.map((datareporte: any, index: number) => {
-                    html += `<tr><td>${index + 1}</td>`;
-                    if (typeof datareporte['ambito'] === "object") {
-                        html += `<td>${datareporte['ambito'].departamento} - ${datareporte['ambito'].provincia} - ${datareporte['ambito'].distrito}</td>`
-                    } else {
-                        if ('ambito' in datareporte) {
-                            html += `<td>${datareporte['ambito']}</td>`
-                        }
-                    }
-                    campos.map((field: string) => {
-                        if (field in datareporte) {
-                            html += `<td>${datareporte[field] == null ? '-' : datareporte[field]}</td>`
+                if (this.reporte_selected.codigo == "1") {
+                    html = this.reportePorCodigo(1, data);
+                } else if (this.reporte_selected.codigo == "2") {
+                    html = this.reportePorCodigo(2, data);
+                } else if (this.reporte_selected.codigo == "3") {
+                    html = this.reportePorCodigo(3, data);
+                } else if (this.reporte_selected.codigo == "5") {
+                    html = this.reportePorCodigo(5, data);
+                }
+                else {
+                    data.map((datareporte: any, index: number) => {
+                        html += `<tr><td>${index + 1}</td>`;
+                        if (typeof datareporte['ambito'] === "object") {
+                            html += `<td>${datareporte['ambito'].departamento} - ${datareporte['ambito'].provincia} - ${datareporte['ambito'].distrito}</td>`
                         } else {
-                            html += `<td>-</td>`
+                            if ('ambito' in datareporte) {
+                                html += `<td>${datareporte['ambito']}</td>`
+                            }
                         }
-                    });
-                    html += `</tr>`
-                })
+                        campos.map((field: string) => {
+                            if (field in datareporte) {
+                                html += `<td>${datareporte[field] == null ? '-' : datareporte[field]}</td>`
+                            } else {
+                                html += `<td>-</td>`
+                            }
+                        });
+                        html += `</tr>`
+                    })
+                }
                 $('#tabla_reporte').find('tbody').html(html);
             })
         }
 
+    }
+
+    reportePorCodigo(codigo: number, data: Array<any>) {
+        let html = '';
+        switch (codigo) {
+            case 0:
+                break;
+            case 1:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td> <td>${datareporte['ambito'][0].provincia}</td> <td> ${datareporte['ambito'][0].distrito}</td>
+                             <td>${datareporte['aulas_programadas']}</td><td>${datareporte['disponible']}</td><td>${datareporte['disponible_percent']}</td>
+                             <td>${datareporte['usar']}</td><td>${datareporte['usar_percent']}</td></tr>`
+
+                });
+                break;
+            case 2:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                                 <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
+                                 <td>-</td>
+                             <td>${datareporte['meta_campo']}</td><td>${datareporte['meta_capa']}</td>
+                             <td>${datareporte['inscritos']}</td>
+                             <td>${datareporte['inscritos_percent']}</td>
+                             <td>${datareporte['seleccionados']}</td>
+                             <td>${datareporte['seleccionados_percent']}</td>
+                             <td>${datareporte['reserva']}</td><td>${datareporte['reserva_percent']}</td></tr>`
+                });
+                break;
+            case 3:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                                 <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
+                                 <td>-</td>
+                             <td>${datareporte['meta_campo']}</td><td>${datareporte['meta_capa']}</td>
+                             <td>${datareporte['bajas']}</td>
+                             <td>${datareporte['altas']}</td>                             
+                             <td>${datareporte['capacitado']}</td><td>${datareporte['capacitado_percent']}</td></tr>`
+                });
+                break;
+            case 4:
+
+                break;
+            case 5:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                                 <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
+                                 <td>-</td>
+                             <td>${datareporte['meta_campo']}</td>
+                             <td>${datareporte['titular']}</td>
+                             <td>${datareporte['titular_percent']}</td>                             
+                             <td>${datareporte['reserva']}</td><td>${datareporte['reserva_percent']}</td>
+                             <td>${datareporte['noseleccionado']}</td><td>${datareporte['noseleccionado_percent']}</td>
+                             </tr>`
+                });
+                break;
+            case 6:
+
+        }
+        return html;
     }
 
     armarFieldsData(data: any) {
