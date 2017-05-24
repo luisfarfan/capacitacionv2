@@ -105,7 +105,8 @@
         zona: '{{ request.session.user_data.user.zona }}' == 'None' ? '' : '{{ request.session.user_data.user.zona }}'
     }
     SESSION_KEY = '{{ session_key }}'
-    SEGURIDADBASEURL = 'http://192.168.200.123:8080/services/userbyproyectosistema/cpvcapacitacion/?key=r10tuzgqruefb0n8p2ke94bdr4mhk3kn';
+{#    SEGURIDADBASEURL = 'http://192.168.200.123:8080/services/userbyproyectosistema/cpvcapacitacion/?key=r10tuzgqruefb0n8p2ke94bdr4mhk3kn';#}
+    SEGURIDADBASEURL = 'http://cpv.inei.gob.pe:8004/services/userbyproyectosistema/cpvcapacitacion/?key=r10tuzgqruefb0n8p2ke94bdr4mhk3kn';
     //SEGURIDADBASEURL = 'http://localhost:81/'
     //SEGURIDADBASEURL = 'http://192.168.200.123:8000/'
 </script>

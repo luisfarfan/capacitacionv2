@@ -83,8 +83,8 @@ class ControlCalidadView extends CursoInyection {
                                 </ul>
                             </td>
                             <td>${this.drawBtnSeleccion(value.id_local, value.seleccionar)}</td>
-                            </tr>`
-            })
+                           </tr>`
+            });
         }
         $('#tabla_locales').find('tbody').html(html);
     }

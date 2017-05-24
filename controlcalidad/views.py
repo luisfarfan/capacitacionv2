@@ -6,8 +6,6 @@ from locales_consecucion.serializer import LocalSerializer, LocalAmbienteSeriali
 from locales_consecucion.models import Local, LocalAmbiente
 from django.http import JsonResponse
 
-from django.db.models import Subquery
-
 """
 Servicio: Locales según Curso de Capacitación
 """
