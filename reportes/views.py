@@ -64,7 +64,7 @@ class NumeroaulasCoberturadas(APIView):
                     disponible.cantidad_disponible_oficina or 0) + int(
                     disponible.cantidad_disponible_otros or 0)
                 disponibletotal = disponibletotal + disponible_total
-                usar = usar + disponible.total_aulas
+                usar = usar + int(disponible.total_aulas or 0)
             ambito = list(Ubigeo.objects.filter(ubigeo=ubigeo['ubigeo']).values())
             response.append({'aulas_programadas': 0, 'disponible': disponibletotal,
                              'disponible_percent': calcPocentaje(disponibletotal, 0),

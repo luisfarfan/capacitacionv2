@@ -273,9 +273,9 @@ export function setDropdown(data: Array<Object>, campos: CamposSelect, extra: Ex
     $(`#${extra.id_element}`).html(html);
     let bgcolor = {}
     bgColor ? bgcolor = {
-        dropdownCssClass: 'border-primary',
-        containerCssClass: 'border-primary text-primary-700'
-    } : ''
+            dropdownCssClass: 'border-primary',
+            containerCssClass: 'border-primary text-primary-700'
+        } : ''
     extra.select2 ? $(`#${extra.id_element}`).select2(bgcolor) : '';
 }
 
@@ -319,6 +319,7 @@ interface IExportarParams {
     columnsDelete: Array<number>,
 }
 export function exportarTable(exportarParams: IExportarParams, caption: string = '', temp: boolean = false) {
+    debugger
     $(`#${exportarParams.contenedor}`).html($(`#${exportarParams.table}`).html());
     if (caption != '') {
         $(`#${exportarParams.contenedor}`).find('caption').html($(`#${caption}`).find('caption').html());

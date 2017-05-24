@@ -227,7 +227,7 @@ class LocalController {
         })
         $('input[name="telefono_local_celular"]').on('keydown', (ev: JQueryEventObject) => {
             let current = $(ev.currentTarget)
-            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+            if (current.val() > 99999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
                 ev.preventDefault();
             }
         })
@@ -239,13 +239,13 @@ class LocalController {
         })
         $('input[name="responsable_celular"]').on('keydown', (ev: JQueryEventObject) => {
             let current = $(ev.currentTarget)
-            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+            if (current.val() > 99999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
                 ev.preventDefault();
             }
         })
         $('input[name="funcionario_celular"]').on('keydown', (ev: JQueryEventObject) => {
             let current = $(ev.currentTarget)
-            if (current.val() > 999999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
+            if (current.val() > 99999999 && ev.keyCode != 8 && ev.keyCode != 9 && ev.keyCode != 46) {
                 ev.preventDefault();
             }
         })
@@ -308,7 +308,18 @@ class LocalController {
         });
 
         $('#btn_generar_ambientes').on('click', () => {
-            this.form_local_validate.form()
+            let inputsambientes = $('#ambientes_esconder').find('input[type="number"]')
+            let count = 0;
+            inputsambientes.map((index: number, domElement: Element) => {
+                if ($(domElement).val() == '') {
+                    count++;
+                }
+            })
+            if (count > 0) {
+                utils.showInfo('Existe omisión en los ambientes!');
+                return false
+            }
+            this.form_local_validate.form();
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
                 utils.showInfo('Por favor, seleccione un curso');
                 return false
@@ -747,9 +758,13 @@ class LocalController {
         $('[name="li_save_capacidad_piso"]').on('click', (element: JQueryEventObject) => {
             let li: any = $(element.currentTarget);
             let tr: any = li.parent().parent().parent();
-            let capacidad: number = tr.find('[name="capacidad_ambiente"]').val()
+            let capacidad: any = tr.find('[name="capacidad_ambiente"]').val()
             let piso: number = tr.find('[name="piso_ambiente"]').val();
             let pk: number = li.data('value');
+            if (capacidad == "") {
+                utils.showInfo('Existe omisión');
+                return false;
+            }
             if (this.local) {
                 this.localService.saveDetalleAmbiente(pk, {
                     capacidad: capacidad,

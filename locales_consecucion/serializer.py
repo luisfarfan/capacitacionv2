@@ -32,9 +32,11 @@ class AmbienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class LocalAmbienteDetalleSerializer(serializers.ModelSerializer):
     id_ambiente = AmbienteSerializer()
     pea = Personal
+
     class Meta:
         model = LocalAmbiente
         fields = '__all__'

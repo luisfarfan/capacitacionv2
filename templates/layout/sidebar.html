@@ -9,9 +9,9 @@
                     <a href="#" class="media-left"><img src="{% static "assets/images/icon_male.jpg" %}"
                                                         class="img-circle img-sm" alt=""></a>
                     <div class="media-body">
-                        <h3 class="media-heading text-bold">{{ request.session.user_session.user_data.rol.nombre }}</h3>
+                        <h3 class="media-heading text-bold">{{ request.session.user_data.user.rol.nombre }}</h3>
                         <div class="text-size-mini text-muted">
-                            <span id="span_usuario_nombre">{{ request.session.user_session.user_data.nombre }} {{ request.session.user_session.user_data.ape_pat }} {{ request.session.user_session.user_data.ape_mat }}</span>
+                            <span id="span_usuario_nombre">{{ request.session.user_data.user.nombre }} {{ request.session.user_data.user.ape_pat }} {{ request.session.user_data.user.ape_mat }}</span>
                         </div>
                     </div>
                 </div>

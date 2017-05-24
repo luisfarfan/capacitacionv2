@@ -44,6 +44,15 @@ class ReportesView extends UbigeoView {
         this.getReportes();
         this.getReporteSelectedSession();
         this.setEvents();
+        $('#btn_exportar').on('click', () => {
+            utils.exportarTable({
+                buttonName: 'btn_exportar',
+                contenedor: 'div_export',
+                fileName: 'reporte.xls',
+                table: 'div_tabla_reporte',
+                columnsDelete: []
+            });
+        })
     }
 
     setEvents() {

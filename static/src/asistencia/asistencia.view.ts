@@ -53,8 +53,10 @@ export class AsistenciaView {
             this.getAulas(curso_id);
             if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
                 $('#btn_cierre_curso').show();
+                $('#btn_bajas_altas').hide();
             } else {
                 $('#btn_cierre_curso').hide();
+                $('#btn_bajas_altas').show();
             }
         });
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
@@ -259,7 +261,7 @@ export class AsistenciaView {
             utils.showInfo('Para dar de alta, tiene que seleccionar a alguna persona!');
             return false;
         }
-        utils.alert_confirm(() => this._darAlta(id_pea, peaAltaSelected), 'Esta seguro de dar de alta a esta persona? Una vez dado de Alta, no podra rehacer el cambio.', 'warning');
+        utils.alert_confirm(() => this._darAlta(id_pea, peaAltaSelected), 'Esta seguro de dar de alta a esta persona?', 'warning');
     }
 
     _darAlta(id_pea: number, id_pea_reemplazo: number) {
@@ -753,7 +755,7 @@ export class AsistenciaView {
             utils.showInfo('Para dar de baja, tiene que seleccionar a alguna persona!');
             return false;
         }
-        utils.alert_confirm(() => this._darBaja(peaBajaSelected), 'Esta seguro de dar de baja a esta persona? Una vez dado de baja, no podra rehacer el cambio.', 'warning');
+        utils.alert_confirm(() => this._darBaja(peaBajaSelected), 'Esta seguro de dar de baja a esta persona?.', 'warning');
     }
 
     _darBaja(pk: number) {

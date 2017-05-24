@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^evaluacion/', include('evaluacion.urls')),
     url(r'^reportes/', include('reportes.urls')),
     url(r'^ubigeo/', include('ubigeo.urls')),
+    url(r'^controlcalidad/', include('controlcalidad.urls')),
     url(r'^controlcalidad/', include(routerControlcalidad.urls)),
     url('^setSession/$', setSession),
     # url('^setSessionPrueba/$', setSessionPrueba),

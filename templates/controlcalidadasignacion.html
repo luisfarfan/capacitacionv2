@@ -3,7 +3,82 @@
 {% block css %}
 {% endblock %}
 {% block content %}
+    <div class="panel panel-flat panel-inei">
 
+        <div class="panel-body">
+
+            <div class="row">
+                <div id="div_tabla_locales_filter" class="table-responsive">
+                    <table class="table datatable-basic table-bordered" id="tabla_locales">
+                        <thead>
+                        <tr class="bg-table-inei1">
+                            <th>#</th>
+                            <th>Nombre Local</th>
+                            <th>Zona</th>
+                            <th>Nombre de Via</th>
+                            <th>Referencia</th>
+                            <th>Número de ambientes a usar</th>
+                            <th>Encargado</th>
+                            <th>Aulas</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal_backdrop" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Listados Curso y Aulas</h5>
+                </div>
+                <div class="col-md-12">
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div id="div_tabla_locales_filter" class="table-responsive">
+                                <table class="table datatable-basic table-bordered" id="tabla_locales_filter">
+                                    <thead>
+                                    <tr class="bg-table-inei1">
+                                        <th>ID</th>
+                                        <th>SALON</th>
+                                        <th>ASIGNAR</th>
+                                        <th>OPCION</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <th>B-001</th>
+                                        <th style="color: #2196F3 !important;font-weight: 700;text-align: left;">
+                                            <select style="-webkit-appearance: menulist-button;width: 50%;height: 30px"
+                                                    id="select_instructor">
+                                                <option value="">Seleccione Instructor</option>
+                                            </select>
+                                        </th>
+                                        <th><a id="" data-popup="tooltip"
+                                               title="Guardar Instructor en esta aula">
+                                            <i class="icon-floppy-disk" style="font-size: 24px"></i></a></th>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -12,5 +87,5 @@
             src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/jquery.battatech.excelexport.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/require.js" %}"
-            data-main="{% static "build/distribucion/distribucion.view.js" %}"></script>
+            data-main="{% static "build/controlcalidad/controlcalidad.view.js" %}"></script>
 {% endblock %}

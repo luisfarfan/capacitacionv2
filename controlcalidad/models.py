@@ -1,5 +1,5 @@
 from django.db import models
-from locales_consecucion.models import Curso, LocalAmbiente, CargoFuncional, LocalCurso
+from locales_consecucion.models import Curso, LocalAmbiente, CargoFuncional, Local
 
 
 # Create your models here.
@@ -89,8 +89,8 @@ class LocalAmbienteRespuestas(models.Model):
 
 
 class UsuarioLocales(models.Model):
-    local = models.ForeignKey(LocalCurso)
-    usuario = models.IntegerField()
+    local = models.ForeignKey(Local)
+    usuario = models.IntegerField(null=True, blank=True)
 
     class Meta:
         managed = True

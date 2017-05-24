@@ -2,6 +2,12 @@ from .models import *
 from rest_framework import routers, serializers, viewsets
 
 
+class UsuarioLocalesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuarioLocales
+        fields = '__all__'
+
+
 class EtapasControlCalidadSerializer(serializers.ModelSerializer):
     class Meta:
         model = EtapasControlCalidad
