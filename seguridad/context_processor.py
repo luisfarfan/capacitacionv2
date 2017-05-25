@@ -29,4 +29,4 @@ def recursive_menu(request):
 
 
 def getModulosbyRol(rol, curso):
-    return list(RolCursoModulosSeguridad.objects.filter(rol=rol, curso=curso).values_list('modulo', flat=True))
+    return list(RolCursoModulosSeguridad.objects.filter(rol=rol).values_list('modulo', flat=True))
