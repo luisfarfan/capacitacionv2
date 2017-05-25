@@ -50,10 +50,6 @@ export class CursoInyection {
         return localStorage.getItem('curso_id');
     }
 
-    getCurso() {
-
-    }
-
     getCursos(etapa_id: number) {
         this.cursoService.get(etapa_id).done((cursos) => {
             this.cursos = cursos;

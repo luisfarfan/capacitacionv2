@@ -1,0 +1,118 @@
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no"/>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzno-03jQqnS0Jiyp75wKVCu5Ho2SIDng">
+    </script>
+    <script type="text/javascript">
+        var map;
+        var marker;
+        var idx = '10000001339';
+        var xd = parseFloat(-77.04604453070);
+        var yd = parseFloat(-11.98747319520);
+        var x = '';
+        var y = '';
+        function guardarGeo() {
+            var x2 = marker.position.lng();
+            var y2 = marker.position.lat();
+            if (x2 == '' || y2 == '') {
+                alert('Por favor indique la coordenada de su establecimiento');
+            } else {
+                alert('Registrando Información');
+                window.location.href = 'PAG_O2FORM_CAP_G.ASP?vartipocap=T17DATA00&varcapitulo=10&varflagestablecimiento=1&varne=000&varmodg=1&varxycapitulo=10&varxyclave=002&varxy_x=' + marker.position.lng() + '&varxy_y=' + marker.position.lat() + '';
+            }
+        }
+        function crearMarcador(lat, lon) {
+            var devCenter;
+            var lat2 = parseFloat(lat);
+            var lon2 = parseFloat(lon);
+            devCenter = new google.maps.LatLng(lat2, lon2);
+            //devCenter = new google.maps.LatLng(-12.935,-74.805);
+            //devCenter = new GLatLng(-12.935,-74.805);
+
+            map.setCenter(devCenter);
+            map.setZoom(15);
+            marker = new google.maps.Marker({
+                position: devCenter,
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+                title: 'Empresa'
+            });
+        }
+
+        //if (navigator.geolocation && x == '' && y == '' && confirm('Se encuentra fisicamente en el establecimiento?')) {
+        //if (navigator.geolocation && x == '' && y == '' && confirm('Se encuentra fisicamente en el establecimiento?')) {
+        //    navigator.geolocation.getCurrentPosition(
+        //    function(position){
+        //        var lat = position.coords.latitude;
+        //        var lng = position.coords.longitude;
+        //        crearMarcador(lat,lng);
+        //alert("Mi posici�n:"+marker.position);
+        //    });
+        //}
+        //else {
+        //if (x == '' && y == '') {
+        //    x = xd;
+        //    y = yd;
+        //}
+        //crearMarcador(yd,xd);
+
+        //}
+
+        function initMap() {
+            google.maps.visualRefresh = true;
+            if (x == '' && y == '') {
+                x = xd;
+                y = yd;
+            }
+            var mapOptions = {
+                center: new google.maps.LatLng(y, x),
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                overviewMapControl: true,
+                overviewMapControlOptions: {opened: true}
+            };
+            var mapElement = document.getElementById("mapDiv");
+            map = new google.maps.Map(mapElement, mapOptions);
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                marker.setPosition(new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()));
+            });
+            crearMarcador(y, x);
+        }
+        google.maps.event.addDomListener(window, 'load', initMap);
+    </script>
+    <style>
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #mapDiv {
+            width: 100%;
+            height: 100%;
+        }
+
+        #inferior {
+            color: #FFF;
+            background: #000;
+            position: absolute; /*El div ser� ubicado con relaci�n a la pantalla*/
+            left: 0px; /*A la derecha deje un espacio de 0px*/
+            right: 0px; /*A la izquierda deje un espacio de 0px*/
+            bottom: 0px; /*Abajo deje un espacio de 0px*/
+            height: 30px; /*alto del div*/
+            z-index: 0;
+        }
+
+    </style>
+    <title></title>
+</head>
+<body>
+<div id="mapDiv"></div>
+<div id="inferior" style="text-align:center">
+    <button onclick="guardarGeo();">REGISTRAR LA COORDENADA GEOREFERENCIAL DEL ESTABLECIMIENTO</button>
+</div>
+
+</body>
+</html>

@@ -27,6 +27,7 @@ from controlcalidad.urls import routerControlcalidad
 
 urlpatterns = [
     url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html")),
+    url(r'^samplegooglemaps/$', TemplateView.as_view(template_name="pagina.html")),
     url(r'^admin/', admin.site.urls),
     url(r'reporte/(?P<slug>.+)/$', ensure_csrf_cookie(RenderReportes.as_view())),
     url(r'modulos/(?P<slug>.+)/$', ensure_csrf_cookie(RenderTemplate.as_view())),
