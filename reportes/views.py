@@ -309,7 +309,7 @@ class directorioLocales(APIView):
         query = list(DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso).values())
         response = []
         for q in query:
-            ubigeo = Ubigeo.objects.filter(ubigeo=q['ubigeo']).values()
+            ubigeo = list(Ubigeo.objects.filter(ubigeo=q['ubigeo_id']).values())
             q['ubigeo'] = ubigeo
             response.append(q)
 
