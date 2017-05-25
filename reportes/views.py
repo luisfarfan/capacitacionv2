@@ -294,6 +294,28 @@ class directoriolocalesNumeroAmbientes(APIView):
         return JsonResponse(list(query), safe=False)
 
 
+class directorioLocales(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
+        filter = {}
+        if ccdd is not None:
+            filter['ubigeo__ccdd'] = ccdd
+        if ccpp is not None:
+            filter['ubigeo__ccpp'] = ccpp
+        if ccdi is not None:
+            filter['ubigeo__ccdi'] = ccdi
+        if zona is not None:
+            filter['zona_ubicacion_local'] = zona
+
+        query = list(DirectorioLocal.objects.filter(**filter, directoriolocalcurso__curso_id=curso).values())
+        response = []
+        for q in query:
+            ubigeo = Ubigeo.objects.filter(ubigeo=q['ubigeo']).values()
+            q['ubigeo'] = ubigeo
+            response.append(q)
+
+        return JsonResponse(query, safe=False)
+
+
 """
 Reporte N°8
 """

@@ -185,6 +185,8 @@ class ReportesView extends UbigeoView {
                     html = this.reportePorCodigo(3, data);
                 } else if (this.reporte_selected.codigo == "5") {
                     html = this.reportePorCodigo(5, data);
+                } else if (this.reporte_selected.codigo == "7") {
+                    html = this.reportePorCodigo(7, data);
                 }
                 else {
                     data.map((datareporte: any, index: number) => {
@@ -265,7 +267,23 @@ class ReportesView extends UbigeoView {
                              </tr>`
                 });
                 break;
-            case 6:
+            case 7:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index}</td>
+                                 <td>${datareporte['ubigeo'][0].departamento}</td>
+                                 <td>${datareporte['ubigeo'][0].provincia}</td>
+                                 <td>${datareporte['ubigeo'][0].distrito}</td>
+                                 <td>${datareporte['zona_ubicacion_local']}</td>
+                                 <td>-</td>
+                                 <td>-</td>
+                                 tipo_via,nombre_via,n_direccion,piso_direccion,mz_direccion,lote_direccion,km_direccion,telefono_local_fijo,telefono_local_celular,total_aulas,responsable_nombre,responsable_telefono
+                             <td>${datareporte['nombre_local']}</td>
+                             <td>${datareporte['nombre_via']}</td>
+                             <td>${datareporte['responsable_nombre']}</td>                             
+                             <td>${datareporte['turno_uso_local']}</td><td>-</td><td>-</td><td>-</td><td>-</td>
+                             </tr>`
+                });
+                break;
 
         }
         return html;

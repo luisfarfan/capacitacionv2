@@ -36,6 +36,17 @@ urlpatterns = [
         r'localesseleccionados_numeroambientes/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         localseleccionadoNumeroAmbientes.as_view()),
 
+    url(r'directorioLocales/(?P<curso>[0-9]+)/$', directorioLocales.as_view()),
+    url(r'directorioLocales/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+        directorioLocales.as_view()),
+    url(r'directorioLocales/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        directorioLocales.as_view()),
+    url(r'directorioLocales/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        directorioLocales.as_view()),
+    url(
+        r'directorioLocales/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        directorioLocales.as_view()),
+
     url(r'postulantesSeleccionadosporCurso/(?P<curso>[0-9]+)/$', postulantesSeleccionadosporCurso.as_view()),
     url(r'postulantesSeleccionadosporCurso/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
         postulantesSeleccionadosporCurso.as_view()),
