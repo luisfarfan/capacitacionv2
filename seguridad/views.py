@@ -114,10 +114,14 @@ from seguridad.models import RolCursoModulosSeguridad
 from locales_consecucion.models import Curso
 
 
-def modulosJefeDistrital():
+def modulosJefeDistrital(request):
     modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin', 'calidad']
+    roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona']
     cursos = Curso.objects.filter(etapa=3)
     for curso in cursos:
         for modulo in modulos:
-            rcms = RolCursoModulosSeguridad(rol='jefedist', modulo=modulo, curso_id=curso.id_curso)
-            rcms.save()
+            for rol in roles:
+                rcms = RolCursoModulosSeguridad(rol=rol, modulo=modulo, curso_id=curso.id_curso)
+                rcms.save()
+
+    return JsonResponse({'msg': True})
