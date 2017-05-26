@@ -26,13 +26,16 @@ export class CursoInyection {
                 }
             });
             curso_val == "-1" ? this.curso_selected = null : '';
-        });
-        this.triggerCurso();
-        $('#btn_actualizar_menu').on('click', () => {
             if ($('#cursos').val() != "-1" && $('#cursos').val() != "") {
                 utils.insertParam('curso', $('#cursos').val())
             }
-        })
+        });
+        this.triggerCurso();
+        // $('#btn_actualizar_menu').on('click', () => {
+        //     if ($('#cursos').val() != "-1" && $('#cursos').val() != "") {
+        //         utils.insertParam('curso', $('#cursos').val())
+        //     }
+        // })
     }
 
     saveCursoSession(curso_id: number) {
@@ -42,8 +45,9 @@ export class CursoInyection {
     }
 
     triggerCurso() {
-        let etapa_id = localStorage.getItem('etapa_id');
-        $('#etapa').val(etapa_id).trigger('change');
+        let etapa_id: any = localStorage.getItem('etapa_id');
+        $('#etapa').val(etapa_id)
+        this.getCursos(etapa_id);
     }
 
     setCurso() {
@@ -60,7 +64,8 @@ export class CursoInyection {
             });
             let curso_id = localStorage.getItem('curso_id');
             this.curso_id = parseInt(curso_id);
-            $('#cursos').val(curso_id).trigger('change');
+            $('#cursos').val(curso_id);
+            // $('#cursos').val(curso_id).trigger('change');
         })
     }
 }

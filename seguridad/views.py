@@ -18,19 +18,7 @@ def setSession(request):
     request.session['user_session'] = data
     request.session['user_data'] = userDataDecode
 
-    # return JsonResponse(data, safe=False)
-
-    return redirect('/bienvenido/')
-
-
-# def setSessionPrueba(request):
-#     response = urllib.request.urlopen(URL_USERDATASESSION_PRUEBA)
-#     data = json.loads(response.read().decode('utf-8'))
-#     request.session['user_session'] = data['data']
-#     if not request.session.session_key:
-#         request.session.save()
-#
-#     return redirect('/modulos/registro-local/')
+    return redirect('/bienvenido/?key={}'.format(key))
 
 
 class RenderTemplate(TemplateView):

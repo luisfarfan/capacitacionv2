@@ -27,7 +27,7 @@ from controlcalidad.urls import routerControlcalidad
 from seguridad.views import modulosJefeDistrital
 
 urlpatterns = [
-    url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html")),
+    url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html"),name='bienvenido'),
     url(r'^samplegooglemaps/$', TemplateView.as_view(template_name="pagina.html")),
     url(r'^admin/', admin.site.urls),
     url(r'reporte/(?P<slug>.+)/$', ensure_csrf_cookie(RenderReportes.as_view())),

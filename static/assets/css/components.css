@@ -3555,7 +3555,7 @@ label.checkbox-switch.checkbox-inline {
 }
 
 .select2-results__option[aria-selected=true] {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -4228,7 +4228,7 @@ li.multiselect-filter i {
 }
 
 .selectboxit-list > .selectboxit-selected > .selectboxit-option-anchor {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -4647,7 +4647,7 @@ fieldset[disabled] .bootstrap-select .btn-default {
 }
 
 .bootstrap-select.btn-group .dropdown-menu > .selected > a {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -7550,7 +7550,7 @@ legend.alpaca-container-label {
 .daterangepicker td.active,
 .daterangepicker td.active:hover,
 .daterangepicker td.active:focus {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
     border-radius: 3px;
 }
@@ -7669,7 +7669,7 @@ legend.alpaca-container-label {
 
 .ranges ul li.active {
     color: #fff;
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .ranges .daterangepicker-inputs {
@@ -8022,7 +8022,7 @@ legend.alpaca-container-label {
     right: 2px;
     width: 0;
     height: 0;
-    border-top: 6px solid #26A69A;
+    border-top: 6px solid #2196F3;
     border-left: 6px solid transparent;
 }
 
@@ -8051,13 +8051,13 @@ legend.alpaca-container-label {
 .picker--focused .picker__day--highlighted {
     cursor: pointer;
     color: #fff;
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .picker__day--selected,
 .picker__day--selected:hover,
 .picker--focused .picker__day--selected {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -8192,13 +8192,13 @@ legend.alpaca-container-label {
 .picker--focused .picker__list-item--highlighted {
     cursor: pointer;
     color: #fff;
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .picker__list-item--selected,
 .picker__list-item--selected:hover,
 .picker--focused .picker__list-item--selected {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
     z-index: 10;
 }
@@ -8306,7 +8306,7 @@ legend.alpaca-container-label {
 
 .AnyTime-mons .ui-state-highlight,
 .AnyTime-mons .ui-state-highlight:hover {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -9133,7 +9133,7 @@ legend.alpaca-container-label {
 .datepicker table tr td span.active:hover,
 .datepicker table tr td.active.disabled:hover,
 .datepicker table tr td span.active.disabled:hover {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -9312,7 +9312,7 @@ legend.alpaca-container-label {
 .datepaginator .pagination > li > .dp-selected,
 .datepaginator .pagination > li > .dp-selected:hover,
 .datepaginator .pagination > li > .dp-selected:focus {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
     width: 140px;
 }
@@ -12743,7 +12743,7 @@ body.stop-scrolling {
 }
 
 .ui-datepicker table td.ui-datepicker-current-day .ui-state-active {
-    background-color: #26A69A;
+    background-color: #2196F3;
     color: #fff;
 }
 
@@ -16336,7 +16336,7 @@ a.plupload_disabled:focus {
 }
 
 .plupload_start {
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .plupload_filelist {
@@ -19654,7 +19654,7 @@ thead .htCollapseButton:after {
 
 .is-selected .pika-button {
     color: #fff;
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .is-today .pika-button:before,
@@ -19677,7 +19677,7 @@ thead .htCollapseButton:after {
 .is-startrange .pika-button,
 .is-endrange .pika-button {
     color: #fff;
-    background: #26A69A;
+    background: #2196F3;
 }
 
 .is-inrange .pika-button {
@@ -20699,7 +20699,7 @@ thead .htCollapseButton:after {
 
 .dt-button-collection > .dt-button.active {
     color: #fff;
-    background-color: #26A69A;
+    background-color: #2196F3;
 }
 
 .dt-button-collection.fixed {
