@@ -1,5 +1,5 @@
 from .utils import *
-from seguridad.models import RolCursoModulosSeguridad
+from seguridad.models import RolCursoModulos
 
 
 def recursive_menu(request):
@@ -29,4 +29,5 @@ def recursive_menu(request):
 
 
 def getModulosbyRol(rol, curso):
-    return list(RolCursoModulosSeguridad.objects.filter(rol=rol, curso=curso).values_list('modulo', flat=True))
+    return list(
+        RolCursoModulos.objects.filter(rolcurso__curso=curso, rolcurso__rol=rol).values_list('modulo', flat=True))

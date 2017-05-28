@@ -5,14 +5,16 @@ import {CursoService} from './locales_consecucion/locales.service';
 import {ICurso} from './locales_consecucion/local.interface';
 import * as utils from './core/utils';
 declare var BASEURL: string;
+declare var ROL: string;
 export class CursoInyection {
-    curso_id: number;
+    curso_id: any;
     cursoService = new CursoService();
     cursos: ICurso[];
     public curso_selected: ICurso;
     etapa_id: number = null;
 
     constructor() {
+        this.setearCurso();
         $('#etapa').on('change', (element: JQueryEventObject) => {
             this.getCursos($(element.currentTarget).val());
             $(element.currentTarget).val() == '' ? this.etapa_id = null : localStorage.setItem('etapa_id', $(element.currentTarget).val());
@@ -54,8 +56,12 @@ export class CursoInyection {
         return localStorage.getItem('curso_id');
     }
 
+    setearCurso() {
+        this.curso_id = parseInt(localStorage.getItem('curso_id'))
+    }
+
     getCursos(etapa_id: number) {
-        this.cursoService.get(etapa_id).done((cursos) => {
+        this.cursoService.get(etapa_id, ROL).done((cursos) => {
             this.cursos = cursos;
             utils.setDropdown(this.cursos, {id: 'id_curso', text: ['nombre_curso']}, {
                 id_element: 'cursos',

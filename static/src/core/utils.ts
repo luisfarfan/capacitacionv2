@@ -297,8 +297,8 @@ export function objectToForm(data: any) {
 
     }
 }
-export function showInfo(message: String) {
-    swal(message);
+export function showInfo(message: string, type: string = 'info') {
+    swal(message, '', type);
 }
 export function upgradeTooltip() {
     $('[data-popup="tooltip"]').off();

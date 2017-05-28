@@ -182,7 +182,7 @@ class LocalController {
         });
         $('#cursos').on('change', () => {
             let curso_id = $('#cursos').val();
-            this.cursoService.get($('#etapa').val()).done((cursos) => {
+            this.cursoService.get($('#etapa').val()).done((cursos: any) => {
                 cursos.map((curso: ICurso) => {
                     if (curso.id_curso == curso_id) {
                         $('[name="fecha_inicio"]').val(`${curso.fecha_inicio}`)
@@ -284,7 +284,7 @@ class LocalController {
                 }
             })
             if (count > 0) {
-                utils.showInfo('Existe omisión en los ambientes!');
+                utils.showInfo('Existe omisión en los ambientes!', 'error');
                 return false
             }
 
@@ -316,7 +316,7 @@ class LocalController {
                 }
             })
             if (count > 0) {
-                utils.showInfo('Existe omisión en los ambientes!');
+                utils.showInfo('Existe omisión en los ambientes!', 'error');
                 return false
             }
             this.form_local_validate.form();
@@ -762,7 +762,7 @@ class LocalController {
             let piso: number = tr.find('[name="piso_ambiente"]').val();
             let pk: number = li.data('value');
             if (capacidad == "") {
-                utils.showInfo('Existe omisión');
+                utils.showInfo('Existe omisión', 'error');
                 return false;
             }
             if (this.local) {

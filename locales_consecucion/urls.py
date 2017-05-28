@@ -10,6 +10,7 @@ router.register(r'directoriolocalcurso', DirectorioLocalCursoViewSet)
 router.register(r'directoriolocal_ambiente', DirectorioLocalAmbienteViewSet)
 
 urlpatterns = [
+    url(r'curso_etapa/(?P<etapa_id>.+)/(?P<rol>.+)/$', CursoEtapaViewSet.as_view()),
     url(r'curso_etapa/(?P<etapa_id>.+)/$', CursoEtapaViewSet.as_view()),
     # Locales Marco segun ubigeo
     url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/$', DirectorioLocalbyUbigeo.as_view()),

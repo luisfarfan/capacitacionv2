@@ -4,6 +4,8 @@ from django.views.generic import TemplateView, ListView
 from reportes.models import Reportes
 from django.conf import settings
 from django.http import JsonResponse
+from seguridad.models import RolCurso, RolCursoModulos
+from locales_consecucion.models import Curso
 
 
 def setSession(request):
@@ -52,6 +54,7 @@ class RenderTemplate(TemplateView):
                     context['breadcumbs'] = modulo['descripcion']
                     context['session_key'] = self.request.session.session_key
                     context['modeenv'] = renderENVDB()
+                    context['modulo'] = modulo['codigo']
                 self.user = True
             return context
         except:
@@ -98,18 +101,30 @@ def renderENVDB():
         return '<span class="label label-success">MODO DESARROLLO - SE PUEDE EDITAR!</span>'
 
 
-from seguridad.models import RolCursoModulosSeguridad
-from locales_consecucion.models import Curso
-
-
-def modulosJefeDistrital(request):
-    modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin', 'calidad']
+def cargarModulos(request):
+    modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin']
     roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona']
-    cursos = Curso.objects.filter(etapa=3)
+    cursos = Curso.objects.filter(etapa__in=[2, 3])
     for curso in cursos:
-        for modulo in modulos:
-            for rol in roles:
-                rcms = RolCursoModulosSeguridad(rol=rol, modulo=modulo, curso_id=curso.id_curso)
-                rcms.save()
+        for rol in roles:
+            if RolCurso.objects.filter(rol=rol, curso_id=curso.id_curso).count() == 0:
+                rolcurso = RolCurso(rol=rol, curso_id=curso.id_curso)
+                rolcurso.save()
 
-    return JsonResponse({'msg': True})
+    rolescursos = RolCurso.objects.all()
+    for rolcurso in rolescursos:
+        for modulo in modulos:
+            if RolCursoModulos.objects.filter(rolcurso_id=rolcurso, modulo=modulo).count() == 0:
+                rolcursomodulo = RolCursoModulos(rolcurso_id=rolcurso.id, modulo=modulo)
+                rolcursomodulo.save()
+
+    return JsonResponse({'msg': 'generado todo'})
+
+
+def visualizaRolCurso(request, rol, curso, modulo):
+    try:
+        visualiza = RolCursoModulos.objects.get(rolcurso__rol=rol, rolcurso__curso=curso, modulo=modulo).visualiza
+    except RolCursoModulos.DoesNotExist:
+        visualiza = 0
+
+    return JsonResponse({'visualiza': visualiza})

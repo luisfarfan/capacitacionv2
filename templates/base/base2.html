@@ -91,6 +91,7 @@
     var host = pathArray[2];
     BASEURL = protocol + '//' + host;
     KEY = '{{ request.GET.key }}'
+    ROL = '{{ request.session.user_data.user.rol.codigo }}'
 </script>
 
 <!-- Utils Js files -->

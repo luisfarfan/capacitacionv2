@@ -279,9 +279,9 @@ export class DirectorioLocalCursoService {
 export class CursoService {
     private url: string = `${BASEURL}/locales/curso_etapa/`;
 
-    get(pk: number = null): JQueryXHR {
+    get(pk: number = null, rolcodigo: string = null): JQueryXHR {
         return $.ajax({
-            url: pk === null ? this.url : `${this.url}${pk}/`,
+            url: pk === null ? this.url : `${this.url}${pk}/${rolcodigo ? rolcodigo + '/' : ''}`,
         })
     }
 }

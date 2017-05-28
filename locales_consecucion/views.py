@@ -8,6 +8,7 @@ from .utils import restar, sumarDisponiblesUsar
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, Min, Sum, Avg
 from rest_framework.views import APIView
+from seguridad.models import RolCurso
 
 
 def agregarDirectorioCurso(request):
@@ -80,7 +81,12 @@ class CursoEtapaViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         etapa_id = self.kwargs['etapa_id']
-        return Curso.objects.filter(etapa_id=etapa_id)
+        if 'rol' in self.kwargs:
+            rol = self.kwargs['rol']
+            cursosbyrol = RolCurso.objects.filter(rol=rol).values_list('curso', flat=True)
+            return Curso.objects.filter(etapa_id=etapa_id, id_curso__in=cursosbyrol)
+        else:
+            return Curso.objects.filter(etapa_id=etapa_id)
 
 
 class DirectorioLocalCursoFilter(generics.ListAPIView):

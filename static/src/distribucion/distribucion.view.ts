@@ -9,12 +9,11 @@ import {ILocalZona, IPersonal, IPersonalAula, FilterFields, IUbigeo, IUsuario} f
 import UbigeoService from '../ubigeo/ubigeo.service';
 import {IZona} from '../ubigeo/ubigeo.interface';
 import * as utils from '../core/utils';
-import {upgradeTooltip} from "../core/utils";
-
+import PermisosView from '../core/permisos/permisos.view';
 declare var ubigeo: any;
 declare var $: any;
 
-class DistribucionView {
+class DistribucionView extends CursoInyection {
     private curso: CursoInyection;
     private localService: LocalService = new LocalService();
     private ubigeoService: UbigeoService = new UbigeoService();
@@ -38,13 +37,17 @@ class DistribucionView {
     private personalAula: IPersonalAula[] = [];
     private ambitosLibres: IUbigeo[] = [];
     private instructores: IUsuario[] = [];
+    private permisos: PermisosView;
 
 
     constructor() {
-        this.curso = new CursoInyection();
+        super();
+        this.permisos = new PermisosView(this.curso_id);
+        this.setearLocales();
         $('#cursos').on('change', () => {
             $('#p_curso_actual').text($('#cursos :selected').text());
-            this.filterFields.curso = this.curso.curso_selected.id_curso;
+            // this.filterFields.curso = this.curso.curso_selected.id_curso;
+            this.filterFields.curso = this.curso_id;
             this.filterLocalesSeleccionados();
             this.getZonasDistrito();
         });
@@ -52,14 +55,16 @@ class DistribucionView {
             $('#modal_asignacion_zonas').modal('show');
         });
         $('#btn_asignar_zonas').on('click', () => {
-            let local_selected: any = $('#select_locales_seleccionados_asignacion').val();
-            let zonasAsignar: Array<string> = $('#select_zonas_por_asignar').val();
-            if (local_selected == "-1" || zonasAsignar == null) {
-                utils.showInfo('Por favor seleccione el Local, y las Zonas a asignar a este Local');
-                return false;
-            } else {
-                utils.alert_confirm(() => this.asignarZonas(), 'Esta seguro de asignar las zonas seleccionadas al Local?')
-            }
+            this.permisos.ucan(() => {
+                let local_selected: any = $('#select_locales_seleccionados_asignacion').val();
+                let zonasAsignar: Array<string> = $('#select_zonas_por_asignar').val();
+                if (local_selected == "-1" || zonasAsignar == null) {
+                    utils.showInfo('Por favor seleccione el Local, y las Zonas a asignar a este Local');
+                    return false;
+                } else {
+                    utils.alert_confirm(() => this.asignarZonas(), 'Esta seguro de asignar las zonas seleccionadas al Local?')
+                }
+            });
         });
         $('#select_locales_seleccionados_asignacion').on('change', () => {
             let local_selected: any = $('#select_locales_seleccionados_asignacion :selected').val();
@@ -82,11 +87,13 @@ class DistribucionView {
         });
 
         $('#btn_distribuir').on('click', () => {
-            if (this.personal.length == 0) {
-                utils.showInfo('No existe personal para realizar la distribución');
-                return false;
-            }
-            utils.alert_confirm(() => this.distribuirPersonal(), 'Esta seguro de realizar la distribución', 'success');
+            this.permisos.ucan(() => {
+                if (this.personal.length == 0) {
+                    utils.showInfo('No existe personal para realizar la distribución');
+                    return false;
+                }
+                utils.alert_confirm(() => this.distribuirPersonal(), 'Esta seguro de realizar la distribución', 'success');
+            });
         });
         $('#btn_pea_contingencia').on('click', () => {
             if (this.localCursoSelected == null) {
@@ -97,12 +104,14 @@ class DistribucionView {
             $('#modal_personal_reserva').modal('show');
         });
         $('#a_save_instructor').on('click', () => {
-            if (this.localAmbienteSelected == null || $('#select_instructor').val() == "") {
-                utils.showInfo('Para guardar el instructor, se necesita seleccionar un Aula')
-                return false;
-            } else {
-                utils.alert_confirm(() => this.saveInstructor(), 'Está seguro de guardar el Instructor en esta aula?', 'info');
-            }
+            this.permisos.ucan(() => {
+                if (this.localAmbienteSelected == null || $('#select_instructor').val() == "") {
+                    utils.showInfo('Para guardar el instructor, se necesita seleccionar un Aula')
+                    return false;
+                } else {
+                    utils.alert_confirm(() => this.saveInstructor(), 'Está seguro de guardar el Instructor en esta aula?', 'info');
+                }
+            });
         });
         $('#btn_exportar').on('click', () => {
             this.exportar();
@@ -120,6 +129,12 @@ class DistribucionView {
             });
             $('#tabla_personal_reserva').DataTable()
         })
+    }
+
+    setearLocales() {
+        this.filterFields.curso = this.curso_id;
+        this.filterLocalesSeleccionados();
+        this.getZonasDistrito();
     }
 
     exportar() {

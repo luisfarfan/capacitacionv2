@@ -19,12 +19,13 @@ import {
 import {CursoInyection} from '../comun.utils';
 import {IUbigeo} from "../ubigeo/ubigeo.view";
 import {IZona} from "../ubigeo/ubigeo.interface";
+import PermisosView from '../core/permisos/permisos.view';
 declare var IDUSUARIO: number;
 declare var ubigeo: IUbigeo;
 declare var $: any;
 
 
-export class EvaluacionView {
+export class EvaluacionView extends CursoInyection {
     public cursoInyection: CursoInyection;
     public ubigeoService: UbigeoService;
     public evaluacionService: EvaluacionService;
@@ -40,8 +41,11 @@ export class EvaluacionView {
     public ambitos: any = {};
     public ambitoDetalle: any = {};
     public _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
+    private permisos: PermisosView;
 
     constructor(init: boolean = false) {
+        super();
+        this.permisos = new PermisosView(this.curso_id);
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
         this.ubigeoService = new UbigeoService();
@@ -78,8 +82,16 @@ export class EvaluacionView {
         });
     }
 
+    setearAulas() {
+        $('#p_curso_actual').text($('#cursos :selected').text());
+        this.getAulas(this.curso_id);
+        this.getCriterios(this.curso_id);
+        this.getCargosFuncionales(this.curso_id);
+    }
+
     setEvents(init: boolean = false) {
         if (init) {
+            this.setearAulas();
             this.cursoInyection = new CursoInyection();
             $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
             this.setearUbigeo();
@@ -108,7 +120,10 @@ export class EvaluacionView {
                 }
             });
             $('#btn_save_asistencia').on('click', () => {
-                this.saveNotas()
+                this.permisos.ucan(() => {
+                    this.saveNotas()
+                })
+
             });
             $('#btn_ver_personal').on('click', () => {
                 this.getPersonalNotaFinal();
@@ -136,9 +151,11 @@ export class EvaluacionView {
                 this.getMeta();
             });
             $('#btn_cierre_curso').on('click', () => {
-                utils.alert_confirm(() => {
-                    this.cerrarCursoConInternet();
-                }, 'Esta seguro de Cerrar el curso?');
+                this.permisos.ucan(() => {
+                    utils.alert_confirm(() => {
+                        this.cerrarCursoConInternet();
+                    }, 'Esta seguro de Cerrar el curso?');
+                });
             });
 
             this.getAmbitos();

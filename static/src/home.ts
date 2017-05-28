@@ -24,32 +24,32 @@ class HomeController {
         // });
     }
 
-    getCursos() {
-        if (this.etapaSelected) {
-            this.cursoService.get(this.etapaSelected).done((cursos) => {
-                this.cursos = cursos;
-                this.drawCursos();
-            })
-        } else {
-            this.drawCursos(false);
-        }
-
-    }
-
-    drawCursos(etapa: boolean = true) {
-        let html = '';
-        if (etapa) {
-            this.cursos.map((curso: ICurso, index: number) => {
-                html += `<tr>
-                             <td>${$('.bootstrap-select :selected').text()}</td>
-                             <td>${curso.nombre_curso}</td>
-                             <td><span class="label label-success">En proceso</span></td>
-                             <td><button type="button" class="btn btn-info btn-xs legitRipple"><i class="icon-comment-discussion position-left"></i>Ingresar</button></td>
-                         </tr>`
-            })
-        }
-        $('#tabla_cursos').find('tbody').html(html);
-    }
+    // getCursos() {
+    //     if (this.etapaSelected) {
+    //         this.cursoService.get(this.etapaSelected).done((cursos) => {
+    //             this.cursos = cursos;
+    //             this.drawCursos();
+    //         })
+    //     } else {
+    //         this.drawCursos(false);
+    //     }
+    //
+    // }
+    //
+    // drawCursos(etapa: boolean = true) {
+    //     let html = '';
+    //     if (etapa) {
+    //         this.cursos.map((curso: ICurso, index: number) => {
+    //             html += `<tr>
+    //                          <td>${$('.bootstrap-select :selected').text()}</td>
+    //                          <td>${curso.nombre_curso}</td>
+    //                          <td><span class="label label-success">En proceso</span></td>
+    //                          <td><button type="button" class="btn btn-info btn-xs legitRipple"><i class="icon-comment-discussion position-left"></i>Ingresar</button></td>
+    //                      </tr>`
+    //         })
+    //     }
+    //     $('#tabla_cursos').find('tbody').html(html);
+    // }
 }
 
 new HomeController()

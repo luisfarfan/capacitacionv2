@@ -9,6 +9,7 @@ import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from
 import * as utils from '../core/utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
 import {alert_confirm} from "../core/utils";
+import PermisosView from '../core/permisos/permisos.view';
 declare var IDUSUARIO: number;
 declare var $: any;
 
@@ -22,11 +23,11 @@ interface ModelDivAsistencia {
     alta: number
 }
 
-export class AsistenciaView {
+export class AsistenciaView extends CursoInyection {
     public asistenciaService: AsistenciaService;
     public personalService: PersonalService;
     public distribucionService: DistribucionService;
-    public cursoInyection: CursoInyection;
+    // public cursoInyection: CursoInyection;
     public localesAmbientes: ILocalAmbienteAsignados[] = [];
     public localAmbienteSelected: ILocalAmbienteAsignados = null;
     public rangoFechas: Array<string> = [];
@@ -35,30 +36,20 @@ export class AsistenciaView {
     public personaldadadeBaja: IPersonal[] = [];
     public personalContingencia: IPersonal[] = [];
     public pea_id: number = null;
-    public cursoSelected: number;
+    public cursoSelectedAsistencia: number;
     public hoy: string = '';
     public hoystamp: number = 0;
     public cursosEmpadronador: Array<number> = [4, 19, 20]
+    private permisos: PermisosView;
 
     constructor() {
+        super();
+        this.permisos = new PermisosView(this.curso_id);
+
         this.asistenciaService = new AsistenciaService();
         this.personalService = new PersonalService();
-        this.cursoInyection = new CursoInyection();
         this.distribucionService = new DistribucionService();
-        $('#cursos').on('change', (element: JQueryEventObject) => {
-            let curso_id = $(element.currentTarget).val();
-            this.cursoSelected = curso_id != "-1" && curso_id != "" ? parseInt(curso_id) : curso_id;
-            $('#p_curso_actual').text($('#cursos :selected').text());
-            $('[name="p_etapa"]').text($('#etapa :selected').text());
-            this.getAulas(curso_id);
-            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
-                $('#btn_cierre_curso').show();
-                $('#btn_bajas_altas').hide();
-            } else {
-                $('#btn_cierre_curso').hide();
-                $('#btn_bajas_altas').show();
-            }
-        });
+        this.setearAulas();
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
             let selected = $(element.currentTarget).val();
             if (selected == '') {
@@ -80,13 +71,15 @@ export class AsistenciaView {
         });
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
-            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+            if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
                 if (utils.isDataTable('#tabla_asistencia')) {
                     $('#tabla_asistencia').dataTable().fnFilterClear()
                 }
                 this.saveAsistenciaEmpadronadorUrbano();
             } else {
-                this.saveAsistencia();
+                this.permisos.ucan(() => {
+                    this.saveAsistencia()
+                })
             }
         });
 
@@ -94,15 +87,24 @@ export class AsistenciaView {
             $('#modal_bajas_altas').modal('show');
         });
         $('#btn_dar_baja').on('click', () => {
-            this.darBaja();
+            this.permisos.ucan(() => {
+                this.darBaja();
+            })
+
         });
         $('#btn_dar_alta').on('click', (element: JQueryEventObject) => {
-            this.darAlta(this.pea_id);
+            this.permisos.ucan(() => {
+                this.darAlta(this.pea_id);
+            })
+
         });
         $('#btn_cierre_curso').on('click', () => {
-            utils.alert_confirm(() => {
-                this.cerrarCursoEmpadronador();
-            }, 'Esta seguro de Cerrar el curso?');
+            this.permisos.ucan(() => {
+                utils.alert_confirm(() => {
+                    this.cerrarCursoEmpadronador();
+                }, 'Esta seguro de Cerrar el curso?');
+            })
+
         });
         this.disabledChecks();
         $('#btn_exportar_bajas_altas').on('click', () => {
@@ -116,29 +118,48 @@ export class AsistenciaView {
         });
 
         $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_baja"]', (ev: JQueryEventObject) => {
-            if (this.disableAltasBajas() == false) {
-                return false
-            }
-            let id = $(ev.currentTarget).data('value')
-            alert_confirm(() => {
-                this.asistenciaService.deshacerBaja(id).done(() => {
-                    $('#select_aulas_asignadas').trigger('change');
-                });
-            }, 'Esta seguro de deshacer la baja?', 'error')
+            this.permisos.ucan(() => {
+                if (this.disableAltasBajas() == false) {
+                    return false
+                }
+                let id = $(ev.currentTarget).data('value')
+                alert_confirm(() => {
+                    this.asistenciaService.deshacerBaja(id).done(() => {
+                        $('#select_aulas_asignadas').trigger('change');
+                    });
+                }, 'Esta seguro de deshacer la baja?', 'error')
+            })
+
         });
 
         $('#tabla_baja_alta_reporte').on('click', '[name="btn_deshacer_alta"]', (ev: JQueryEventObject) => {
-            let id = $(ev.currentTarget).data('value');
-            if (this.disableAltasBajas() == false) {
-                return false
-            }
-            alert_confirm(() => {
-                this.asistenciaService.deshacerAlta(id).done(() => {
-                    $('#select_aulas_asignadas').trigger('change');
-                });
-            }, 'Esta seguro de deshacer la alta?', 'error')
+            this.permisos.ucan(() => {
+                let id = $(ev.currentTarget).data('value');
+                if (this.disableAltasBajas() == false) {
+                    return false
+                }
+                alert_confirm(() => {
+                    this.asistenciaService.deshacerAlta(id).done(() => {
+                        $('#select_aulas_asignadas').trigger('change');
+                    });
+                }, 'Esta seguro de deshacer la alta?', 'error')
+            });
         });
         this.getDate();
+    }
+
+    setearAulas() {
+        this.cursoSelectedAsistencia = this.curso_id != "-1" && this.curso_id != "" ? parseInt(this.curso_id) : this.curso_id;
+        $('#p_curso_actual').text($('#cursos :selected').text());
+        $('[name="p_etapa"]').text($('#etapa :selected').text());
+        this.getAulas(this.curso_id);
+        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
+            $('#btn_cierre_curso').show();
+            $('#btn_bajas_altas').hide();
+        } else {
+            $('#btn_cierre_curso').hide();
+            $('#btn_bajas_altas').show();
+        }
     }
 
     getDate() {
@@ -293,7 +314,7 @@ export class AsistenciaView {
         if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
             colspan = 2;
         }
-        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
             header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
                         <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
@@ -310,7 +331,7 @@ export class AsistenciaView {
 
 
         this.rangoFechas.map((fecha: string, index: number) => {
-            if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+            if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
                 spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
             }
             header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="${colspan}"><center>${fecha} ${spanEmpadronadorUrbano}</center></th>`;
@@ -360,7 +381,7 @@ export class AsistenciaView {
                 if (value.id_pea.baja_estado == 1) {
                     tbody += `<td></td>`;
                 } else {
-                    if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+                    if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
                         tbody += this.drawDivAsistenciaEmpadronadorUrbano(divParams, ind);
                     } else {
                         if (divParams.turno_manana != null || divParams.turno_tarde != null) {
@@ -375,7 +396,7 @@ export class AsistenciaView {
             });
             tbody += `</tr>`
         });
-        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
             if (utils.isDataTable('#tabla_asistencia')) {
                 $('#tabla_asistencia').DataTable().destroy();
             }
@@ -816,7 +837,7 @@ export class AsistenciaView {
 
     exportar() {
         $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
-        if ($.inArray(this.cursoSelected, this.cursosEmpadronador) >= 0) {
+        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
             this.exportarEmpadronadorUrbano();
         } else {
             this._exportarGeneral();
