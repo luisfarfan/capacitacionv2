@@ -19,8 +19,9 @@ def setSession(request):
     userDataDecode = json.loads(userData.read().decode('utf-8'))
     request.session['user_session'] = data
     request.session['user_data'] = userDataDecode
+    request.session['seguridadurl'] = seguridadurl
 
-    return redirect('/bienvenido/?key={}'.format(key))
+    return redirect('/bienvenido/')
 
 
 class RenderTemplate(TemplateView):

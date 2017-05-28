@@ -141,6 +141,7 @@ class DistribucionView extends CursoInyection {
         $('#clone').html($('#tabla_pea').clone());
         let select_instructor = $('#tabla_pea').find('select :selected').text();
         $('#clone').find('#a_save_instructor').remove()
+        $('#clone').find('.select2-container--default').remove();
         $('#clone').find('select').replaceWith(`<span>${select_instructor}</span>`);
         let td = $('#clone').find('table').find('td')
         let theadtr = $('#clone').find('table').find('thead').find('th')
@@ -168,6 +169,7 @@ class DistribucionView extends CursoInyection {
                 html += `<option value="${instructor.id}">${instructor.ape_pat} ${instructor.ape_mat} ${instructor.nombre} - ${instructor.rol.nombre} ${instructor.dni}</option>`
             });
             $('#select_instructor').html(html);
+            $('#select_instructor').select2();
         });
     }
 
@@ -351,12 +353,12 @@ class DistribucionView extends CursoInyection {
             this.personal.map((value: IPersonal, index: number) => {
                 html += `<tr>
                              <td>${index + 1}</td>
-                             <td>${value.dni}</td>
+                             <td>&nbsp;${value.dni}</td>
                              <td>${value.ape_paterno}</td>
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
-                             <td>${value.zona}</td>
+                             <td>&nbsp;${value.zona}</td>
                          </tr>`
             });
             table_personal_capacitar.destroy();
@@ -422,12 +424,12 @@ class DistribucionView extends CursoInyection {
                             <td>${personal.id_pea.ape_paterno}</td>
                             <td>${personal.id_pea.ape_materno}</td>
                             <td>${personal.id_pea.nombre}</td>
-                            <td>${personal.id_pea.dni}</td>
+                            <td>&nbsp;${personal.id_pea.dni}</td>
                             <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                            <td>${personal.id_pea.zona}</td>
+                            <td>&nbsp;${personal.id_pea.zona}</td>
                          </tr>`;
             });
-            this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor);
+            this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('').trigger('change') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor).trigger('change');
             $('#tabla_pea').find('tbody').html(html);
         });
     }
@@ -435,7 +437,7 @@ class DistribucionView extends CursoInyection {
     setCabeceraDistribucion(localambiente: number) {
         $('#span_nombre_local').text(this.localCursoSelected.local.nombre_local);
         $('#span_direccion').text(this.localCursoSelected.local.nombre_via);
-        $('#span_fecha_inicio').text(this.localCursoSelected.local.fecha_inicio);
+        $('#span_fecha_inicio').text(`${this.localCursoSelected.local.fecha_inicio} hasta ${this.localCursoSelected.local.fecha_fin}`);
         $('#span_aula').text(this.localAmbienteSelected.numero);
         this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
             if (value.id_localambiente == localambiente) {

@@ -225,7 +225,7 @@ export class AsistenciaView extends CursoInyection {
                     alta = `<td>${value.id_pea_reemplazo.ape_paterno}</td>
                             <td>${value.id_pea_reemplazo.ape_materno}</td>
                             <td>${value.id_pea_reemplazo.nombre}</td>
-                            <td>${value.id_pea_reemplazo.dni}</td>
+                            <td>&nbsp;${value.id_pea_reemplazo.dni}</td>
                             <td><ul class="icons-list"><li>
                                             <a data-popup="tooltip" title="Deshacer alta" name="btn_deshacer_alta"
                                                     data-value="${value.id_pea_reemplazo.id_pea}"
@@ -241,7 +241,7 @@ export class AsistenciaView extends CursoInyection {
                            <td>${value.ape_paterno}</td>
                            <td>${value.ape_materno}</td>
                            <td>${value.nombre}</td>
-                           <td>${value.dni}</td>
+                           <td>&nbsp;${value.dni}</td>
                            <td><ul class="icons-list"><li><a data-popup="tooltip" title="Deshacer baja" name="btn_deshacer_baja" data-value="${value.id_pea}"
                                     class="btn btn-primary active btn-icon btn-rounded legitRipple"><i class="icon-cancel-circle2"></i>
                                 </a></li></ul>
@@ -360,9 +360,9 @@ export class AsistenciaView extends CursoInyection {
             }
             tbody += `<td>${index + 1}</td>
                       <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
-                      <td>${value.id_pea.dni}</td>
+                      <td>&nbsp;${value.id_pea.dni}</td>
                       <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                      <td>${value.id_pea.zona}</td>`
+                      <td>&nbsp;${value.id_pea.zona}</td>`
             this.rangoFechas.map((fecha: string, ind: number) => {
                 let divParams: ModelDivAsistencia = {
                     fecha: fecha,
@@ -703,7 +703,7 @@ export class AsistenciaView extends CursoInyection {
         let inputsValidarTotal = $('input[name^="turno"]:not(:disabled)').length / 3
 
         if (inputsValidar != inputsValidarTotal) {
-            utils.showInfo('Aún le falta llenar la asistencia');
+            utils.showInfo('Aún le falta llenar la asistencia', 'error');
             return false;
         }
 
@@ -752,7 +752,7 @@ export class AsistenciaView extends CursoInyection {
                 utils.showSwalAlert('La asistencia fue guardad con éxito!', 'Exito', 'success');
                 $('#select_aulas_asignadas').trigger('change');
             });
-        }, 'Después de guardar la asistencia, no se va tener opción a editar!', 'success');
+        }, 'Después de guardar la asistencia, no se va tener opción a editar!, Está seguro de guardar?', 'success');
     }
 
     getAulas(curso_id: number) {

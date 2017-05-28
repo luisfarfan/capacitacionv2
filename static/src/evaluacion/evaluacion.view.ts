@@ -244,7 +244,7 @@ export class EvaluacionView extends CursoInyection {
                 html += `<tr data-value="${pea.id_peaaula}">
                         <td>${index + 1}</td>
                         <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
-                        <td>${pea.id_pea.dni}</td>
+                        <td>&nbsp;${pea.id_pea.dni}</td>
                         <td>${pea.personalaula_notafinal[0].nota_final}</td>
                         <td>${estado}</td>
                      </tr>`;
@@ -421,9 +421,9 @@ export class EvaluacionView extends CursoInyection {
             }
             tbody += `<td>${index + 1}</td>
                       <td>${persona.id_pea.ape_paterno} ${persona.id_pea.ape_materno} ${persona.id_pea.nombre}</td>
-                      <td>${persona.id_pea.dni}</td>
+                      <td>&nbsp;${persona.id_pea.dni}</td>
                       <td>${persona.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                      <td>${persona.id_pea.zona}</td>`;
+                      <td>&nbsp;${persona.id_pea.zona}</td>`;
             this.criteriosCurso.criterios.map((criterio: ICriterio) => {
                 let objCriterio: string = '';
                 this.detalleCriterios.map((detalle: IDetalleCriterio) => {
@@ -506,12 +506,12 @@ export class EvaluacionView extends CursoInyection {
             });
         });
         if (error > 0) {
-            utils.showInfo('La nota no puede ser mayor a 20, por favor corrijalo');
+            utils.showInfo('La nota no puede ser mayor a 20, por favor corrijalo', 'error');
             input.focus();
             return false;
         }
         if (vacio > 0) {
-            utils.showInfo('Debe de llenar todos los campos por favor!');
+            utils.showInfo('Debe de llenar todos los campos por favor!', 'error');
             return false;
         }
         utils.alert_confirm(() => {
@@ -520,7 +520,7 @@ export class EvaluacionView extends CursoInyection {
                 utils.showSwalAlert('Se ha guardado las notas!', 'Exito!', 'success');
                 this.saveNotaFinal();
             });
-        }, 'Después de guardar las notas no se va tener opción a editar', 'error')
+        }, 'Después de guardar las notas no se va tener opción a editar, Está seguro de guardar?', 'info')
     }
 
     saveNotaFinal() {

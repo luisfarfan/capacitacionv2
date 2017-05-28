@@ -283,14 +283,14 @@ class LocalController {
                     count++;
                 }
             })
-            if (count > 0) {
-                utils.showInfo('Existe omisión en los ambientes!', 'error');
-                return false
-            }
 
             this.form_local_validate.form();
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
                 utils.showInfo('Por favor, seleccione un curso');
+                return false
+            }
+            if (count > 0) {
+                utils.showInfo('Existe omisión en los ambientes!', 'error');
                 return false
             }
             if (this.form_local_validate.valid()) {
@@ -610,7 +610,7 @@ class LocalController {
         let html = '';
         this.locales.map((local: ILocal, index: number) => {
             html += `<tr ${local.usar == 1 ? 'style="background-color: rgb(214, 241, 184);"' : ''}>`
-            html += `<td>${local.nombre_local}</td><td>${local.zona_ubicacion_local}</td>
+            html += `<td>${local.nombre_local}</td><td>&nbsp;${local.zona_ubicacion_local}</td>
                      <td>${local.nombre_via}</td><td>${local.n_direccion}</td>
                      <td>${local.referencia}</td><td>${local.total_aulas}</td>`
             html += `<td><ul class="icons-list">
