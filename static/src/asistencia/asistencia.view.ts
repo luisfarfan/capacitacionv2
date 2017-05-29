@@ -56,9 +56,9 @@ export class AsistenciaView extends CursoInyection {
                 this.localAmbienteSelected = null;
             } else {
                 this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
-                $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`)
-                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`)
-                $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio}`)
+                $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`);
+                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`);
+                $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio} hasta ${this.localAmbienteSelected.localcurso.local.fecha_fin}`);
                 $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
                 $('[name="p_etapa"]').text($('#etapa :selected').text());
 

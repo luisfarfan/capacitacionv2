@@ -45,7 +45,6 @@ class DistribucionView extends CursoInyection {
         this.permisos = new PermisosView(this.curso_id);
         this.setearLocales();
         $('#cursos').on('change', () => {
-            $('#p_curso_actual').text($('#cursos :selected').text());
             // this.filterFields.curso = this.curso.curso_selected.id_curso;
             this.filterFields.curso = this.curso_id;
             this.filterLocalesSeleccionados();
@@ -133,6 +132,8 @@ class DistribucionView extends CursoInyection {
 
     setearLocales() {
         this.filterFields.curso = this.curso_id;
+        $('[name="p_curso_actual"]').text($('#cursos :selected').text());
+        $('[name="p_etapa"]').text($('#etapa :selected').text());
         this.filterLocalesSeleccionados();
         this.getZonasDistrito();
     }

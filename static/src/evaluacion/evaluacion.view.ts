@@ -355,9 +355,10 @@ export class EvaluacionView extends CursoInyection {
             if (response.status) {
                 utils.showSwalAlert('Se cerro el curso correctamente', 'Exito!', 'success');
             } else {
-                utils.showInfo('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'error');
+                utils.showSwalAlert('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'Error!', 'error');
+                // utils.showInfo('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'error');
             }
-        })
+        });
     }
 
     getCargosFuncionales(id_curso: number) {

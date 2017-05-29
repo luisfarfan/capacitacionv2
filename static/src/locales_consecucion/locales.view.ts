@@ -293,6 +293,9 @@ class LocalController {
                 utils.showInfo('Existe omisión en los ambientes!', 'error');
                 return false
             }
+            if (!this.validarOmisionLocalAmbiente()) {
+                return false;
+            }
             if (this.form_local_validate.valid()) {
                 this.saveLocales()
             } else {
@@ -781,6 +784,27 @@ class LocalController {
                 });
             }
         });
+    }
+
+    validarOmisionLocalAmbiente() {
+        let capacidadmabientes = 0
+        let pisoambientes = 0
+        $('input[name="capacidad_ambiente"]').map((index: number, element: Element) => {
+            if ($(element).val() == "") {
+                capacidadmabientes++;
+            }
+        })
+        $('input[name="piso_ambiente"]').map((index: number, element: Element) => {
+            if ($(element).val() == "") {
+                pisoambientes++;
+            }
+        });
+
+        if (capacidadmabientes + pisoambientes > 0) {
+            utils.showInfo('Existe omision en capacidad y/o piso de ambientes', 'error');
+            return false;
+        }
+        return true;
     }
 
     deleteLocal(id_local: number) {
