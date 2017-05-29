@@ -218,22 +218,45 @@ class PersonalNotasSinInternet(generics.ListAPIView):
             '-nota_final')
 
 
-def cerrarCursoConInternet(request):
-    postdata = request.POST['data']
-    dataDict = json.loads(postdata)
-    count = 0
-    for data in dataDict:
-        peanota = PersonalAulaNotaFinal.objects.get(peaaula=data['peaaula'])
-        peanota.bandaprob = data['bandaprob']
-        peanota.capacita = data['capacita']
-        peanota.seleccionado = data['seleccionado']
-        peanota.sw_titu = data['sw_titu']
-        peanota.notacap = data['notacap']
-        peanota.save()
-        count = count + 1
-        sendChio(peanota)
+def validarCerrarCurso(curso, ubigeo, zona=None):
+    cargos = CursoCargoFuncional.objects.filter(curso=curso).values_list('id_cargofuncional', flat=True)
+    if zona:
+        personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__id_cargofuncional__in=cargos,
+                                                   id_pea__contingencia=0).count()
+        personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=ubigeo,
+                                                                 peaaula__id_pea__id_cargofuncional=cargos,
+                                                                 peaaula__id_pea__contingencia=0).count()
+    else:
+        personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__zona=zona,
+                                                   id_pea__id_cargofuncional__in=cargos, id_pea__contingencia=0).count()
+        personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=ubigeo,
+                                                                 peaaula__id_pea__id_cargofuncional=cargos,
+                                                                 peaaula__id_pea__zona=zona,
+                                                                 peaaula__id_pea__contingencia=0)
+    if personalaula > personalaulanotas:
+        return False
 
-    return JsonResponse({'msg': 'Guardado correcto'})
+    return True
+
+
+def cerrarCursoConInternet(request, curso, ubigeo, zona):
+    if validarCerrarCurso(curso, ubigeo, zona):
+        postdata = request.POST['data']
+        dataDict = json.loads(postdata)
+        count = 0
+        for data in dataDict:
+            peanota = PersonalAulaNotaFinal.objects.get(peaaula=data['peaaula'])
+            peanota.bandaprob = data['bandaprob']
+            peanota.capacita = data['capacita']
+            peanota.seleccionado = data['seleccionado']
+            peanota.sw_titu = data['sw_titu']
+            peanota.notacap = data['notacap']
+            peanota.save()
+            count = count + 1
+            sendChio(peanota)
+        return JsonResponse({'status': True, 'msg': 'Curso cerrado exitosamente!'})
+    else:
+        return JsonResponse({'status': False, 'msg': 'Aun no se puede cerrar curso, por que falta notas en zonas'})
 
 
 def sendChio(peanota):

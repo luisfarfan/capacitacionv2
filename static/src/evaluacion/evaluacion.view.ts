@@ -202,6 +202,9 @@ export class EvaluacionView extends CursoInyection {
         let cargo: number = $('#select_cargos_funcionales').val();
         let ambito_selected = $('#select_zonas').val();
         let _ubigeo: any = {ccdd: null, ccpp: null, ccdi: null, zona: null}
+        if (ambito_selected == "-1") {
+            ambito_selected = null;
+        }
         this.setUbigeo();
         this.setearUbigeo();
         this._ubigeo = JSON.parse(localStorage.getItem('ubigeo'));
@@ -227,7 +230,6 @@ export class EvaluacionView extends CursoInyection {
         if (ambito_selected == "-1") {
             this._ubigeo.zona = null
         }
-        console.log(_ubigeo);
         this.evaluacionService.filterPersonalNotaFinal(cargo, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal();
@@ -306,6 +308,7 @@ export class EvaluacionView extends CursoInyection {
     }
 
     cerrarCursoConInternet() {
+        console.log(ubigeo);
         let peanotafinal: IPeanotafinal[] = [];
         let meta: number = $('#meta').text()
         let count = 0;
