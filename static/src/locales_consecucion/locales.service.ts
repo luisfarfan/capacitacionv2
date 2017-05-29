@@ -281,6 +281,7 @@ export class CursoService {
 
     get(pk: number = null, rolcodigo: string = null): JQueryXHR {
         return $.ajax({
+            async: false,
             url: pk === null ? this.url : `${this.url}${pk}/${rolcodigo ? rolcodigo + '/' : ''}`,
         })
     }

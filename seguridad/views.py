@@ -104,8 +104,29 @@ def renderENVDB():
 
 def cargarModulos(request):
     modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin']
-    roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona']
+    roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona', 'coordcapa', 'coordcurso', 'instnac',
+             'jefesubprov', 'jefesubzon', 'jefeempesp', 'jefesecurb']
     cursos = Curso.objects.filter(etapa__in=[2, 3])
+    for curso in cursos:
+        for rol in roles:
+            if RolCurso.objects.filter(rol=rol, curso_id=curso.id_curso).count() == 0:
+                rolcurso = RolCurso(rol=rol, curso_id=curso.id_curso)
+                rolcurso.save()
+
+    rolescursos = RolCurso.objects.all()
+    for rolcurso in rolescursos:
+        for modulo in modulos:
+            if RolCursoModulos.objects.filter(rolcurso_id=rolcurso, modulo=modulo).count() == 0:
+                rolcursomodulo = RolCursoModulos(rolcurso_id=rolcurso.id, modulo=modulo)
+                rolcursomodulo.save()
+
+    return JsonResponse({'msg': 'generado todo'})
+
+
+def cargarModulos2(request):
+    modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin']
+    roles = ['coordcapa', 'coordcurso', 'instnac', 'jefesubprov', 'jefesubzon', 'jefeempesp', 'jefesecurb']
+    cursos = Curso.objects.filter(etapa__in=[3])
     for curso in cursos:
         for rol in roles:
             if RolCurso.objects.filter(rol=rol, curso_id=curso.id_curso).count() == 0:

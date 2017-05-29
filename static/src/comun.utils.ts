@@ -48,6 +48,7 @@ export class CursoInyection {
 
     triggerCurso() {
         let etapa_id: any = localStorage.getItem('etapa_id');
+        this.etapa_id = etapa_id;
         $('#etapa').val(etapa_id)
         this.getCursos(etapa_id);
     }
@@ -71,7 +72,8 @@ export class CursoInyection {
             let curso_id = localStorage.getItem('curso_id');
             this.curso_id = parseInt(curso_id);
             $('#cursos').val(curso_id);
+            this.cursos.filter((curso: ICurso, index: number) => curso.id_curso == parseInt(curso_id) ? this.curso_selected = curso : '');
             // $('#cursos').val(curso_id).trigger('change');
-        })
+        });
     }
 }

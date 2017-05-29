@@ -42,6 +42,7 @@ export class EvaluacionView extends CursoInyection {
     public ambitoDetalle: any = {};
     public _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
     private permisos: PermisosView;
+    public ubigeozona: string = '';
 
     constructor(init: boolean = false) {
         super();
@@ -84,6 +85,7 @@ export class EvaluacionView extends CursoInyection {
 
     setearAulas() {
         $('#p_curso_actual').text($('#cursos :selected').text());
+        $('[name="p_etapa"]').text($('#etapa :selected').text());
         this.getAulas(this.curso_id);
         this.getCriterios(this.curso_id);
         this.getCargosFuncionales(this.curso_id);
@@ -91,9 +93,9 @@ export class EvaluacionView extends CursoInyection {
 
     setEvents(init: boolean = false) {
         if (init) {
-            this.setearAulas();
             this.cursoInyection = new CursoInyection();
             $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
+            this.setearAulas();
             this.setearUbigeo();
             $('#cursos').on('change', (element: JQueryEventObject) => {
                 let curso_id = $(element.currentTarget).val();
@@ -157,7 +159,6 @@ export class EvaluacionView extends CursoInyection {
                     }, 'Esta seguro de Cerrar el curso?');
                 });
             });
-
             this.getAmbitos();
         }
     }
@@ -210,21 +211,25 @@ export class EvaluacionView extends CursoInyection {
         this._ubigeo = JSON.parse(localStorage.getItem('ubigeo'));
         if (this._ubigeo.ccdd == null) {
             _ubigeo.ccdd = ambito_selected
+            this.ubigeozona = _ubigeo.ccdd
         }
         else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp == null) {
             _ubigeo.ccdd = this._ubigeo.ccdd
             _ubigeo.ccpp = ambito_selected
+            this.ubigeozona = `${_ubigeo.ccdd}${_ubigeo.ccpp}`
         }
         else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp != null && this._ubigeo.ccdi == null) {
             _ubigeo.ccdd = this._ubigeo.ccdd
             _ubigeo.ccpp = this._ubigeo.ccpp
             _ubigeo.ccdi = ambito_selected
+            this.ubigeozona = `${_ubigeo.ccdd}${_ubigeo.ccpp}${_ubigeo.ccdi}`
         }
         else if (this._ubigeo.ccdd != null && this._ubigeo.ccpp != null && this._ubigeo.ccdi != null && this._ubigeo.zona == null) {
             _ubigeo.ccdd = this._ubigeo.ccdd
             _ubigeo.ccpp = this._ubigeo.ccpp
             _ubigeo.ccdi = this._ubigeo.ccdi
             _ubigeo.zona = ambito_selected
+            this.ubigeozona = `${_ubigeo.ccdd}${_ubigeo.ccpp}${_ubigeo.ccdi}${_ubigeo.zona}`;
         }
 
         if (ambito_selected == "-1") {
@@ -308,7 +313,6 @@ export class EvaluacionView extends CursoInyection {
     }
 
     cerrarCursoConInternet() {
-        console.log(ubigeo);
         let peanotafinal: IPeanotafinal[] = [];
         let meta: number = $('#meta').text()
         let count = 0;
@@ -347,8 +351,12 @@ export class EvaluacionView extends CursoInyection {
                 peanotafinal.push(value.personalaula_notafinal[0]);
             }
         });
-        this.evaluacionService.cerrarCursoConInternet(peanotafinal).done((response) => {
-            console.log(response);
+        this.evaluacionService.cerrarCursoConInternet(peanotafinal, this.curso_id, this.ubigeozona).done((response) => {
+            if (response.status) {
+                utils.showSwalAlert('Se cerro el curso correctamente', 'Exito!', 'success');
+            } else {
+                utils.showInfo('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'error');
+            }
         })
     }
 

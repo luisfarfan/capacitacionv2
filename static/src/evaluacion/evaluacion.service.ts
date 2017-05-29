@@ -126,9 +126,9 @@ export class EvaluacionService {
         });
     }
 
-    cerrarCursoConInternet(object: Array<Object>) {
+    cerrarCursoConInternet(object: Array<Object>, curso: number, ubigeozona: string) {
         return $.ajax({
-            url: this.url_cerrarCursoConInternet,
+            url: `${this.url_cerrarCursoConInternet}${curso}/${ubigeozona}/`,
             type: 'POST',
             data: {data: JSON.stringify(object)}
         });

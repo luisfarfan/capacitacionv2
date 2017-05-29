@@ -2,17 +2,18 @@
  * Created by Administrador on 22/05/2017.
  */
 import {CursoInyection} from './comun.utils';
-import {CursoService} from './locales_consecucion/locales.service';
-import {ICurso} from './locales_consecucion/local.interface';
+import * as utils from './core/utils';
 
-class HomeController {
-    private cursos: ICurso[] = [];
-    private etapaSelected: number = null;
-    private cursoService: CursoService = new CursoService();
+class HomeController extends CursoInyection {
+    private paramsUrl: any = null;
 
     constructor() {
-        new CursoInyection();
+        super();
         // this.setEvents();
+        this.paramsUrl = this.getSearchParameters();
+        if (this.curso_selected && this.paramsUrl == null) {
+            utils.insertParam('curso', this.curso_selected.id_curso);
+        }
     }
 
     setEvents() {
@@ -24,32 +25,20 @@ class HomeController {
         // });
     }
 
-    // getCursos() {
-    //     if (this.etapaSelected) {
-    //         this.cursoService.get(this.etapaSelected).done((cursos) => {
-    //             this.cursos = cursos;
-    //             this.drawCursos();
-    //         })
-    //     } else {
-    //         this.drawCursos(false);
-    //     }
-    //
-    // }
-    //
-    // drawCursos(etapa: boolean = true) {
-    //     let html = '';
-    //     if (etapa) {
-    //         this.cursos.map((curso: ICurso, index: number) => {
-    //             html += `<tr>
-    //                          <td>${$('.bootstrap-select :selected').text()}</td>
-    //                          <td>${curso.nombre_curso}</td>
-    //                          <td><span class="label label-success">En proceso</span></td>
-    //                          <td><button type="button" class="btn btn-info btn-xs legitRipple"><i class="icon-comment-discussion position-left"></i>Ingresar</button></td>
-    //                      </tr>`
-    //         })
-    //     }
-    //     $('#tabla_cursos').find('tbody').html(html);
-    // }
+    transformToAssocArray(prmstr: any) {
+        var params: any = {};
+        var prmarr = prmstr.split("&");
+        for (var i = 0; i < prmarr.length; i++) {
+            var tmparr = prmarr[i].split("=");
+            params[tmparr[0]] = tmparr[1];
+        }
+        return params;
+    }
+
+    getSearchParameters() {
+        var prmstr = window.location.search.substr(1);
+        return prmstr != null && prmstr != "" ? this.transformToAssocArray(prmstr) : null;
+    }
 }
 
 new HomeController()

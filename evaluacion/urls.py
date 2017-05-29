@@ -10,7 +10,8 @@ routerEvaluacion.register(r'personalnointernetnotas', PersonalNotasSinInternetVi
 urlpatterns = [
     url(r'saveNotas/$', saveNotas),
     url(r'saveNotasFinal/$', saveNotasFinal),
-    url(r'cerrarCursoConInternet/$', cerrarCursoConInternet),
+    url(r'cerrarCursoConInternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$',
+        cerrarCursoConInternet),
     url(r'cerrarCursoSinInternet/$', cerrarCursoSinInternet),
     url(r'saveNotaFinalSinInternet/$', saveNotaFinalSinInternet),
     url(r'cerrarCursoEmpadronador/$', cerrarCursoEmpadronador),

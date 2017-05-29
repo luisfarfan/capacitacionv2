@@ -48,5 +48,6 @@ urlpatterns = [
     url(r'^monitoreo/', include('monitoreo.urls')),
     url(r'^apirest_establecimientos/', include('apirest_establecimientos.urls')),
     url('^cargarModulos/$', cargarModulos),
+    url('^cargarModulos2/$', cargarModulos2),
     url('^visualizaRolCurso/(?P<rol>.+)/(?P<curso>.+)/(?P<modulo>.+)/$', visualizaRolCurso),
 ]

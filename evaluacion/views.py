@@ -219,7 +219,7 @@ class PersonalNotasSinInternet(generics.ListAPIView):
 
 
 def validarCerrarCurso(curso, ubigeo, zona=None):
-    cargos = CursoCargoFuncional.objects.filter(curso=curso).values_list('id_cargofuncional', flat=True)
+    cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
     if zona:
         personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__id_cargofuncional__in=cargos,
                                                    id_pea__contingencia=0).count()
@@ -239,7 +239,12 @@ def validarCerrarCurso(curso, ubigeo, zona=None):
     return True
 
 
-def cerrarCursoConInternet(request, curso, ubigeo, zona):
+def cerrarCursoConInternet(request, curso, ubigeo):
+    if len(ubigeo) == 11:
+        zona = ubigeo[-5:]
+        ubigeo = ubigeo[:6]
+    else:
+        zona = None
     if validarCerrarCurso(curso, ubigeo, zona):
         postdata = request.POST['data']
         dataDict = json.loads(postdata)
@@ -253,7 +258,7 @@ def cerrarCursoConInternet(request, curso, ubigeo, zona):
             peanota.notacap = data['notacap']
             peanota.save()
             count = count + 1
-            sendChio(peanota)
+            # sendChio(peanota)
         return JsonResponse({'status': True, 'msg': 'Curso cerrado exitosamente!'})
     else:
         return JsonResponse({'status': False, 'msg': 'Aun no se puede cerrar curso, por que falta notas en zonas'})
