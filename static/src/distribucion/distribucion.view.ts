@@ -208,6 +208,9 @@ class DistribucionView extends CursoInyection {
                 id: 'id_local',
                 text: ['nombre_local']
             }, {id_element: 'select_locales_seleccionados_asignacion', bootstrap_multiselect: true, select2: false});
+        }).fail((error) => {
+            console.log(error);
+            utils.showInfo('Error!!!');
         });
     }
 

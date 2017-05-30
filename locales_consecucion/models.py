@@ -283,6 +283,11 @@ class DirectorioLocal(models.Model):
     cantidad_usar_computo = models.IntegerField(blank=True, null=True)
     total_aulas = models.IntegerField(blank=True, null=True)
     total_disponibles = models.IntegerField(default=0, blank=True, null=True)
+    manzana = models.CharField(max_length=10, blank=True, null=True)
+    gestion = models.CharField(max_length=100, blank=True, null=True)
+    numero_alumnos = models.IntegerField(default=0, null=True, blank=True)
+    numero_docentes = models.IntegerField(default=0, null=True, blank=True)
+    numero_secciones = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         managed = True

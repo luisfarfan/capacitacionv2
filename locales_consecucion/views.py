@@ -77,7 +77,7 @@ class DirectorioLocalAmbienteFilterViewSet(generics.ListAPIView):
 
 
 class CursoEtapaViewSet(generics.ListAPIView):
-    serializer_class = CursoSerializer
+    serializer_class = CursoSerializer2
 
     def get_queryset(self):
         etapa_id = self.kwargs['etapa_id']
@@ -282,7 +282,8 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
             cantidad_total_computo=directorio.cantidad_total_computo,
             cantidad_disponible_computo=directorio.cantidad_disponible_computo,
             cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local,
-            total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles)
+            total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles,
+            funcionario_celular=directorio.funcionario_celular, turno_uso_local=directorio.turno_uso_local)
         local = Local.objects.get(id_directoriolocal_id=id_directoriolocal)
     else:
         local = Local(nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
@@ -318,20 +319,21 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
                       cantidad_total_computo=directorio.cantidad_total_computo,
                       cantidad_disponible_computo=directorio.cantidad_disponible_computo,
                       cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local,
-                      total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles)
+                      total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles,
+                      funcionario_celular=directorio.funcionario_celular, turno_uso_local=directorio.turno_uso_local)
         local.save()
+        localcurso = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
+        localcurso.save()
+        _calcularTotalAulas()
+        localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
+        if localambientes.count():
+            for i in localambientes:
+                ambientes = LocalAmbiente(localcurso_id=localcurso.id, id_ambiente_id=i.id_ambiente_id,
+                                          capacidad=i.capacidad,
+                                          n_piso=i.n_piso)
+                ambientes.save()
 
-    localcurso = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
-    localcurso.save()
-    localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
-    if localambientes.count():
-        for i in localambientes:
-            ambientes = LocalAmbiente(localcurso_id=localcurso.id, id_ambiente_id=i.id_ambiente_id,
-                                      capacidad=i.capacidad,
-                                      n_piso=i.n_piso)
-            ambientes.save()
-
-    return JsonResponse({'msg': True}, safe=False)
+    return JsonResponse({'msg': True})
 
 
 class SeleccionarLocalDisponible(APIView):
@@ -353,13 +355,27 @@ class DeseleccionarLocalDisponible(APIView):
         return JsonResponse({'usar': local.usar})
 
 
-def addLocalesCurso():
-    cursos = Curso.objects.all()
+def addLocalesCurso(request):
+    cursos = Curso.objects.filter(etapa=3)
     directorio = DirectorioLocal.objects.all()
-
+    bulkInsert = []
     for curso in cursos:
         for dir in directorio:
             localcurso = DirectorioLocalCurso(curso_id=curso.id_curso, local_id=dir.id_local)
+            bulkInsert.append(localcurso)
+
+    DirectorioLocalCurso.objects.bulk_create(bulkInsert)
+
+
+def _calcularTotalAulas():
+    locales = Local.objects.all()
+    for local in locales:
+        local.total_aulas = int(local.cantidad_usar_auditorios or 0) + int(local.cantidad_usar_aulas or 0) + int(
+            local.cantidad_usar_computo or 0) + int(local.cantidad_usar_oficina or 0) + int(
+            local.cantidad_usar_otros or 0) + int(
+            local.cantidad_usar_sala or 0) + int(local.cantidad_usar_sala or 0)
+        local.save()
+    return JsonResponse({'msg': True})
 
 
 def calcularTotalAulas(request):

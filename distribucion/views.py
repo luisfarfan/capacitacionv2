@@ -21,7 +21,6 @@ class LocalZonaDetalleViewSet(APIView):
     def get(self, request, localcurso):
         ambitosLocalDetalle = []
         ambitosLocal = LocalAmbito.objects.filter(localcurso_id=localcurso)
-        print(ambitosLocal)
         for ambito in ambitosLocal:
             ambitosLocalDetalle.append(
                 {'ccdd': ambito.ccdd, 'ccpp': ambito.ccpp, 'ccdi': ambito.ccdi, 'zona': ambito.zona,
@@ -157,7 +156,6 @@ def personasLibres(localcurso, exclude=[]):
     curso = LocalCurso.objects.get(pk=localcurso).curso_id
     cargosfuncionales = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional',
                                                                                           flat=True)
-    print(cargosfuncionales, curso)
     localambitos = LocalAmbito.objects.filter(localcurso_id=localcurso)
     deps = localambitos.values_list('ccdd', flat=True).distinct()
     provs = localambitos.values_list('ccpp', flat=True).distinct()

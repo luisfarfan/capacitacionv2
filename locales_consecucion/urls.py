@@ -63,5 +63,5 @@ urlpatterns = [
     url(r'calcularTotalAulas/$', calcularTotalAulas),
     url(r'diccionarioCursos/$', diccionarioCursos),
     url(r'seleccionar_local/$', SeleccionarLocalDisponible.as_view()),
-
+    url(r'addLocalesCurso/$', addLocalesCurso),
 ]

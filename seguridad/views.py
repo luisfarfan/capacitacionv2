@@ -124,8 +124,9 @@ def cargarModulos(request):
 
 
 def cargarModulos2(request):
+    # roles = ['coordcapa', 'coordcurso', 'instnac', 'jefesubprov', 'jefesubzon', 'jefeempesp', 'jefesecurb']
     modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin']
-    roles = ['coordcapa', 'coordcurso', 'instnac', 'jefesubprov', 'jefesubzon', 'jefeempesp', 'jefesecurb']
+    roles = ['jefesecempesp']
     cursos = Curso.objects.filter(etapa__in=[3])
     for curso in cursos:
         for rol in roles:

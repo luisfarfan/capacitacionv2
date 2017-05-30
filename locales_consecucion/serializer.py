@@ -32,7 +32,6 @@ class AmbienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class LocalAmbienteDetalleSerializer(serializers.ModelSerializer):
     id_ambiente = AmbienteSerializer()
     pea = Personal
@@ -72,6 +71,12 @@ class CursoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Curso
         fields = '__all__'
+
+
+class CursoSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = Curso
+        fields = ('id_curso', 'cod_curso', 'nombre_curso', 'etapa', 'fecha_inicio', 'fecha_fin')
 
 
 class LocalCursoSerializer(serializers.ModelSerializer):
