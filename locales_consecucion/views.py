@@ -173,6 +173,29 @@ class DirectorioLocalbyUbigeo(generics.ListAPIView):
         return DirectorioLocal.objects.filter(**filter)
 
 
+def directorioLocalesPagination(request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
+    filter = {}
+    filter['directoriolocalcurso__curso_id'] = curso
+    start = request.GET.get('start') or 0
+    length = request.GET.get('length') or 0
+    if ccdd is not None:
+        filter['ubigeo__ccdd'] = ccdd
+    if ccpp is not None:
+        filter['ubigeo__ccdd'] = ccdd
+        filter['ubigeo__ccpp'] = ccpp
+    if ccdi is not None:
+        filter['ubigeo__ccdd'] = ccdd
+        filter['ubigeo__ccpp'] = ccpp
+        filter['ubigeo__ccdi'] = ccdi
+    if zona is not None:
+        filter['ubigeo__ccdd'] = ccdd
+        filter['ubigeo__ccpp'] = ccpp
+        filter['ubigeo__ccdi'] = ccdi
+        filter['zona_ubicacion_local'] = zona
+    data = DirectorioLocal.objects.filter(**filter)[int(start or 0):int(start or 0) + int(length or 0)].values()
+    return JsonResponse(list(data), safe=False)
+
+
 @csrf_exempt
 def generar_ambientes(request):
     if request.method == "POST" and request.is_ajax():

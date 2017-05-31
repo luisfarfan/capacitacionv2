@@ -13,15 +13,15 @@ urlpatterns = [
     url(r'curso_etapa/(?P<etapa_id>.+)/(?P<rol>.+)/$', CursoEtapaViewSet.as_view()),
     url(r'curso_etapa/(?P<etapa_id>.+)/$', CursoEtapaViewSet.as_view()),
     # Locales Marco segun ubigeo
-    url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/$', DirectorioLocalbyUbigeo.as_view()),
-    url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$', DirectorioLocalbyUbigeo.as_view()),
+    url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/$', directorioLocalesPagination),
+    url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$', directorioLocalesPagination),
     url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
-        DirectorioLocalbyUbigeo.as_view()),
+        directorioLocalesPagination),
     url(r'directoriolocal_byambito/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
-        DirectorioLocalbyUbigeo.as_view()),
+        directorioLocalesPagination),
     url(
         r'directoriolocal_byambito/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
-        DirectorioLocalbyUbigeo.as_view()),
+        directorioLocalesPagination),
     # Fin ubigeo locales marco segun ubigeo
 
 

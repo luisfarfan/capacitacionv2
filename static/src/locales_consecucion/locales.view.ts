@@ -282,7 +282,7 @@ class LocalController {
                 if ($(domElement).val() == '') {
                     count++;
                 }
-            })
+            });
 
             this.form_local_validate.form();
             if ($('#cursos').val() == "-1" || $('#cursos').val() == "") {
@@ -296,16 +296,26 @@ class LocalController {
             if (!this.validarOmisionLocalAmbiente()) {
                 return false;
             }
+            let funcionariosdatos = 0;
+            $('#div_funcionario_datos').find('input').map((index: number, element: Element) => {
+                if ($(element).val() == "") {
+                    funcionariosdatos++;
+                }
+            })
+            if (funcionariosdatos > 0) {
+                utils.showInfo('Por favor, llene los datos del Funcionario', 'error');
+                return false
+            }
             if (this.form_local_validate.valid()) {
                 this.saveLocales()
             } else {
                 $('#modal_erroresformulario').modal('show');
                 let ul: string = '';
                 this.form_local_validate.errorList.map((value: any) => {
-                    let name = $(value.element).parent().parent().find('label').text()
+                    let name = $(value.element).parent().parent().find('label').text();
                     let message = value.message;
                     ul += `<li><a href="#"><span class="text-bold">${name}:</span> ${message}</a></li>`;
-                })
+                });
                 $('#errores').html(ul);
             }
         });
