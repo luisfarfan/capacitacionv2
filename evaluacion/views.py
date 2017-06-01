@@ -1,9 +1,10 @@
 from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
-from .models import MetaSeleccion, Ficha177
+from .models import Ficha177
+from reportes.models import MetaSeleccion
 import json
-from django.db.models import Count
+from django.db.models import Count, Sum
 from rest_framework.views import APIView
 
 
@@ -191,14 +192,25 @@ def ambitosRankeo(ccdd=None, ccpp=None, ccdi=None):
 
 
 class Meta(APIView):
-    def get(self, request, ubigeo, cargofuncional, zona=None):
-        filter = {'ubigeo': ubigeo, 'id_cargofuncional': cargofuncional}
+    def get(self, request, cargofuncional, ccdd=None, ccpp=None, ccdi=None, zona=None):
+        filter = {'id_cargofuncional': cargofuncional}
+        annotate = ()
+        if ccdd is not None:
+            filter['ccdd'] = ccdd
+            annotate = ('ccdd',)
+        if ccpp is not None:
+            filter['ccpp'] = ccpp
+            annotate = ('ccdd', 'ccpp')
+        if ccdi is not None:
+            filter['ccdi'] = ccdi
+            annotate = ('ccdd', 'ccpp', 'ccdi')
         if zona is not None:
             filter['zona'] = zona
-        else:
-            filter['zona__isnull'] = True
-        query = MetaSeleccion.objects.filter(**filter).values()
-        return JsonResponse(list(query), safe=False)
+
+        print(annotate)
+        query = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
+            sum=Sum('meta_capa'))
+        return JsonResponse({'meta': query[0]['sum']})
 
 
 class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):

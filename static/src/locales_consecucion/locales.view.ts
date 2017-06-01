@@ -369,7 +369,7 @@ class LocalController {
                 $('#modal_localesbyubigeo').modal('show');
             }
         });
-        $('#tabla_directorio_locales_filter').DataTable();
+        // $('#tabla_directorio_locales_filter').DataTable();
 
         $('input[name="fecha_inicio"]').daterangepicker({
             //"minDate": fecha_hoy,
@@ -420,7 +420,13 @@ class LocalController {
                 table: 'div_tabla_locales_filter',
                 columnsDelete: [7, 6]
             })
-        })
+        });
+        $('#tabla_directorio_locales_filter').on('click', '[name="li_editardirectorio"]', (element: JQueryEventObject) => {
+            this.setDirectorioLocal($(element.currentTarget).data('value'));
+            this.local = null;
+            this.localCurso = null;
+            $('#modal_localesmarco').modal('hide');
+        });
     }
 
     seleccionarLocal(id_local: number, seleccionar: boolean = true) {
@@ -655,9 +661,28 @@ class LocalController {
         });
     }
 
+    drawDirectorioLocalFilter() {
+        let curso: number = $('#cursos').val();
+        utils.drawDataTable('tabla_directorio_locales_filter', '', true, {
+            processing: true,
+            serverSide: true,
+            ajax: `${this.directoriolocalService.getDirectorioUrlbyAmbienteGeografico(curso, this.ubigeo)}`,
+            columns: [
+                {"data": "nombre_local"},
+                {"data": "zona_ubicacion_local"},
+                {
+                    "data": null, "render": function (data: any, type: any, row: any) {
+                    return `<ul class="icons-list"><li data-popup="tooltip" title="Editar" name="li_editardirectorio" data-value=${data.id_local} style="color: #8bc34a"><a><i class="icon-pencil"></i></a></li></ul>`
+                }
+                }
+            ],
+        }, true);
+    }
+
     filterDirectorioLocal() {
         let curso: number = $('#cursos').val();
         this.setAmbito();
+        this.drawDirectorioLocalFilter();
         this.directoriolocalService.getbyAmbienteGeografico(curso, this.ubigeo).done((directorioLocales: ILocal[]) => {
             this.localService.getbyAmbienteGeografico(curso, this.ubigeo).done((localcurso: ILocalCurso[]) => {
                 this.localesCurso = localcurso;
@@ -667,34 +692,34 @@ class LocalController {
                 this.directorioLocales = directorioLocales;
                 let directoriolocales_ids: Array<number> = []
                 this.locales.map((value: ILocal, index: number) => directoriolocales_ids.push(value.id_directoriolocal));
-                utils.drawTable(this.directorioLocales, ['nombre_local', 'zona_ubicacion_local'], 'id_local', {
-                    edit_name: 'directoriolocal_edit',
-                    delete_name: '',
-                    enumerar: true,
-                    table_id: 'tabla_directorio_locales_filter',
-                    datatable: true,
-                    checkbox: '',
-                    checked: false,
-                });
-                $('[name="directoriolocal_edit"]').off('click')
-                $('[name="chk_directoriolocal_seleccionado"]').off('click');
-                $('[name="directoriolocal_edit"]').on('click', (element: JQueryEventObject) => {
-                    this.setDirectorioLocal($(element.currentTarget).data('value'));
-                    this.local = null;
-                    this.localCurso = null;
-                    $('#modal_localesmarco').modal('hide');
-                });
-                $('[name="chk_directoriolocal_seleccionado"]').on('click', (element: JQueryEventObject) => {
-                    utils.alert_confirm(() => {
-                        this.directoriolocalService.seleccionarDirectorio($(element.currentTarget).val(), $('#cursos').val()).done(() => {
-                            $(element.currentTarget).prop('checked', true)
-                        });
-                    }, 'Esta seguro de guardar?', 'info', $(element.currentTarget).prop('checked', false))
-                });
-                let chk_directoriolocal: any = $('[name="chk_directoriolocal_seleccionado"]');
-                chk_directoriolocal.map((index: number, value: any) => {
-                    directoriolocales_ids.indexOf(parseInt(value.value)) != -1 ? $(value).prop('checked', true) && $(value).prop('disabled', true) : '';
-                });
+                // utils.drawTable(this.directorioLocales, ['nombre_local', 'zona_ubicacion_local'], 'id_local', {
+                //     edit_name: 'directoriolocal_edit',
+                //     delete_name: '',
+                //     enumerar: true,
+                //     table_id: 'tabla_directorio_locales_filter',
+                //     datatable: true,
+                //     checkbox: '',
+                //     checked: false,
+                // });
+                // $('[name="directoriolocal_edit"]').off('click');
+                // $('[name="chk_directoriolocal_seleccionado"]').off('click');
+                // $('[name="directoriolocal_edit"]').on('click', (element: JQueryEventObject) => {
+                //     this.setDirectorioLocal($(element.currentTarget).data('value'));
+                //     this.local = null;
+                //     this.localCurso = null;
+                //     $('#modal_localesmarco').modal('hide');
+                // });
+                // $('[name="chk_directoriolocal_seleccionado"]').on('click', (element: JQueryEventObject) => {
+                //     utils.alert_confirm(() => {
+                //         this.directoriolocalService.seleccionarDirectorio($(element.currentTarget).val(), $('#cursos').val()).done(() => {
+                //             $(element.currentTarget).prop('checked', true)
+                //         });
+                //     }, 'Esta seguro de guardar?', 'info', $(element.currentTarget).prop('checked', false))
+                // });
+                // let chk_directoriolocal: any = $('[name="chk_directoriolocal_seleccionado"]');
+                // chk_directoriolocal.map((index: number, value: any) => {
+                //     directoriolocales_ids.indexOf(parseInt(value.value)) != -1 ? $(value).prop('checked', true) && $(value).prop('disabled', true) : '';
+                // });
             });
         })
     }

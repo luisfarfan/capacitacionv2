@@ -100,15 +100,15 @@ class SinInternetView {
         let cargofuncional = $('#select_cargos_funcionales').val();
         let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
 
-        this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
-            if (meta.length) {
-                $('#meta').text(meta[0].meta)
-            } else {
-                $('#meta').text('No existe meta')
-            }
-        }).fail(() => {
-            $('#meta').text('')
-        });
+        // this.evaluacionService.getMeta(`${ubigeo.ccdd}${ubigeo.ccpp}${ubigeo.ccdi}`, cargofuncional, zona).done((meta: Array<any>) => {
+        //     if (meta.length) {
+        //         $('#meta').text(meta[0].meta)
+        //     } else {
+        //         $('#meta').text('No existe meta')
+        //     }
+        // }).fail(() => {
+        //     $('#meta').text('')
+        // });
     }
 
     rankear() {

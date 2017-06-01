@@ -232,15 +232,13 @@ export function drawTable(data: Array<Object>, campos: Array<string>, pk: string
         $(`#${options.table_id}`).find('tbody').html(html);
     }
 }
-export function drawDataTable(table_id: string, html: string, datatable: boolean = true) {
+export function drawDataTable(table_id: string, html: string = '', datatable: boolean = true, options: any = {}, index: boolean = false) {
     if (datatable) {
         let table = $(`#${table_id}`).DataTable();
         if ($.fn.DataTable.isDataTable(`#${table_id}`)) {
             table.destroy();
             $(`#${table_id}`).find('tbody').html(html);
-            table = $(`#${table_id}`).DataTable({
-                bPaginate: false
-            });
+            table = $(`#${table_id}`).DataTable(options);
             $('.dataTables_length select').select2({
                 minimumResultsForSearch: Infinity,
                 width: 'auto',

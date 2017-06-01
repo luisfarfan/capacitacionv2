@@ -197,6 +197,9 @@ class Local(models.Model):
     id_directoriolocal = models.ForeignKey('DirectorioLocal', blank=True, null=True)
     usar = models.IntegerField(default=0)
     total_disponibles = models.IntegerField(default=0, blank=True, null=True)
+    ccdd = models.CharField(max_length=2, blank=True, null=True)
+    ccpp = models.CharField(max_length=2, blank=True, null=True)
+    ccdi = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -288,6 +291,9 @@ class DirectorioLocal(models.Model):
     numero_alumnos = models.IntegerField(default=0, null=True, blank=True)
     numero_docentes = models.IntegerField(default=0, null=True, blank=True)
     numero_secciones = models.IntegerField(default=0, null=True, blank=True)
+    ccdd = models.CharField(max_length=2, blank=True, null=True)
+    ccpp = models.CharField(max_length=2, blank=True, null=True)
+    ccdi = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         managed = True
@@ -326,6 +332,11 @@ class CargoFuncional(models.Model):
 
     def __str__(self):
         return '{}'.format(self.nombre_funcionario)
+
+
+@admin.register(CargoFuncional)
+class CargoFuncionalAdmin(admin.ModelAdmin):
+    pass
 
 
 class CursoCargoFuncional(models.Model):
@@ -369,6 +380,9 @@ class Personal(models.Model):
     id_pea_reemplazo = models.ForeignKey('Personal', null=True, blank=True)
     edad = models.IntegerField(blank=True, null=True)
     correo = models.CharField(max_length=100, blank=True, null=True)
+    ccdd = models.CharField(max_length=2, blank=True, null=True)
+    ccpp = models.CharField(max_length=2, blank=True, null=True)
+    ccdi = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         managed = True

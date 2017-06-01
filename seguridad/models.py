@@ -4,9 +4,9 @@ from django.contrib import admin
 
 
 class RolCursoModulosSeguridad(models.Model):
-    rol = models.CharField(max_length=10)
+    rol = models.CharField(max_length=100)
     curso = models.ForeignKey(Curso)
-    modulo = models.CharField(max_length=20)
+    modulo = models.CharField(max_length=100)
 
     class Meta:
         managed = True
@@ -14,7 +14,7 @@ class RolCursoModulosSeguridad(models.Model):
 
 
 class RolCurso(models.Model):
-    rol = models.CharField(max_length=20)
+    rol = models.CharField(max_length=100)
     curso = models.ForeignKey(Curso)
 
     class Meta:
@@ -33,7 +33,7 @@ class RolCursoAdmin(admin.ModelAdmin):
 
 class RolCursoModulos(models.Model):
     rolcurso = models.ForeignKey(RolCurso)
-    modulo = models.CharField(max_length=20)
+    modulo = models.CharField(max_length=100)
     visualiza = models.IntegerField(default=0)
 
     class Meta:

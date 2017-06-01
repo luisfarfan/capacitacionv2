@@ -67,14 +67,30 @@ export class EvaluacionView extends CursoInyection {
 
     getMeta() {
         let cargofuncional = $('#select_cargos_funcionales').val();
-        let zona = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
+        let ambito: string = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
+        let ccdd: string = null;
+        let ccpp: string = null;
+        let ccdi: string = null;
+        let zona: string = null;
+        if (ambito.length == 2) {
+            ccdd = ambito
+        }
+        if (ambito.length == 4) {
+            ccdd = ambito.substring(0, 2)
+            ccpp = ambito.substring(2, 4)
+        }
+        if (ambito.length == 6) {
+            ccdd = ambito.substring(0, 2)
+            ccpp = ambito.substring(2, 4)
+            ccdi = ambito.substring(4, 6)
+        }
         this.setearUbigeo();
         this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
         this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
         this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
-        this.evaluacionService.getMeta(`${this._ubigeo.ccdd}${this._ubigeo.ccpp}${$('#select_zonas').val()}`, cargofuncional).done((meta: Array<any>) => {
-            if (meta.length) {
-                $('#meta').text(meta[0].meta)
+        this.evaluacionService.getMeta(cargofuncional, ccdd, ccpp, ccdi, zona).done((response) => {
+            if (response) {
+                $('#meta').text(response.meta)
             } else {
                 $('#meta').text('No existe meta')
             }
@@ -412,6 +428,7 @@ export class EvaluacionView extends CursoInyection {
                 asistencia = asistencia - 0.5;
             }
         })
+        console.log(asistencia);
         return asistencia
     }
 
@@ -444,10 +461,19 @@ export class EvaluacionView extends CursoInyection {
                     }
                 });
                 let nota: number = null;
-                criterio.id_criterio == 2 ? nota = this.calcularAsistencia(persona.personalaula) : nota = null;
+                if (criterio.id_criterio == 2) {
+                    nota = this.calcularAsistencia(persona.personalaula)
+                } else {
+                    nota = null
+                }
                 persona.personalaula_notas.filter((val: IPersonalNotas) => {
                     if (val.cursocriterio.criterio == criterio.id_criterio) {
-                        criterio.id_criterio == 2 ? nota = this.calcularAsistencia(persona.personalaula) : nota = val.nota;
+                        if (criterio.id_criterio == 2) {
+                            nota = this.calcularAsistencia(persona.personalaula)
+                            debugger
+                        } else {
+                            nota = val.nota
+                        }
                         this.detalleCriterios.map((criteriodetalle: IDetalleCriterio) => {
                             if (val.cursocriterio.criterio == criteriodetalle.criterio) {
                                 nota_final = nota_final + (nota * (criteriodetalle.ponderacion / 100));
@@ -477,7 +503,7 @@ export class EvaluacionView extends CursoInyection {
             if (persona.id_pea.baja_estado == 1) {
                 tbody += `<td></td><td><span name="span_state" class="label label-danger">Dado de baja</span></td>`
             } else {
-                tbody += `<td><input disabled min="0" max="20" value="${nota_final}" name="nota_final" type="number"></td>
+                tbody += `<td><input disabled min="0" max="20" data-value="${JSON.stringify({id_criterio: null})}" value="${nota_final}" name="nota_final" type="number"></td>
                           <td>${span}</td></tr>`
             }
 
@@ -497,6 +523,7 @@ export class EvaluacionView extends CursoInyection {
         registrosNotas.map((index: number, domElement: Element) => {
             let peaaula: number = $(domElement).data('value');
             let inputs: any = $(domElement).find('input');
+            console.log(inputs);
             inputs.map((ind: number, inputElement: Element) => {
                 let nota: any = $(inputElement).val();
                 if (nota > 20) {
@@ -508,7 +535,7 @@ export class EvaluacionView extends CursoInyection {
                 if (nota == "") {
                     vacio++
                 }
-                if ($(inputElement).val() != '' && !$(inputElement).is(':disabled')) {
+                if ($(inputElement).val() != '' && $(inputElement).data('value').id_criterio != null) {
                     request.push({
                         peaaula: peaaula,
                         criterio: $(inputElement).data('value').id_criterio,
@@ -559,10 +586,6 @@ export class EvaluacionView extends CursoInyection {
             });
             $('#select_aulas_asignadas').html(html);
         })
-    }
-
-    getDetalleCriterio() {
-
     }
 
     setCalculoPromedio() {

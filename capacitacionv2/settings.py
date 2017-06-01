@@ -14,7 +14,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ENV = 'SQLITE'
+ENV = 'EMPADRONAMIENTO'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -213,6 +213,78 @@ elif ENV == 'SQLITE':
                 'unicode_results': True
             },
         },
+    }
+elif ENV == 'EMPADRONAMIENTO':
+    _DATABASECONF = {
+        'default': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV2017_CAPACITACION',
+            'USER': 'us_capacitacion_web',
+            'PASSWORD': 'cap5wegU$re',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
+            'USER': 'us_inei_bdrrhh_consecucion',
+            'PASSWORD': 'nU6&beTRi',
+            'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        },
+        'segmentacion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_SEGMENTACION',
+            'USER': 'us_segmentacion_web',
+            'PASSWORD': 'u$s3g*mentaWeB',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'SQL Server',
+                'unicode_results': True
+            },
+        }
+    }
+elif ENV == 'EMPADRONAMIENTO_LINUX':
+    _DATABASECONF = {
+        'default': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV2017_CAPACITACION',
+            'USER': 'us_capacitacion_web',
+            'PASSWORD': 'cap5wegU$re',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        },
+        'consecucion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
+            'USER': 'us_inei_bdrrhh_consecucion',
+            'PASSWORD': 'nU6&beTRi',
+            'HOST': '192.168.203.160',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        },
+        'segmentacion': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': 'CPV_SEGMENTACION',
+            'USER': 'us_segmentacion_web',
+            'PASSWORD': 'u$s3g*mentaWeB',
+            'HOST': '172.18.1.41',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 11 for SQL Server',
+                'unicode_results': True
+            },
+        }
     }
 DATABASES = _DATABASECONF
 

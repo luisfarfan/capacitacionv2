@@ -156,6 +156,7 @@ def personasLibres(localcurso, exclude=[]):
     curso = LocalCurso.objects.get(pk=localcurso).curso_id
     cargosfuncionales = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional',
                                                                                           flat=True)
+    print(cargosfuncionales)
     localambitos = LocalAmbito.objects.filter(localcurso_id=localcurso)
     deps = localambitos.values_list('ccdd', flat=True).distinct()
     provs = localambitos.values_list('ccpp', flat=True).distinct()

@@ -21,9 +21,20 @@ export class EvaluacionService {
     private url_cerrarCursoConInternet: string = `${BASEURL}/evaluacion/cerrarCursoConInternet/`;
 
 
-    getMeta(ubigeo: string, cargofuncional: number, zona: string = null): JQueryXHR {
-        let url = `${this.url_meta}${ubigeo}/${cargofuncional}/`
-        zona ? url = url + zona + '/' : '';
+    getMeta(cargofuncional: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
+        let url = `${this.url_meta}${cargofuncional}/`
+        if (ccdd) {
+            url += `${ccdd}/`
+        }
+        if (ccpp) {
+            url += `${ccpp}/`
+        }
+        if (ccdi) {
+            url += `${ccdi}/`
+        }
+        if (zona) {
+            url += `${zona}/`
+        }
         return $.ajax({
             url: url
         });

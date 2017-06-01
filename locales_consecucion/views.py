@@ -170,14 +170,16 @@ class DirectorioLocalbyUbigeo(generics.ListAPIView):
             filter['ubigeo__ccdi'] = self.kwargs['ccdi']
             filter['zona_ubicacion_local'] = self.kwargs['zona']
 
-        return DirectorioLocal.objects.filter(**filter)
+        return DirectorioLocal.objects.filter(**filter)[:100]
 
 
 def directorioLocalesPagination(request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
     filter = {}
     filter['directoriolocalcurso__curso_id'] = curso
     start = request.GET.get('start') or 0
-    length = request.GET.get('length') or 0
+    length = request.GET.get('length') or 10
+    queryString = request.GET.get('search[value]')
+    draw = request.GET.get('draw') or 1
     if ccdd is not None:
         filter['ubigeo__ccdd'] = ccdd
     if ccpp is not None:
@@ -192,8 +194,16 @@ def directorioLocalesPagination(request, curso, ccdd=None, ccpp=None, ccdi=None,
         filter['ubigeo__ccpp'] = ccpp
         filter['ubigeo__ccdi'] = ccdi
         filter['zona_ubicacion_local'] = zona
-    data = DirectorioLocal.objects.filter(**filter)[int(start or 0):int(start or 0) + int(length or 0)].values()
-    return JsonResponse(list(data), safe=False)
+    _start = int(start or 0)
+    _length = _start + int(length or 0)
+    if queryString != '' and queryString != None:
+        data = DirectorioLocal.objects.filter(**filter, nombre_local__contains=queryString)[_start:_length].values()
+    else:
+        data = DirectorioLocal.objects.filter(**filter)[_start:_length].values()
+
+    return JsonResponse(
+        {'data': list(data), 'draw': draw, 'recordsFiltered': DirectorioLocal.objects.filter(**filter).count(),
+         'recordsTotal': DirectorioLocal.objects.filter(**filter).count()}, safe=False)
 
 
 @csrf_exempt
@@ -271,7 +281,9 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
     directoriolocalcurso = DirectorioLocalCurso.objects.get(local_id=id_directoriolocal, curso_id=id_curso)
     sumarDisponiblesUsar(id_directoriolocal, True)
     if Local.objects.filter(id_directoriolocal_id=id_directoriolocal).count():
-        localseleccionado = Local.objects.filter(id_directoriolocal_id=id_directoriolocal).update(
+        print('hola')
+        localseleccionado = Local.objects.filter(id_directoriolocal_id=id_directoriolocal,
+                                                 localcurso__curso_id=id_curso).update(
             nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
             zona_ubicacion_local=directorio.zona_ubicacion_local,
             mz_direccion=directorio.mz_direccion, tipo_via=directorio.tipo_via,
@@ -344,17 +356,36 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
                       cantidad_usar_computo=directorio.cantidad_usar_computo, id_directoriolocal_id=directorio.id_local,
                       total_aulas=directorio.total_aulas, total_disponibles=directorio.total_disponibles,
                       funcionario_celular=directorio.funcionario_celular, turno_uso_local=directorio.turno_uso_local)
-        local.save()
-        localcurso = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
-        localcurso.save()
+    local.save()
+    try:
+        localcurso = LocalCurso.objects.get(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
+    except LocalCurso.DoesNotExist:
+        localcurso = None
+
+    if localcurso is None:
+        localcursosave = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
+        localcursosave.save()
         _calcularTotalAulas()
         localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
-        if localambientes.count():
-            for i in localambientes:
-                ambientes = LocalAmbiente(localcurso_id=localcurso.id, id_ambiente_id=i.id_ambiente_id,
-                                          capacidad=i.capacidad,
-                                          n_piso=i.n_piso)
-                ambientes.save()
+        localcursoambienes = LocalAmbiente.objects.filter(localcurso_id=localcursosave.id).count()
+        if localcursoambienes == 0:
+            if localambientes.count():
+                for i in localambientes:
+                    ambientes = LocalAmbiente(localcurso_id=localcursosave.id, id_ambiente_id=i.id_ambiente_id,
+                                              capacidad=i.capacidad,
+                                              n_piso=i.n_piso)
+                    ambientes.save()
+    else:
+        _calcularTotalAulas()
+        localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
+        localcursoambienes = LocalAmbiente.objects.filter(localcurso_id=localcurso.id).count()
+        if localcursoambienes == 0:
+            if localambientes.count():
+                for i in localambientes:
+                    ambientes = LocalAmbiente(localcurso_id=localcurso.id, id_ambiente_id=i.id_ambiente_id,
+                                              capacidad=i.capacidad,
+                                              n_piso=i.n_piso)
+                    ambientes.save()
 
     return JsonResponse({'msg': True})
 

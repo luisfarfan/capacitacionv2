@@ -235,6 +235,23 @@ export class DirectorioLocalService {
         });
     }
 
+    getDirectorioUrlbyAmbienteGeografico(curso: number, ambito: any = {}): string {
+        let url = `${this.urlAmbito}${curso}/`;
+        if ('ccdd' in ambito) {
+            url += `${ambito['ccdd']}/`;
+        }
+        if ('ccpp' in ambito) {
+            url += `${ambito['ccpp']}/`;
+        }
+        if ('ccdi' in ambito) {
+            url += `${ambito['ccdi']}/`;
+        }
+        if ('zona' in ambito) {
+            url += `${ambito['zona']}/`;
+        }
+        return url;
+    }
+
     getAmbientes(localcurso: number): JQueryXHR {
         return $.ajax({
             url: `${this.urldirectoriolocal_ambiente}${localcurso}/1/`,
