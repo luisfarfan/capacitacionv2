@@ -324,7 +324,6 @@ class DistribucionView extends CursoInyection {
             let html: string = '';
             this.localAmbientes.map((value: ILocalAmbienteDetail, index: number) => {
                 html += `<tr title="Mostrar personal de aula" style="cursor: pointer; cursor: hand;" data-value="${value.id_localambiente}">
-                            <td>${index + 1}</td>
                             <td>${value.id_ambiente.nombre_ambiente}</td>
                             <td>${value.numero}</td>
                             <td>${value.capacidad}</td>
@@ -362,7 +361,7 @@ class DistribucionView extends CursoInyection {
                              <td>${value.ape_materno} </td>
                              <td>${value.nombre}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
-                             <td>&nbsp;${value.zona}</td>
+                             <td>&nbsp;${value.zona == null ? '' : value.zona}</td>
                          </tr>`
             });
             table_personal_capacitar.destroy();
@@ -384,7 +383,7 @@ class DistribucionView extends CursoInyection {
                              <td>${value.nombre}</td>
                              <td>${value.dni}</td>
                              <td>${value.id_cargofuncional.nombre_funcionario}</td>
-                             <td>${value.zona}</td>
+                             <td>${value.zona == null ? '-' : value.zona}</td>
                              <td>${value.celular}</td>
                              <td>${value.correo}</td>
                          </tr>`
@@ -430,7 +429,7 @@ class DistribucionView extends CursoInyection {
                             <td>${personal.id_pea.nombre}</td>
                             <td>&nbsp;${personal.id_pea.dni}</td>
                             <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                            <td>&nbsp;${personal.id_pea.zona}</td>
+                            <td>&nbsp;${personal.id_pea.zona == null ? '-' : personal.id_pea.zona}</td>
                          </tr>`;
             });
             this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('').trigger('change') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor).trigger('change');

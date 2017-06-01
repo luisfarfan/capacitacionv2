@@ -32,9 +32,24 @@ class AmbienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UbigeoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ubigeo
+        fields = '__all__'
+
+
+class PersonalSerializer(serializers.ModelSerializer):
+    ubigeo = UbigeoSerializer()
+
+    class Meta:
+        model = Personal
+        fields = '__all__'
+
+
 class LocalAmbienteDetalleSerializer(serializers.ModelSerializer):
     id_ambiente = AmbienteSerializer()
-    pea = Personal
+
+    # id_pea = PersonalSerializer()
 
     class Meta:
         model = LocalAmbiente

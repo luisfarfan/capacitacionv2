@@ -210,7 +210,7 @@ class LocalAmbienteDetalleViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         localcurso = self.kwargs['localcurso']
-        return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente', '-capacidad')
+        return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente', 'numero')
 
 
 class PersonalAulaViewSet(viewsets.ModelViewSet):
