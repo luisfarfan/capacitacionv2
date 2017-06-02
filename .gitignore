@@ -66,3 +66,6 @@ fabric.properties
 db.sqlite3
 documentation
 static/build
+capacitacionv2/settings/dev.py
+capacitacionv2/settings/prod.py
+capacitacionv2/settings/qa.py
