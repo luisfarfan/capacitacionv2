@@ -20,7 +20,7 @@ DATABASES = {
         'PASSWORD': 'nU6&beTRi',
         'HOST': '192.168.203.160',
         'OPTIONS': {
-            'driver': 'SQL Server',
+            'driver': 'ODBC Driver 11 for SQL Server',
             'unicode_results': True
         },
     },
@@ -31,7 +31,7 @@ DATABASES = {
         'PASSWORD': 'u$s3g*mentaWeB',
         'HOST': '172.18.1.41',
         'OPTIONS': {
-            'driver': 'SQL Server',
+            'driver': 'ODBC Driver 11 for SQL Server',
             'unicode_results': True
         },
     }
