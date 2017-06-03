@@ -13,7 +13,7 @@ export class CursoInyection {
     public curso_selected: ICurso;
     etapa_id: number = null;
 
-    constructor() {
+    constructor(private callback: Function = null) {
         this.setearCurso();
         $('#etapa').on('change', (element: JQueryEventObject) => {
             this.getCursos($(element.currentTarget).val());

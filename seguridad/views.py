@@ -90,7 +90,8 @@ class RenderReportes(TemplateView):
                 context['modeenv'] = renderENVDB()
             return context
         except:
-            return redirect('localhost:8001/reportes/main')
+            # return redirect('localhost:8001/reportes/main')
+            return context
 
 
 def renderENVDB():
