@@ -34,6 +34,10 @@ class ReportesView extends UbigeoView {
             ccdi: ubigeo.ccdi,
             zona: ubigeo.zona,
         });
+        $('#select_reportes').selectBoxIt({
+            autoWidth: false,
+            theme: "bootstrap"
+        });
         if (localStorage.getItem('reporteSelected') == null) {
             this.reporte_selected = null
         } else {
@@ -69,7 +73,7 @@ class ReportesView extends UbigeoView {
                         this.setReporteSelectedSession(this.reporte_selected);
                     }
                 });
-                window.location.replace(`${BASEURL}/reporte/${this.reporte_selected.slug}/`);
+                window.location.replace(`${BASEURL}/reporte/${this.reporte_selected.id}/?curso=${$('#cursos').val()}`);
             }
         });
 
@@ -330,23 +334,9 @@ class ReportesView extends UbigeoView {
     getReportes() {
         this.reporteService.listaReportes().done((reportes) => {
             this.reportes = reportes;
-            let html = `<option value="">Seleccione</option>`;
-            this.reportes.map((reporte: IReportes) => {
-                if (this.reporte_selected !== null) {
-                    if (this.reporte_selected.id == reporte.id) {
-                        html += `<option selected value="${reporte.id}">${reporte.nombre}</option>`
-                    } else {
-                        html += `<option value="${reporte.id}">${reporte.nombre}</option>`
-                    }
-                } else {
-                    html += `<option value="${reporte.id}">${reporte.nombre}</option>`
-                }
-            });
-            $('#select_reportes').html(html);
-            $('#select_reportes').selectBoxIt({
-                autoWidth: false,
-                theme: "bootstrap"
-            });
+            let reporte_selected = $('#select_reportes').val();
+            this.reportes.filter((value: IReportes) => value.id == reporte_selected ? this.reporte_selected = value : '');
+            console.log(this.reporte_selected);
         });
     }
 }

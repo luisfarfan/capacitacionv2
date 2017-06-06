@@ -1,0 +1,23 @@
+<div class="panel panel-flat panel-inei">
+    <div class="panel-heading">
+        <h5 class="panel-title text-inei">Seleccione reporte a visualizar</h5>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li><a data-action="collapse"></a></li>
+                <li><a data-action="reload"></a></li>
+                <li><a data-action="close"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <select id="select_reportes" class="selectbox-bootstrap border-primary text-inei btn-flat">
+                <option value="">Seleccione</option>
+                {% for reporte in reportes %}
+                    <option {% if selected == reporte.id %}selected {% endif %}
+                            value="{{ reporte.id }}">{{ reporte.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
