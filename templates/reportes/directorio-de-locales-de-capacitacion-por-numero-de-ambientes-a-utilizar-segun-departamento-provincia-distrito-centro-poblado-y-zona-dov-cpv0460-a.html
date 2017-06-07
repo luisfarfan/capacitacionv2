@@ -67,40 +67,15 @@
             </div>
         </div>
         <div class="panel-body">
-            <div class="row">
-                <table id="header_reporte_ambito" style="width: 40%"
-                       class="table table-bordered table-condensed pull-left">
-                    <thead>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">DEPARTAMENTO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">PROVINCIA</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">DISTRITO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    </thead>
-
-                </table>
-                <table id="header_reporte_curso" style="width: 40%"
-                       class="table table-bordered table-condensed pull-right">
-                    <thead>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">CURSO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    </thead>
-
-                </table>
-            </div>
             <div id="div_tabla_reporte" class="row">
                 <table id="tabla_reporte" class="table table-bordered">
+                    <caption>
+                        <h4 style="text-align: center;text-transform: uppercase;"
+                            class="text-inei text-primary text-bold">{{ reporte_selected.nombre }}</h4>
+                        <br><br>
+                    </caption>
                     <thead>
-                    <tr>
+                    <tr class="bg-primary">
                         <th>N°</th>
                         <th>UBIGEO</th>
                         <th>DEPARTAMENTO</th>

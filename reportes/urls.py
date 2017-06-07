@@ -58,15 +58,15 @@ urlpatterns = [
         r'postulantesSeleccionadosporCurso/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         postulantesSeleccionadosporCurso.as_view()),
 
-    url(r'coberturaPersonal/(?P<curso>[0-9]+)/$', coberturaPersonal.as_view()),
-    url(r'coberturaPersonal/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+    url(r'coberturaPersonal/(?P<cargo>[0-9]+)/$', coberturaPersonal.as_view()),
+    url(r'coberturaPersonal/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/$',
         coberturaPersonal.as_view()),
-    url(r'coberturaPersonal/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+    url(r'coberturaPersonal/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
         coberturaPersonal.as_view()),
-    url(r'coberturaPersonal/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+    url(r'coberturaPersonal/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
         coberturaPersonal.as_view()),
     url(
-        r'coberturaPersonal/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        r'coberturaPersonal/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         coberturaPersonal.as_view()),
 
     url(r'bajadePostulantes/(?P<curso>[0-9]+)/$', bajadePostulantes.as_view()),
@@ -80,17 +80,17 @@ urlpatterns = [
         r'bajadePostulantes/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         bajadePostulantes.as_view()),
 
-    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<curso>[0-9]+)/$',
+    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<cargo>[0-9]+)/$',
         postulantesSeleccionadosSegunMetadeCampo.as_view()),
-    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/$',
         postulantesSeleccionadosSegunMetadeCampo.as_view()),
-    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
-        postulantesSeleccionadosSegunMetadeCampo.as_view()),
-    url(
-        r'postulantesSeleccionadosSegunMetadeCampo/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+    url(r'postulantesSeleccionadosSegunMetadeCampo/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
         postulantesSeleccionadosSegunMetadeCampo.as_view()),
     url(
-        r'postulantesSeleccionadosSegunMetadeCampo/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        r'postulantesSeleccionadosSegunMetadeCampo/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        postulantesSeleccionadosSegunMetadeCampo.as_view()),
+    url(
+        r'postulantesSeleccionadosSegunMetadeCampo/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         postulantesSeleccionadosSegunMetadeCampo.as_view()),
 
     url(r'asistenciaporCurso/(?P<curso>[0-9]+)/$', asistenciaporCurso.as_view()),

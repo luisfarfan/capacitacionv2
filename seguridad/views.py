@@ -83,19 +83,22 @@ class RenderReportes(TemplateView):
                 context['breadcumbs'] = 'Reportes'
                 context['session_key'] = self.request.session.session_key
                 context['modeenv'] = renderENVDB()
-                context['reportes'] = Reportes.objects.all()
+                context['reportes'] = Reportes.objects.all().order_by('order')
+                context['reporte_selected'] = Reportes.objects.get(id=slug)
                 context['selected'] = int(slug or 0)
             else:
                 reporte = Reportes.objects.get(slug=slug)
                 context['breadcumbs'] = reporte.nombre
                 context['session_key'] = self.request.session.session_key
                 context['modeenv'] = renderENVDB()
-                context['reportes'] = Reportes.objects.all()
+                context['reportes'] = Reportes.objects.all().order_by('order')
+                context['reporte_selected'] = Reportes.objects.get(id=slug)
                 context['selected'] = int(slug or 0)
             return context
         except:
             # return redirect('localhost:8001/reportes/main')
-            context['reportes'] = Reportes.objects.all()
+            context['reportes'] = Reportes.objects.all().order_by('order')
+            context['reporte_selected'] = Reportes.objects.get(id=slug)
             context['selected'] = int(slug or 0)
             return context
 
