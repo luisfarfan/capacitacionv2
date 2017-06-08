@@ -47,7 +47,7 @@ export class AsistenciaService {
     private url_cerrarCursoEmpadronador: string = `${BASEURL}/evaluacion/cerrarCursoEmpadronador/`;
     private url_deshacerBaja: string = `${BASEURL}/asistencia/deshacerBaja/`;
     private url_deshacerAlta: string = `${BASEURL}/asistencia/deshacerAlta/`;
-
+    private url_localambientes_bylocalasistencia: string = `${BASEURL}/asistencia/localambientes_bylocalasistencia/`;
 
 
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
@@ -59,6 +59,12 @@ export class AsistenciaService {
     getAulasbyLocal(id_local: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_localambientes_bylocal}${id_local}/`
+        })
+    }
+
+    getAulasbyLocalAsistencia(id_local: number): JQueryXHR {
+        return $.ajax({
+            url: `${this.url_localambientes_bylocalasistencia}${id_local}/`
         })
     }
 

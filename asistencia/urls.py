@@ -12,6 +12,8 @@ routerAsistencia.register(r'personaldetalle', DetallePersonalViewSet)
 urlpatterns = [
     url(r'localambientes_instructor/(?P<id_instructor>[0-9]+)/(?P<curso>[0-9]+)/$',
         LocalAmbientebyInstructorViewSet.as_view()),
+    # url(r'localambientes_bylocalasistencia/(?P<id_local>[0-9]+)/$',
+    #     LocalAmbientebyLocalViewSet.as_view()),
     url(r'getrangofechas/$', rangoFechas),
     url(r'personalaula_bylocalambiente/(?P<id_localambiente>[0-9]+)/$',
         FilterPersonalAulaDetalleViewSet.as_view()),

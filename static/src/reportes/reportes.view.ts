@@ -111,11 +111,13 @@ class ReportesView extends UbigeoView {
                 bootstrap_multiselect: false,
                 select2: false
             });
-            $('#locales').off();
-            $('#locales').on('change', () => {
-                this.local_selected = $('#locales').val();
-                this.getAulas();
-            })
+            if (this.reporte_selected.id != 3 && this.reporte_selected.id != 4) {
+                $('#locales').off();
+                $('#locales').on('change', () => {
+                    this.local_selected = $('#locales').val();
+                    this.getAulas();
+                });
+            }
         });
     }
 
@@ -133,6 +135,7 @@ class ReportesView extends UbigeoView {
 
     getAulasAsistencia() {
         this.asistenciaService.getAulasbyLocal(this.local_selected).done((aulas) => {
+            console.log(aulas);
             this.asistenciaView.localesAmbientes = aulas;
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
@@ -156,12 +159,7 @@ class ReportesView extends UbigeoView {
         let url = this.armarUrl();
         $('#span_curso').text($('#cursos :selected').text());
         if (this.reporte_selected.id == 3) {
-            this.asistenciaService.getPersonalAsistenciaDetalle($('#select_aulas_asignadas2').val()).done((personal) => {
-                this.asistenciaView.personalAsistencia = personal;
-                this.asistenciaView.setPersonalParaBaja(true);
-                this.asistenciaView.drawPersonal();
-                this.asistenciaView.getContingencia();
-            });
+            this.asistenciaView.setLocalAmbienteSelected($('#select_aulas_asignadas2').val());
         } else if (this.reporte_selected.id == 4) {
             this.asistenciaService.getPersonalAsistenciaDetalle($('#select_aulas_asignadas').val()).done((personal) => {
                 this.evaluacionView.personal = personal;
@@ -371,8 +369,8 @@ class ReportesView extends UbigeoView {
                 $('#locales').change(() => {
                     let localvalue = $('#locales').val();
                     this.local_selected = localvalue;
-                    // this.getAulasAsistencia();
-                    this.getAulas();
+                    this.getAulasAsistencia();
+                    // this.getAulas();
                 });
             }
         });
