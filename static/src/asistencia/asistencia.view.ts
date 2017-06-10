@@ -769,13 +769,14 @@ export class AsistenciaView extends CursoInyection {
     }
 
     getAulas(curso_id: number) {
+        //console.log("get Aulas");
         this.asistenciaService.getAulasbyInstructor(IDUSUARIO, curso_id).done((aulas: ILocalAmbienteAsignados[]) => {
             this.localesAmbientes = aulas;
             console.log(aulas);
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
             this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => {
-                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
+                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero} -> local ${value.localcurso.local.nombre_local} </option>`
             });
             $('#select_aulas_asignadas').html(html);
         })
