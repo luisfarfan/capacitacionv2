@@ -403,7 +403,7 @@ class DeseleccionarLocalDisponible(APIView):
 
 
 def addLocalesCurso(request):
-    cursos = Curso.objects.filter(etapa=3)
+    cursos = Curso.objects.filter(etapa=4)
     directorio = DirectorioLocal.objects.all()
     bulkInsert = []
     for curso in cursos:
