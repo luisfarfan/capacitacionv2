@@ -26,7 +26,7 @@ declare var $: any;
 
 
 export class EvaluacionView extends CursoInyection {
-    public cursoInyection: CursoInyection;
+    // public cursoInyection: CursoInyection;
     public ubigeoService: UbigeoService;
     public evaluacionService: EvaluacionService;
     public asistenciaService: AsistenciaService;
@@ -109,17 +109,17 @@ export class EvaluacionView extends CursoInyection {
 
     setEvents(init: boolean = false) {
         if (init) {
-            this.cursoInyection = new CursoInyection();
+            // this.cursoInyection = new CursoInyection();
             $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
             this.setearAulas();
             this.setearUbigeo();
-            $('#cursos').on('change', (element: JQueryEventObject) => {
-                let curso_id = $(element.currentTarget).val();
-                $('#p_curso_actual').text($('#cursos :selected').text());
-                this.getAulas(curso_id);
-                this.getCriterios(curso_id);
-                this.getCargosFuncionales(curso_id);
-            });
+            // $('#cursos').on('change', (element: JQueryEventObject) => {
+            //     let curso_id = $(element.currentTarget).val();
+            //     $('#p_curso_actual').text($('#cursos :selected').text());
+            //     this.getAulas(curso_id);
+            //     this.getCriterios(curso_id);
+            //     this.getCargosFuncionales(curso_id);
+            // });
 
             $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
                 let selected = $(element.currentTarget).val();
@@ -283,13 +283,13 @@ export class EvaluacionView extends CursoInyection {
             return `<span class="label label-danger">Dado de baja</span>`
         } else {
             if (meta >= count) {
-                if (value.personalaula_notafinal[0].nota_final >= 11) {
+                if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
                     return `<span class="label label-success">Titular</span>`
                 } else {
                     return `<span class="label label-danger">No seleccionado</span>`
                 }
             } else {
-                if (value.personalaula_notafinal[0].nota_final >= 11) {
+                if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
                     return `<span class="label label-primary">Reserva</span>`;
                 } else {
                     return `<span class="label label-danger">No seleccionado</span>`;
@@ -306,7 +306,7 @@ export class EvaluacionView extends CursoInyection {
             count++;
             let span: any = $(input).parent().parent().find('span')
             if (meta >= count) {
-                if ($(input).val() >= 11) {
+                if ($(input).val() >= this.curso_selected.nota_minima) {
                     span.addClass('label-success')
                     span.text('Titular')
                 } else {
@@ -314,7 +314,7 @@ export class EvaluacionView extends CursoInyection {
                     span.text('No seleccionado')
                 }
             } else {
-                if ($(input).val() >= 11) {
+                if ($(input).val() >= this.curso_selected.nota_minima) {
                     span.addClass('label-primary')
                     span.text('reserva')
                 } else if ($(input).val() <= 2) {
@@ -344,7 +344,7 @@ export class EvaluacionView extends CursoInyection {
                     value.personalaula_notafinal[0].bandaprob = 1
                 }
                 if (meta >= count) {
-                    if (value.personalaula_notafinal[0].nota_final >= 11) {
+                    if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
                         value.personalaula_notafinal[0].capacita = 1
                         value.personalaula_notafinal[0].seleccionado = 1
                         value.personalaula_notafinal[0].sw_titu = 1
@@ -354,7 +354,7 @@ export class EvaluacionView extends CursoInyection {
                         value.personalaula_notafinal[0].sw_titu = 0
                     }
                 } else {
-                    if (value.personalaula_notafinal[0].nota_final >= 11) {
+                    if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
                         value.personalaula_notafinal[0].capacita = 1
                         value.personalaula_notafinal[0].seleccionado = 1
                         value.personalaula_notafinal[0].sw_titu = 0
@@ -494,7 +494,7 @@ export class EvaluacionView extends CursoInyection {
             });
             nota_final = Math.round(nota_final * 100) / 100;
             let span: string = '';
-            if (nota_final >= 11) {
+            if (nota_final >= this.curso_selected.nota_minima) {
                 span = `<span name="span_state" class="label label-success">Apto</span>`;
             } else {
                 span = `<span name="span_state" class="label label-danger">No apto</span>`;
@@ -606,7 +606,7 @@ export class EvaluacionView extends CursoInyection {
             });
             nota_final = Math.round(nota_final * 100) / 100;
             $(tr).find('[name="nota_final"]').val(nota_final);
-            if (nota_final >= 11) {
+            if (nota_final >= this.curso_selected.nota_minima) {
                 $(tr).find('span').removeClass('label-danger');
                 $(tr).find('span').addClass('label-success');
                 $(tr).find('span').text('Apto');
