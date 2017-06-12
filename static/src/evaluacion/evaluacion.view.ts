@@ -532,9 +532,10 @@ export class EvaluacionView extends CursoInyection {
                         input = $(inputElement);
                     }
                 }
-                if (nota == "") {
-                    vacio++
-                }
+                ////if (nota == "") {
+                ////    vacio++
+
+                ////}
                 if ($(inputElement).val() != '' && $(inputElement).data('value').id_criterio != null) {
                     request.push({
                         peaaula: peaaula,
