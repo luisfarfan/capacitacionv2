@@ -46,6 +46,9 @@ export class EvaluacionView extends CursoInyection {
 
     constructor(init: boolean = false) {
         super();
+        console.log(this.curso_selected);//al iniciar la pagina, ya tienes todos los datos del curso, en este caso, ya tienes la nota minima de cada curso.
+        //ahora, hay q identificar donde pongo el APTO  y no APTO, o mejor, a todo lo q tenga 11 lo reemplazamos por this.curso_selected,nota_minima,
+        // listo, ahora a cada curso ponle 11, pero a este curso q te dijeron, ponle 14.
         this.permisos = new PermisosView(this.curso_id);
         this.evaluacionService = new EvaluacionService();
         this.asistenciaService = new AsistenciaService();
@@ -615,6 +618,8 @@ export class EvaluacionView extends CursoInyection {
                 $(tr).find('span').addClass('label-danger');
                 $(tr).find('span').text('No apto');
             }
+            console.log(nota_final,this.curso_selected.nota_minima)
+            console.log(nota_final >= this.curso_selected.nota_minima)
         });
     }
 

@@ -73,6 +73,7 @@ export class CursoInyection {
             this.curso_id = parseInt(curso_id);
             $('#cursos').val(curso_id);
             this.cursos.filter((curso: ICurso, index: number) => curso.id_curso == parseInt(curso_id) ? this.curso_selected = curso : '');
+            console.log(this.curso_selected)
             // $('#cursos').val(curso_id).trigger('change');
         });
     }

@@ -60,3 +60,17 @@ class LocalAmbienteRespuestasSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalAmbienteRespuestas
         fields = '__all__'
+
+
+class ManualSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manual
+        fields = '__all__'
+
+class SuccessSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+
+# class RespuestaLocalSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RespuestaLocal
+#         fields = '__all__'
