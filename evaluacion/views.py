@@ -121,8 +121,9 @@ def saveNotas(request):
         evaluacion = PersonalCursoCriterio.objects.filter(peaaula_id=data['peaaula'],
                                                           cursocriterio_id=data['criterio']).count()
 
-        if data['nota'] == '':
-            data['nota'] = None
+        ##if data['nota'] == '':
+
+         ##   data['nota'] = None
 
         if evaluacion:
             notapea = PersonalCursoCriterio.objects.get(peaaula_id=data['peaaula'], cursocriterio_id=data['criterio'])

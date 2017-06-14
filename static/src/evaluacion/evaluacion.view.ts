@@ -412,31 +412,44 @@ export class EvaluacionView extends CursoInyection {
 
     calcularAsistencia(peaaula: IPersonalAula[]) {
         let asistencia: number = 18;
-        peaaula.map((value: IPersonalAula, index: number) => {
-            if (value.turno_manana == 1) {
-                asistencia = asistencia - 0.5;
-            }
-            if (value.turno_manana == 2 && value.turno_tarde == 2) {
-                asistencia = asistencia - 1;
-            } else if (value.turno_manana == 2 && value.turno_tarde !== 2) {
-                asistencia = asistencia - 1;
-            } else if (value.turno_tarde == 2 && value.turno_manana !== 2) {
-                asistencia = asistencia - 1;
-            }
+        console.log('Asistencia por persona',peaaula);
+        console.log(peaaula.length);
+        if (peaaula.length > 0){
+            peaaula.map((value: IPersonalAula, index: number) => {
+                if (value.turno_manana == 1) {
+                    asistencia = asistencia - 0.5;
+                }
+                if (value.turno_manana == 2 && value.turno_tarde == 2) {
+                    asistencia = asistencia - 1;
+                } else if (value.turno_manana == 2 && value.turno_tarde !== 2) {
+                    asistencia = asistencia - 1;
+                } else if (value.turno_tarde == 2 && value.turno_manana !== 2) {
+                    asistencia = asistencia - 1;
+                }
 
-            if (value.turno_tarde == 1) {
-                asistencia = asistencia - 0.5;
-            }
-        })
-        console.log(asistencia);
-        return asistencia
+                if (value.turno_tarde == 1) {
+                    asistencia = asistencia - 0.5;
+                }
+            })
+            return asistencia
+        }
+        else
+        {
+            utils.showInfo('No completaste Asistencias!', 'error');
+            return null;
+
+        }
+
+
     }
 
     drawTbody() {
         let tbody = ``;
+        let nota_validate = 0;
         this.personal.map((persona: IPersonalAsistenciaDetalle, index: number) => {
             let nota_final: number = 0;
             let disabled: string = '';
+
             if (persona.id_pea.baja_estado == 1) {
                 disabled = 'disabled'
                 tbody += `<tr style="background-color: #ffc1c1" data-value="${persona.id_peaaula}">`;
@@ -463,8 +476,10 @@ export class EvaluacionView extends CursoInyection {
                 let nota: number = null;
                 if (criterio.id_criterio == 2) {
                     nota = this.calcularAsistencia(persona.personalaula)
+                    nota_validate = nota;
+
                 } else {
-                    nota = null
+                    nota = null;
                 }
                 persona.personalaula_notas.filter((val: IPersonalNotas) => {
                     if (val.cursocriterio.criterio == criterio.id_criterio) {
@@ -508,10 +523,13 @@ export class EvaluacionView extends CursoInyection {
             }
 
         });
-        $('#tabla_evaluacion').find('thead').html(this.drawHeader());
-        $('#tabla_evaluacion').find('tbody').html(tbody);
+        if (nota_validate != null){
+            $('#tabla_evaluacion').find('thead').html(this.drawHeader());
+            $('#tabla_evaluacion').find('tbody').html(tbody);
+            this.setCalculoPromedio();
+         }
 
-        this.setCalculoPromedio();
+
     }
 
     saveNotas() {
@@ -532,9 +550,10 @@ export class EvaluacionView extends CursoInyection {
                         input = $(inputElement);
                     }
                 }
-                if (nota == "") {
-                    vacio++
-                }
+                ////if (nota == "") {
+                ////    vacio++
+
+                ////}
                 if ($(inputElement).val() != '' && $(inputElement).data('value').id_criterio != null) {
                     request.push({
                         peaaula: peaaula,
