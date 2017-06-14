@@ -16,7 +16,8 @@ export class DistribucionService {
     private url_distribuir: string = `${BASEURL}/distribucion/distribuir/`;
     private url_personalaula: string = `${BASEURL}/distribucion/personalaula/`;
     private url_crudpersonalaula: string = `${BASEURL}/distribucion/crudpersonalaula/`;
-    private url_instructores: string = `${SEGURIDADBASEURL}seguridad/proyectosistema_user/CPV/capa/`
+    private url_instructores: string = `${SEGURIDADBASEURL}seguridad/proyectosistema_user/CPV/capa/`;
+    private url_localambientesbylocal_detalle: string = `${BASEURL}/distribucion/localambientebylocal_detalle/`;
 
 
     getInstructoresSeguridad(): JQueryXHR {
@@ -29,10 +30,16 @@ export class DistribucionService {
         });
     }
 
-    filterLocalAmbientes(localcurso: number): JQueryXHR {
-        return $.ajax({
-            url: `${this.url_localambientes_detalle}${localcurso}/`,
-        });
+    filterLocalAmbientes(localcurso: number, local: boolean = false): JQueryXHR {
+        if (local) {
+            return $.ajax({
+                url: `${this.url_localambientesbylocal_detalle}${localcurso}/`,
+            });
+        } else {
+            return $.ajax({
+                url: `${this.url_localambientes_detalle}${localcurso}/`,
+            });
+        }
     }
 
     getPersonalbylocalCurso(localcurso: number, contingencia: boolean = false): JQueryXHR {

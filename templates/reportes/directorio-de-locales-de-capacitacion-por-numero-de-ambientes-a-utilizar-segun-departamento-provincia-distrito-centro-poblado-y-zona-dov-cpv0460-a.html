@@ -2,25 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">Seleccione reporte a visualizar</h5>
-            <div class="heading-elements">
-                <ul class="icons-list">
-                    <li><a data-action="collapse"></a></li>
-                    <li><a data-action="reload"></a></li>
-                    <li><a data-action="close"></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <select id="select_reportes" class="selectbox-bootstrap border-primary text-inei btn-flat">
-                    <option value="">Seleccione</option>
-                </select>
-            </div>
-        </div>
-    </div>
+    {% include 'reportes/dropdownReportes.html' %}
     <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
             <h5 class="panel-title text-inei">UBICACIÓN GEOGRÁFICA</h5>
@@ -85,40 +67,15 @@
             </div>
         </div>
         <div class="panel-body">
-            <div class="row">
-                <table id="header_reporte_ambito" style="width: 40%"
-                       class="table table-bordered table-condensed pull-left">
-                    <thead>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">DEPARTAMENTO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">PROVINCIA</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">DISTRITO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    </thead>
-
-                </table>
-                <table id="header_reporte_curso" style="width: 40%"
-                       class="table table-bordered table-condensed pull-right">
-                    <thead>
-                    <tr>
-                        <th class="bg-primary" style="width: 10%">CURSO</th>
-                        <th style="width: 50%"><span id="span_curso"></span></th>
-                    </tr>
-                    </thead>
-
-                </table>
-            </div>
             <div id="div_tabla_reporte" class="row">
                 <table id="tabla_reporte" class="table table-bordered">
+                    <caption>
+                        <h4 style="text-align: center;text-transform: uppercase;"
+                            class="text-inei text-primary text-bold">{{ reporte_selected.nombre }}</h4>
+                        <br><br>
+                    </caption>
                     <thead>
-                    <tr>
+                    <tr class="bg-primary">
                         <th>N°</th>
                         <th>UBIGEO</th>
                         <th>DEPARTAMENTO</th>

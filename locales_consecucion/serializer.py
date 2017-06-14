@@ -91,7 +91,7 @@ class CursoSerializer(serializers.ModelSerializer):
 class CursoSerializer2(serializers.ModelSerializer):
     class Meta:
         model = Curso
-        fields = ('id_curso', 'cod_curso', 'nombre_curso', 'etapa', 'fecha_inicio', 'fecha_fin')
+        fields = ('id_curso', 'cod_curso', 'nombre_curso', 'etapa', 'fecha_inicio', 'fecha_fin','nota_minima')
 
 
 class LocalCursoSerializer(serializers.ModelSerializer):

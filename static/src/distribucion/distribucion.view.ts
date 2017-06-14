@@ -128,6 +128,15 @@ class DistribucionView extends CursoInyection {
             });
             $('#tabla_personal_reserva').DataTable()
         })
+        $('#seleccionar_todos').on('click', (element: JQueryEventObject) => {
+            if ($(element.currentTarget).is(':checked')) {
+                $('#select_zonas_por_asignar > option').prop('selected', 'selected');
+                $('#select_zonas_por_asignar').trigger('change');
+            } else {
+                $('#select_zonas_por_asignar > option').removeAttr('selected');
+                $('#select_zonas_por_asignar').trigger('change');
+            }
+        });
     }
 
     setearLocales() {
@@ -232,7 +241,7 @@ class DistribucionView extends CursoInyection {
                 id_element: 'select_zonas_por_asignar',
                 bootstrap_multiselect: false,
                 select2: true
-            }, true);
+            }, true, '', false);
         });
     }
 

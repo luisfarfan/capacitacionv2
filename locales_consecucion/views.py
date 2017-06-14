@@ -281,7 +281,6 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
     directoriolocalcurso = DirectorioLocalCurso.objects.get(local_id=id_directoriolocal, curso_id=id_curso)
     sumarDisponiblesUsar(id_directoriolocal, True)
     if Local.objects.filter(id_directoriolocal_id=id_directoriolocal).count():
-        print('hola')
         localseleccionado = Local.objects.filter(id_directoriolocal_id=id_directoriolocal,
                                                  localcurso__curso_id=id_curso).update(
             nombre_local=directorio.nombre_local, nombre_via=directorio.nombre_via,
@@ -360,34 +359,28 @@ def directorioSeleccionado(request, id_directoriolocal, id_curso):
     try:
         localcurso = LocalCurso.objects.get(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
     except LocalCurso.DoesNotExist:
-        localcurso = None
+        LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id).save()
+        localcurso = LocalCurso.objects.get(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
 
-    if localcurso is None:
-        localcursosave = LocalCurso(local_id=local.id_local, curso_id=directoriolocalcurso.curso_id)
-        localcursosave.save()
-        _calcularTotalAulas()
-        localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
-        localcursoambienes = LocalAmbiente.objects.filter(localcurso_id=localcursosave.id).count()
-        if localcursoambienes == 0:
-            if localambientes.count():
-                for i in localambientes:
-                    ambientes = LocalAmbiente(localcurso_id=localcursosave.id, id_ambiente_id=i.id_ambiente_id,
-                                              capacidad=i.capacidad,
-                                              n_piso=i.n_piso)
-                    ambientes.save()
-    else:
-        _calcularTotalAulas()
-        localambientes = DirectorioLocalAmbiente.objects.filter(localcurso_id=directoriolocalcurso.id)
-        localcursoambienes = LocalAmbiente.objects.filter(localcurso_id=localcurso.id).count()
-        if localcursoambienes == 0:
-            if localambientes.count():
-                for i in localambientes:
-                    ambientes = LocalAmbiente(localcurso_id=localcurso.id, id_ambiente_id=i.id_ambiente_id,
-                                              capacidad=i.capacidad,
-                                              n_piso=i.n_piso)
-                    ambientes.save()
+    generarAmbientesLocalSeleccionado(localcurso.id, id_curso)
 
     return JsonResponse({'msg': True})
+
+
+def generarAmbientesLocalSeleccionado(localcurso, id_curso):
+    local = LocalCurso.objects.get(pk=localcurso)
+    ambientes = LocalAmbiente.objects.filter(localcurso_id=localcurso).count()
+
+    if ambientes:
+        LocalAmbiente.objects.filter(localcurso_id=localcurso).delete()
+
+    ambientesdirectorio = DirectorioLocalAmbiente.objects.filter(
+        localcurso__local_id=local.local.id_directoriolocal,
+        localcurso__curso_id=id_curso)
+    if ambientesdirectorio:
+        for aula in ambientesdirectorio:
+            LocalAmbiente(localcurso_id=local.id, n_piso=aula.n_piso, numero=aula.numero,
+                          id_ambiente_id=aula.id_ambiente_id, capacidad=aula.capacidad).save()
 
 
 class SeleccionarLocalDisponible(APIView):
@@ -410,7 +403,7 @@ class DeseleccionarLocalDisponible(APIView):
 
 
 def addLocalesCurso(request):
-    cursos = Curso.objects.filter(etapa=3)
+    cursos = Curso.objects.filter(etapa=4)
     directorio = DirectorioLocal.objects.all()
     bulkInsert = []
     for curso in cursos:

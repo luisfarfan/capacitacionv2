@@ -15,6 +15,21 @@ export interface IAnalista {
     nombre: string,
 }
 
+export interface IGrupoPregunta {
+    titulo1: string,
+    conjunto: number,
+    formato: null,
+    tipo_titulo: number
+}
+
+export  interface IPregunta {
+    id: number,
+    nombre: string,
+    order: number,
+    grupo: number,
+    tipo: null
+}
+
 export interface IRol {
     id: number,
     nombre: string,
@@ -38,14 +53,61 @@ export interface ILocal {
     responsable_telefono: string,
     telefono_local_celular: string,
     telefono_local_fijo: string,
-    tipo_via: number
-    total_aulas: number
-    total_disponibles: number
-    turno_uso_local: number
-    ubigeo: string
+    tipo_via: number,
+    total_aulas: number,
+    total_disponibles: number,
+    turno_uso_local: number,
+    ubigeo: string,
     usar: number
     zona_ubicacion_local: string,
     seleccionar: number,
     instructor: number,
-    localusuario: number
+    localusuario: number,
+    cantidad_usar_aulas: number,
+    id_directoriolocal_id: number
+
+}
+
+export interface IAula {
+    capacidad: number,
+    id_ambiente: number,
+    id_instructor: number,
+    id_localambiente: number,
+    localcurso: number,
+    n_piso: number,
+    numero: number,
+    disponible: number
+}
+
+export interface IInstructor {
+    auna: number,
+    instructor: number,
+    local: number
+}
+
+export interface IInstAulas {
+   id_instructor:number
+}
+
+export interface IManual {
+    id: number,
+    nombre: string,
+    curso: number
+}
+
+export interface IRespuesta {
+    id_local: number
+    local: number
+    pregunta: number,
+    opcion: IOpcion,
+    cantidad: string
+}
+
+export interface IOpcion {
+    pregunta: number,
+    opcion: string,
+}
+
+export interface  IEstado {
+    estado: boolean
 }

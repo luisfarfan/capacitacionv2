@@ -36,6 +36,8 @@ class NumeroaulasCoberturadas(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
         cargos = CursoCargoFuncional.objects.filter(id_curso=curso).values_list('id_cargofuncional', flat=True)
         filter = {}
+        if ccdd is None:
+            annotate = ('ubigeo',)
         if ccdd is not None:
             filter['ccdd'] = ccdd
             annotate = ('ubigeo',)
@@ -66,9 +68,10 @@ class NumeroaulasCoberturadas(APIView):
                 disponibletotal = disponibletotal + disponible_total
                 usar = usar + int(disponible.total_aulas or 0)
             ambito = list(Ubigeo.objects.filter(ubigeo=ubigeo['ubigeo']).values())
-            response.append({'aulas_programadas': 0, 'disponible': disponibletotal,
-                             'disponible_percent': calcPocentaje(disponibletotal, 0),
-                             'usar': usar, 'usar_percent': calcPocentaje(usar, 0), 'ambito': ambito})
+            if disponibletotal > 0:
+                response.append({'aulas_programadas': disponibletotal, 'disponible': disponibletotal,
+                                 'disponible_percent': calcPocentaje(disponibletotal, disponible_total),
+                                 'usar': usar, 'usar_percent': calcPocentaje(usar, disponible_total), 'ambito': ambito})
         return JsonResponse(response, safe=False)
 
 
@@ -79,11 +82,12 @@ Reporte N° 2
 
 class postulantesSeleccionadosporCurso(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
-        cargos = CursoCargoFuncional.objects.filter(id_curso=curso).values_list('id_cargofuncional', flat=True)
         filter = {}
-        filter['id_cargofuncional__in'] = list(cargos)
+        filter['id_cargofuncional'] = curso
         filter3 = {}
-        filter3['id_cargofuncional__in'] = list(cargos)
+        filter3['id_cargofuncional'] = curso
+        if ccdd is None:
+            annotate = ('ubigeo',)
         if ccdd is not None:
             filter['ccdd'] = ccdd
             filter3['ccdd_i'] = ccdd
@@ -103,20 +107,24 @@ class postulantesSeleccionadosporCurso(APIView):
             dcount=Count(*annotate))
         response = []
         for meta in metas:
-            meta_campo = MetaSeleccion.objects.using('consecucion').filter(ubigeo=meta['ubigeo']).aggregate(
+            meta_campo = MetaSeleccion.objects.using('consecucion').filter(id_cargofuncional=curso,
+                                                                           ubigeo=meta['ubigeo']).aggregate(
                 sum=Sum('meta_campo'))
-            meta_capa = MetaSeleccion.objects.using('consecucion').filter(ubigeo=meta['ubigeo']).aggregate(
+            meta_capa = MetaSeleccion.objects.using('consecucion').filter(id_cargofuncional=curso,
+                                                                          ubigeo=meta['ubigeo']).aggregate(
                 sum=Sum('meta_capa'))
-            ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
-            inscritos = Inscritos.objects.using('consecucion').filter(ubigeo_i=meta['ubigeo']).count()
-            seleccionados = Personal.objects.filter(id_cargofuncional__in=cargos, ubigeo_id=meta['ubigeo']).count()
-            reserva = Personal.objects.filter(id_cargofuncional__in=cargos, ubigeo_id=meta['ubigeo'],
-                                              contingencia=1).count()
-            response.append({'meta_campo': meta_campo['sum'], 'meta_capa': meta_capa['sum'], 'inscritos': inscritos,
-                             'inscritos_percent': calcPocentaje(inscritos, meta_capa['sum']),
-                             'seleccionados_percent': calcPocentaje(seleccionados, meta_capa['sum']),
-                             'reserva_percent': calcPocentaje(reserva, meta_capa['sum']),
-                             'seleccionados': seleccionados, 'reserva': reserva, 'ambito': ambito})
+            if meta_campo['sum'] > 0:
+                ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
+                inscritos = Inscritos.objects.using('consecucion').filter(id_cargofuncional=curso,
+                                                                          ubigeo_i=meta['ubigeo']).count()
+                seleccionados = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo']).count()
+                reserva = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo'],
+                                                  contingencia=1).count()
+                response.append({'meta_campo': meta_campo['sum'], 'meta_capa': meta_capa['sum'], 'inscritos': inscritos,
+                                 'inscritos_percent': calcPocentaje(inscritos, meta_capa['sum']),
+                                 'seleccionados_percent': calcPocentaje(seleccionados, meta_capa['sum']),
+                                 'reserva_percent': calcPocentaje(reserva, meta_capa['sum']),
+                                 'seleccionados': seleccionados, 'reserva': reserva, 'ambito': ambito})
 
         return JsonResponse(response, safe=False)
 
@@ -127,12 +135,13 @@ Reporte N° 3
 
 
 class coberturaPersonal(APIView):
-    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
-        cargos = CursoCargoFuncional.objects.filter(id_curso=curso).values_list('id_cargofuncional', flat=True)
+    def get(self, request, cargo, ccdd=None, ccpp=None, ccdi=None, zona=None):
         filter = {}
-        filter['id_cargofuncional__in'] = list(cargos)
+        filter['id_cargofuncional'] = cargo
         filter3 = {}
-        filter3['id_cargofuncional__in'] = list(cargos)
+        filter3['id_cargofuncional'] = cargo
+        if ccdd is None:
+            annotate = ('ubigeo',)
         if ccdd is not None:
             filter['ccdd'] = ccdd
             filter3['ccdd_i'] = ccdd
@@ -152,23 +161,26 @@ class coberturaPersonal(APIView):
             dcount=Count(*annotate))
         response = []
         for meta in metas:
-            meta_campo = MetaSeleccion.objects.using('consecucion').filter(ubigeo=meta['ubigeo']).aggregate(
+            meta_campo = MetaSeleccion.objects.using('consecucion').filter(id_cargofuncional=cargo,
+                                                                           ubigeo=meta['ubigeo']).aggregate(
                 sum=Sum('meta_campo'))
-            meta_capa = MetaSeleccion.objects.using('consecucion').filter(ubigeo=meta['ubigeo']).aggregate(
+            meta_capa = MetaSeleccion.objects.using('consecucion').filter(id_cargofuncional=cargo,
+                                                                          ubigeo=meta['ubigeo']).aggregate(
                 sum=Sum('meta_capa'))
-            ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
-            bajas = Personal.objects.filter(id_cargofuncional__in=cargos, ubigeo_id=meta['ubigeo'],
-                                            baja_estado=1).count()
-            altas = Personal.objects.filter(id_cargofuncional__in=cargos, ubigeo_id=meta['ubigeo'],
-                                            alta_estado=1).count()
-            capacitado = Personal.objects.filter(id_cargofuncional__in=cargos, ubigeo_id=meta['ubigeo'],
-                                                 contingencia=0).count()
-            response.append(
-                {'meta_campo': meta_campo['sum'], 'meta_capa': meta_capa['sum'], 'bajas': bajas, 'altas': bajas,
-                 'bajas_percent': calcPocentaje(bajas, meta_capa['sum']),
-                 'altas_percent': calcPocentaje(altas, meta_capa['sum']),
-                 'capacitado': capacitado,
-                 'capacitado_percent': calcPocentaje(capacitado, meta_capa['sum']), 'ambito': ambito})
+            if meta_campo['sum'] > 0:
+                ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
+                bajas = Personal.objects.filter(id_cargofuncional=cargo, ubigeo_id=meta['ubigeo'],
+                                                baja_estado=1).count()
+                altas = Personal.objects.filter(id_cargofuncional=cargo, ubigeo_id=meta['ubigeo'],
+                                                alta_estado=1).count()
+                capacitado = Personal.objects.filter(id_cargofuncional=cargo, ubigeo_id=meta['ubigeo'],
+                                                     contingencia=0).count()
+                response.append(
+                    {'meta_campo': meta_campo['sum'], 'meta_capa': meta_capa['sum'], 'bajas': bajas, 'altas': bajas,
+                     'bajas_percent': calcPocentaje(bajas, meta_capa['sum']),
+                     'altas_percent': calcPocentaje(altas, meta_capa['sum']),
+                     'capacitado': capacitado,
+                     'capacitado_percent': calcPocentaje(capacitado, meta_capa['sum']), 'ambito': ambito})
 
         return JsonResponse(response, safe=False)
 
@@ -229,12 +241,13 @@ Reporte N° 5
 
 
 class postulantesSeleccionadosSegunMetadeCampo(APIView):
-    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
-        cargos = CursoCargoFuncional.objects.filter(id_curso=curso).values_list('id_cargofuncional', flat=True)
+    def get(self, request, cargo, ccdd=None, ccpp=None, ccdi=None, zona=None):
         filter = {}
-        filter['id_cargofuncional__in'] = list(cargos)
+        filter['id_cargofuncional'] = cargo
         filter3 = {}
-        filter3['id_cargofuncional__in'] = list(cargos)
+        filter3['id_cargofuncional'] = cargo
+        if ccdd is None:
+            annotate = ('ubigeo',)
         if ccdd is not None:
             filter['ccdd'] = ccdd
             filter3['ccdd_i'] = ccdd
@@ -254,21 +267,24 @@ class postulantesSeleccionadosSegunMetadeCampo(APIView):
             dcount=Count(*annotate))
         response = []
         for meta in metas:
-            meta_campo = MetaSeleccion.objects.using('consecucion').filter(ubigeo=meta['ubigeo']).aggregate(
+            meta_campo = MetaSeleccion.objects.using('consecucion').filter(id_cargofuncional=cargo,
+                                                                           ubigeo=meta['ubigeo']).aggregate(
                 sum=Sum('meta_campo'))
-            ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
-            titular = PersonalAulaNotaFinal.objects.filter(sw_titu=1, peaaula__id_pea__ubigeo=meta['ubigeo']).count()
-            reserva = PersonalAulaNotaFinal.objects.filter(sw_titu=0, seleccionado=1,
-                                                           peaaula__id_pea__ubigeo=meta['ubigeo']).count()
-            noseleccionado = PersonalAulaNotaFinal.objects.filter(sw_titu=0, seleccionado=0,
-                                                                  peaaula__id_pea__ubigeo=meta['ubigeo']).count()
+            if meta_campo['sum'] > 0:
+                ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
+                titular = PersonalAulaNotaFinal.objects.filter(sw_titu=1,
+                                                               peaaula__id_pea__ubigeo=meta['ubigeo']).count()
+                reserva = PersonalAulaNotaFinal.objects.filter(sw_titu=0, seleccionado=1,
+                                                               peaaula__id_pea__ubigeo=meta['ubigeo']).count()
+                noseleccionado = PersonalAulaNotaFinal.objects.filter(sw_titu=0, seleccionado=0,
+                                                                      peaaula__id_pea__ubigeo=meta['ubigeo']).count()
 
-            response.append(
-                {'meta_campo': meta_campo['sum'], 'titular': titular, 'reserva': reserva,
-                 'reserva_percent': calcPocentaje(reserva, meta_campo['sum']),
-                 'noseleccionado_percent': calcPocentaje(noseleccionado, meta_campo['sum']),
-                 'noseleccionado': noseleccionado,
-                 'titular_percent': calcPocentaje(titular, meta_campo['sum']), 'ambito': ambito})
+                response.append(
+                    {'meta_campo': meta_campo['sum'], 'titular': titular, 'reserva': reserva,
+                     'reserva_percent': calcPocentaje(reserva, meta_campo['sum']),
+                     'noseleccionado_percent': calcPocentaje(noseleccionado, meta_campo['sum']),
+                     'noseleccionado': noseleccionado,
+                     'titular_percent': calcPocentaje(titular, meta_campo['sum']), 'ambito': ambito})
 
         return JsonResponse(response, safe=False)
 

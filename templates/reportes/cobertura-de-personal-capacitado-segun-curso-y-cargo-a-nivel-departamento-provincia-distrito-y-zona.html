@@ -2,25 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-    <div class="panel panel-flat panel-inei">
-        <div class="panel-heading">
-            <h5 class="panel-title text-inei">Seleccione reporte a visualizar</h5>
-            <div class="heading-elements">
-                <ul class="icons-list">
-                    <li><a data-action="collapse"></a></li>
-                    <li><a data-action="reload"></a></li>
-                    <li><a data-action="close"></a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <select id="select_reportes" class="selectbox-bootstrap border-primary text-inei btn-flat">
-                    <option value="">Seleccione</option>
-                </select>
-            </div>
-        </div>
-    </div>
+    {% include 'reportes/dropdownReportes.html' %}
     <div class="panel panel-flat panel-inei">
         <div class="panel-heading">
             <h5 class="panel-title text-inei">UBICACIÓN GEOGRÁFICA</h5>
@@ -35,7 +17,16 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label>Cargos Funcionales</label>
+
+                    <select id="cargo_funcional" class="form-control bg-white text-grey-400">
+
+                        <option value="">Seleccione Cargo Funcional</option>
+                    </select>
+
+                </div>
+                <div class="col-md-3">
                     <label>Departamento</label>
 
                     <select id="departamentos" class="form-control bg-white text-grey-400">
@@ -44,7 +35,7 @@
                     </select>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
 
                     <label>Provincia</label>
                     <select id="provincias" class="form-control bg-white text-grey-400">
@@ -53,7 +44,7 @@
                     </select>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label>Distrito</label>
                     <select id="distritos" class=" form-control bg-white text-grey-400">
 
@@ -81,16 +72,19 @@
             <table id="header_reporte" style="width: 40%" class="table table-bordered table-condensed">
                 <thead>
                 <tr>
-                    <th class="bg-primary" style="width: 10%">CURSO</th>
+                    <th class="bg-primary" style="width: 30%">CURSO</th>
                     <th style="width: 50%"><span id="span_curso"></span></th>
                 </tr>
+                <tr>
+                    <th class="bg-primary" style="width: 30%">CARGO FUNCIONAL</th>
+                    <th style="width: 50%"><span id="span_cargofuncional"></span></th>
+                </tr>
                 </thead>
-
             </table>
             <table id="tabla_reporte" class="table table-bordered">
                 <thead>
-                <tr>
-                    <th rowspan="2">#</th>
+                <tr class="bg-primary">
+                    <th rowspan="2">N°</th>
                     <th rowspan="2">DEPARTAMENTO</th>
                     <th rowspan="2">PROVINCIA</th>
                     <th rowspan="2">DISTRITO</th>
@@ -101,7 +95,7 @@
                     <th rowspan="2">N° DE PERSONAL DADO DE ALTA</th>
                     <th colspan="2">N° DE PERSONAL CAPACITADO</th>
                 </tr>
-                <tr>
+                <tr class="bg-primary">
                     <th>Absoluto</th>
                     <th>%</th>
                 </tr>

@@ -121,8 +121,9 @@ def saveNotas(request):
         evaluacion = PersonalCursoCriterio.objects.filter(peaaula_id=data['peaaula'],
                                                           cursocriterio_id=data['criterio']).count()
 
-        if data['nota'] == '':
-            data['nota'] = None
+        ##if data['nota'] == '':
+
+         ##   data['nota'] = None
 
         if evaluacion:
             notapea = PersonalCursoCriterio.objects.get(peaaula_id=data['peaaula'], cursocriterio_id=data['criterio'])
@@ -231,20 +232,39 @@ class PersonalNotasSinInternet(generics.ListAPIView):
 
 
 def validarCerrarCurso(curso, ubigeo, zona=None):
+    print(curso, ubigeo, zona)
     cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
     if zona:
         personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__id_cargofuncional__in=cargos,
                                                    id_pea__contingencia=0).count()
         personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=ubigeo,
-                                                                 peaaula__id_pea__id_cargofuncional=cargos,
+                                                                 peaaula__id_pea__id_cargofuncional__in=cargos,
                                                                  peaaula__id_pea__contingencia=0).count()
     else:
-        personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__zona=zona,
-                                                   id_pea__id_cargofuncional__in=cargos, id_pea__contingencia=0).count()
-        personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=ubigeo,
-                                                                 peaaula__id_pea__id_cargofuncional=cargos,
-                                                                 peaaula__id_pea__zona=zona,
-                                                                 peaaula__id_pea__contingencia=0)
+        if len(ubigeo) == 6:
+            personalaula = PersonalAula.objects.filter(id_pea__ubigeo=ubigeo, id_pea__zona=zona,
+                                                       id_pea__id_cargofuncional__in=cargos,
+                                                       id_pea__contingencia=0).count()
+            personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo=ubigeo,
+                                                                     peaaula__id_pea__id_cargofuncional__in=cargos,
+                                                                     peaaula__id_pea__contingencia=0).count()
+        elif len(ubigeo) == 4:
+            personalaula = PersonalAula.objects.filter(id_pea__ubigeo__ccdd=ubigeo[:2],
+                                                       id_pea__ubigeo__ccpp=ubigeo[2:4],
+                                                       id_pea__id_cargofuncional__in=cargos,
+                                                       id_pea__contingencia=0).count()
+            personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo__ccdd=ubigeo[:2],
+                                                                     peaaula__id_pea__ubigeo__ccpp=ubigeo[2:4],
+                                                                     peaaula__id_pea__id_cargofuncional__in=cargos,
+                                                                     peaaula__id_pea__contingencia=0).count()
+        elif len(ubigeo) == 2:
+            print(ubigeo)
+            personalaula = PersonalAula.objects.filter(id_pea__ubigeo__ccdd=ubigeo[:2],
+                                                       id_pea__id_cargofuncional__in=cargos,
+                                                       id_pea__contingencia=0).count()
+            personalaulanotas = PersonalAulaNotaFinal.objects.filter(peaaula__id_pea__ubigeo__ccdd=ubigeo[:2],
+                                                                     peaaula__id_pea__id_cargofuncional__in=cargos,
+                                                                     peaaula__id_pea__contingencia=0).count()
     if personalaula > personalaulanotas:
         return False
 
@@ -270,7 +290,7 @@ def cerrarCursoConInternet(request, curso, ubigeo):
             peanota.notacap = data['notacap']
             peanota.save()
             count = count + 1
-            # sendChio(peanota)
+            sendChio(peanota)
         return JsonResponse({'status': True, 'msg': 'Curso cerrado exitosamente!'})
     else:
         return JsonResponse({'status': False, 'msg': 'Aun no se puede cerrar curso, por que falta notas en zonas'})

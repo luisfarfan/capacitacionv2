@@ -64,13 +64,13 @@ class RenderTemplate(TemplateView):
 
 class RenderReportes(TemplateView):
     def get_template_names(self):
-        slug = self.kwargs.get('slug')
+        slug = int(self.kwargs.get('slug') or 0)
         self.request.session['modulo_id'] = 108
         try:
             if slug == 'main':
                 template = 'main.html'
             else:
-                template = Reportes.objects.get(slug=slug).template_html
+                template = Reportes.objects.get(id=slug).template_html
             return 'reportes/{}'.format(template)
         except:
             return 'reportes/reporte.html'
@@ -83,14 +83,24 @@ class RenderReportes(TemplateView):
                 context['breadcumbs'] = 'Reportes'
                 context['session_key'] = self.request.session.session_key
                 context['modeenv'] = renderENVDB()
+                context['reportes'] = Reportes.objects.all().order_by('order')
+                context['reporte_selected'] = Reportes.objects.get(id=slug)
+                context['selected'] = int(slug or 0)
             else:
                 reporte = Reportes.objects.get(slug=slug)
                 context['breadcumbs'] = reporte.nombre
                 context['session_key'] = self.request.session.session_key
                 context['modeenv'] = renderENVDB()
+                context['reportes'] = Reportes.objects.all().order_by('order')
+                context['reporte_selected'] = Reportes.objects.get(id=slug)
+                context['selected'] = int(slug or 0)
             return context
         except:
-            return redirect('localhost:8001/reportes/main')
+            # return redirect('localhost:8001/reportes/main')
+            context['reportes'] = Reportes.objects.all().order_by('order')
+            context['reporte_selected'] = Reportes.objects.get(id=slug)
+            context['selected'] = int(slug or 0)
+            return context
 
 
 def renderENVDB():
@@ -106,7 +116,7 @@ def cargarModulos(request):
     modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin']
     roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona', 'coordcapa', 'coordcurso', 'instnac',
              'jefesubprov', 'jefesubzon', 'jefeempesp', 'jefesecurb']
-    cursos = Curso.objects.filter(etapa__in=[2, 3])
+    cursos = Curso.objects.filter(etapa__in=[2, 3, 4])
     for curso in cursos:
         for rol in roles:
             if RolCurso.objects.filter(rol=rol, curso_id=curso.id_curso).count() == 0:
@@ -151,3 +161,18 @@ def visualizaRolCurso(request, rol, curso, modulo):
         visualiza = 0
 
     return JsonResponse({'visualiza': visualiza})
+
+from seguridad.models import RolCursoModulosSeguridad
+from locales_consecucion.models import Curso
+
+def modulosJefeDistrital(request):
+    modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin', 'calidad','asigana']
+    roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona','anacal']
+    cursos = Curso.objects.filter(etapa=3)
+    for curso in cursos:
+        for modulo in modulos:
+            for rol in roles:
+                rcms = RolCursoModulosSeguridad(rol=rol, modulo=modulo, curso_id=curso.id_curso)
+                rcms.save()
+
+    return JsonResponse({'msg': True})

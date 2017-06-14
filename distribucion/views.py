@@ -213,6 +213,14 @@ class LocalAmbienteDetalleViewSet(generics.ListAPIView):
         return LocalAmbiente.objects.filter(localcurso_id=localcurso).order_by('id_ambiente', 'numero')
 
 
+class LocalAmbientebyLocalDetalleViewSet(generics.ListAPIView):
+    serializer_class = LocalAmbienteDetalleSerializer
+
+    def get_queryset(self):
+        local = self.kwargs['local']
+        return LocalAmbiente.objects.filter(localcurso__local_id=local).order_by('id_ambiente', 'numero')
+
+
 class PersonalAulaViewSet(viewsets.ModelViewSet):
     queryset = PersonalAula.objects.all()
     serializer_class = PersonalAulaCrudSerializer

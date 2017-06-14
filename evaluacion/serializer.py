@@ -74,3 +74,5 @@ class PersonalSinInternetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personal
         fields = '__all__'
+
+

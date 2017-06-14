@@ -25,6 +25,7 @@ urlpatterns = [
         PersonalLibreporCursoViewSet.as_view()),
     # Urls para Local Ambientes
     url(r'localambiente_detalle/(?P<localcurso>[0-9]+)/$', LocalAmbienteDetalleViewSet.as_view()),
+    url(r'localambientebylocal_detalle/(?P<local>[0-9]+)/$', LocalAmbientebyLocalDetalleViewSet.as_view()),
     # Url para distribucion
     url(r'distribuir/(?P<localcurso_id>[0-9]+)/$', distribuir_byLocalCurso),
     url(r'personalaula/(?P<id_localambiente>[0-9]+)/$', PersonalAulaDetalleViewSet.as_view()),
@@ -34,6 +35,8 @@ urlpatterns = [
     url(r'sendSMSEmpadronadorUrbano/$', sendSMSEmpadronadorUrbano),
     url(r'sendSMSEmpadronadorUrbanoDia2/$', sendSMSEmpadronadorUrbanoDia2),
     url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1),
-    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4),
-    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5/$', sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5),
+    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4/$',
+        sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona4),
+    url(r'sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5/$',
+        sendSMSEmpadronadorUrbanoNoAsistieronDia1JesusMariaZona5),
 ]

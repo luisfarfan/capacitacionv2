@@ -46,7 +46,7 @@ class LocalController {
             maxlength: 100
         },
         n_direccion: {
-            maxlength: 4
+            maxlength: 5
         },
         km_direccion: {
             maxlength: 3
@@ -180,17 +180,40 @@ class LocalController {
             }
             this.saveUbigeo()
         });
-        $('#cursos').on('change', () => {
-            let curso_id = $('#cursos').val();
-            this.cursoService.get($('#etapa').val()).done((cursos: any) => {
-                cursos.map((curso: ICurso) => {
-                    if (curso.id_curso == curso_id) {
-                        $('[name="fecha_inicio"]').val(`${curso.fecha_inicio}`)
-                        $('[name="fecha_fin"]').val(`${curso.fecha_fin}`)
-                    }
-                })
+        this.setFechaRangoLocal();
+    }
+
+    setFechaRangoLocal() {
+        let curso_id = $('#cursos').val();
+        this.cursoService.get($('#etapa').val()).done((cursos: any) => {
+            cursos.map((curso: ICurso) => {
+                if (curso.id_curso == curso_id) {
+                    $('[name="fecha_inicio"]').val(`${curso.fecha_inicio}`)
+                    $('[name="fecha_fin"]').val(`${curso.fecha_fin}`)
+                }
             })
         })
+    }
+
+    backgroundColorAulas() {
+        let capacidades = $('input[name="capacidad_ambiente"]').find('input');
+        let pisos = $('input[name="piso_ambiente"]').find('input')
+        capacidades.map((index: number, input: Element) => {
+            let valor = $(input).val();
+            if (valor == "") {
+                $(input).css('background-color', '#f7b3ae')
+            } else {
+                $(input).css('background-color', '')
+            }
+        })
+        pisos.map((index: number, input: Element) => {
+            let valor = $(input).val();
+            if (valor == "") {
+                $(input).css('background-color', '#f7b3ae')
+            } else {
+                $(input).css('background-color', '')
+            }
+        });
     }
 
     setUbigeo() {
@@ -747,6 +770,11 @@ class LocalController {
 
     setForm(obj: ILocal) {
         utils.objectToForm(obj);
+        let fecha_inicio = $('[name="fecha_inicio"]').val();
+        let fecha_fin = $('[name="fecha_fin"]').val();
+        if (fecha_inicio == "" || fecha_fin == "") {
+            this.setFechaRangoLocal();
+        }
         this.setDirectorioLocalAmbientes();
     }
 
@@ -793,6 +821,7 @@ class LocalController {
             $('#tabla_aulas').find('tbody').html(html);
             $('#tabla_aulas').DataTable();
         }
+        this.backgroundColorAulas();
         $('[name="li_save_capacidad_piso"]').on('click', (element: JQueryEventObject) => {
             let li: any = $(element.currentTarget);
             let tr: any = li.parent().parent().parent();
@@ -818,6 +847,7 @@ class LocalController {
                     utils.showSwalAlert('Se grabo con éxito!', 'Correcto', 'success');
                 });
             }
+            this.backgroundColorAulas();
         });
     }
 

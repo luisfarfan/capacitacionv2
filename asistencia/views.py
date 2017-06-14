@@ -17,7 +17,7 @@ class LocalAmbientebyInstructorViewSet(generics.ListAPIView):
         id_instructor = self.kwargs['id_instructor']
         curso = self.kwargs['curso']
 
-        return LocalAmbiente.objects.filter(localcurso__curso=curso, id_instructor=id_instructor)
+        return LocalAmbiente.objects.filter(localcurso__curso=curso, id_instructor=id_instructor, localcurso__local__usar=1)
 
 
 class LocalAmbientebyLocal(generics.ListAPIView):

@@ -1,10 +1,12 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import generics, viewsets
 from .serializer import *
 from locales_consecucion.serializer import LocalSerializer, LocalAmbienteSerializer
 from locales_consecucion.models import Local, LocalAmbiente
 from django.http import JsonResponse
+import json
+from .models import RespuestaLocal, RespuestaManuales
+from .mixins import CustomQueryMixin
 
 """
 Servicio: Locales según Curso de Capacitación
@@ -47,7 +49,7 @@ class AulasLocalViewSet(generics.ListAPIView):
 
     def get_queryset(self):
         local = self.kwargs['local']
-        return LocalAmbiente.objects.filter(localcurso__local_id=local)
+        return LocalAmbiente.objects.filter(localcurso_id=local)
 
 
 class UsuarioLocalesViewSet(viewsets.ModelViewSet):
@@ -98,3 +100,107 @@ class OpcionesViewSet(viewsets.ModelViewSet):
 class LocalAmbienteRespuestasViewSet(viewsets.ModelViewSet):
     queryset = LocalAmbienteRespuestas.objects.all()
     serializer_class = LocalAmbienteRespuestasSerializer
+
+
+class ManualViewSet(viewsets.ModelViewSet):
+    queryset = Manual.objects.all()
+    serializer_class = ManualSerializer
+
+
+class GrupoPreguntasFilterViewSet(generics.ListAPIView):
+    serializer_class = GrupoPreguntasSerializer
+
+    def get_queryset(self):
+        formato = self.kwargs['formato']
+        return GrupoPreguntas.objects.filter(formato=formato)
+
+
+class ManualCursoFilterViewSet(generics.ListAPIView):
+    serializer_class = ManualSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        return Manual.objects.filter(curso=curso)
+
+
+class PreguntasFilterViewSet(generics.ListAPIView):
+    serializer_class = PreguntasSerializer
+
+    def get_queryset(self):
+        grupo_id = self.kwargs['conjunto']
+        return Preguntas.objects.filter(grupo_id=grupo_id)
+
+
+# class RespuestaLocalViewSet(viewsets.ModelViewSet):
+#     queryset = Manual.objects.all()
+#     serializer_class = RespuestaLocalSerializer
+
+class addEditRespuestasLocales(generics.ListAPIView):
+    def post(self, request):
+        postdata = request.POST['data']
+        data = json.loads(postdata)
+        c = 1
+        for preguntas in data:
+            for opciones in preguntas['opciones']:
+                if RespuestaLocal.objects.filter(local_id=preguntas['id'],
+                                                 llave=c).count() == 0:
+                    RespuestaLocal(llave=c, pregunta=preguntas['pregunta'], local_id=preguntas['id'],
+                                   opcionselected_id=opciones['opcion'],
+                                   respuesta_texto=opciones['respuesta'], opcional=opciones['opcional']).save()
+                    c = c + 1
+
+        return JsonResponse({'msg': 'Hecho'})
+
+
+class addEditRespuestasAulas(generics.ListAPIView):
+    def post(self, request):
+        postdata = request.POST['data']
+        data = json.loads(postdata)
+        c = 1
+        for preguntas in data:
+            for opciones in preguntas['opciones']:
+                if RespuestaAula.objects.filter(aula_id=preguntas['id'],
+                                                llave=c).count() == 0:
+                    RespuestaAula(llave=c, pregunta=preguntas['pregunta'], respuesta_texto=opciones['respuesta'],
+                                  aula_id=preguntas['id'], opcionselected_id=opciones['opcion'],
+                                  opcional=opciones['opcional']).save()
+                    c = c + 1
+
+        return JsonResponse({'msg': 'Hecho'})
+
+
+class addEditRespuestasManuales(generics.ListAPIView):
+    def post(self, request):
+        postdata = request.POST['data']
+        data = json.loads(postdata)
+        c = 1
+        for preguntas in data:
+            for opciones in preguntas['opciones']:
+
+                if RespuestaManuales.objects.filter(aula_id=preguntas['id'],
+                                                    llave=c, manual_id=preguntas['id_manual']).count() == 0:
+                    RespuestaManuales(llave=c, pregunta=preguntas['pregunta'], respuesta_texto=opciones['respuesta'],
+                                      aula_id=preguntas['id'], manual_id=preguntas['id_manual'],
+                                      opcionselected_id=opciones['opcion'],
+                                      opcional=opciones['opcional'], cantidad=opciones['cantidad']).save()
+                    c = c + 1
+
+        return JsonResponse({'msg': 'Hecho'})
+
+
+class EstadoManualsFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
+    serializer_class = SuccessSerializer
+
+    def get_queryset(self):
+        idaula = self.kwargs.get('idaula')
+        idmanual = self.kwargs.get('idmanual')
+        datos = RespuestaManuales.objects.filter(aula_id=idaula, manual_id=idmanual)
+        if datos.exists():
+            return {"success": True}
+        else:
+            return {"success": False}
+
+
+class AulaInstructorViewSet(viewsets.ModelViewSet):
+    queryset = AulaInstructor.objects.all()
+    serializer_class = AulaInstructorSerializer

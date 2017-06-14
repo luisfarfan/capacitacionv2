@@ -45,7 +45,6 @@ export class AsistenciaView extends CursoInyection {
     constructor() {
         super();
         this.permisos = new PermisosView(this.curso_id);
-
         this.asistenciaService = new AsistenciaService();
         this.personalService = new PersonalService();
         this.distribucionService = new DistribucionService();
@@ -146,6 +145,20 @@ export class AsistenciaView extends CursoInyection {
             });
         });
         this.getDate();
+    }
+
+    setLocalAmbienteSelected(selected: any) {
+        this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
+        // $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`);
+        // $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`);
+        // $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio} hasta ${this.localAmbienteSelected.localcurso.local.fecha_fin}`);
+        // $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
+        // $('[name="p_etapa"]').text($('#etapa :selected').text());
+        this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
+            this.rangoFechas = fechasRango;
+            this.drawHeaderFechas();
+            this.cargarPersonalAsistenciaPorAula();
+        });
     }
 
     setearAulas() {
@@ -756,12 +769,14 @@ export class AsistenciaView extends CursoInyection {
     }
 
     getAulas(curso_id: number) {
+        //console.log("get Aulas");
         this.asistenciaService.getAulasbyInstructor(IDUSUARIO, curso_id).done((aulas: ILocalAmbienteAsignados[]) => {
             this.localesAmbientes = aulas;
+            console.log(aulas);
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
             this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => {
-                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
+                html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero} -> local ${value.localcurso.local.nombre_local} </option>`
             });
             $('#select_aulas_asignadas').html(html);
         })

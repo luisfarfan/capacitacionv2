@@ -11,6 +11,7 @@ import {EvaluacionView} from '../evaluacion/evaluacion.view';
 import {AsistenciaService} from '../asistencia/asistencia.service';
 import * as utils from '../core/utils';
 import {AsistenciaView} from "../asistencia/asistencia.view";
+import {EvaluacionService} from '../evaluacion/evaluacion.service';
 declare var $: any;
 declare var ubigeo: IUbigeo;
 declare var BASEURL: string;
@@ -26,6 +27,8 @@ class ReportesView extends UbigeoView {
     private urlParams: string = '';
     private cursoinyection: CursoInyection = null;
     private local_selected: number = null;
+    private evaluacionService: EvaluacionService = new EvaluacionService();
+    private REPORTESCONCARGO: Array<number> = [6, 7, 9]
 
     constructor() {
         super('departamentos', 'provincias', 'distritos', 'zona', {
@@ -33,6 +36,10 @@ class ReportesView extends UbigeoView {
             ccpp: ubigeo.ccpp,
             ccdi: ubigeo.ccdi,
             zona: ubigeo.zona,
+        });
+        $('#select_reportes').selectBoxIt({
+            autoWidth: false,
+            theme: "bootstrap"
         });
         if (localStorage.getItem('reporteSelected') == null) {
             this.reporte_selected = null
@@ -69,33 +76,13 @@ class ReportesView extends UbigeoView {
                         this.setReporteSelectedSession(this.reporte_selected);
                     }
                 });
-                window.location.replace(`${BASEURL}/reporte/${this.reporte_selected.slug}/`);
+                window.location.replace(`${BASEURL}/reporte/${this.reporte_selected.id}/?curso=${$('#cursos').val()}`);
             }
         });
 
         $('#zona').change(() => {
             this.getLocales();
         });
-        if (this.reporte_selected.id == 4) {
-            this.evaluacionView = new EvaluacionView(false);
-            $('#locales').change(() => {
-                let localvalue = $('#locales').val();
-                this.local_selected = localvalue;
-                this.getAulas();
-            });
-            $('#aulas').change(() => {
-                let aulavalue = $('#aulas').val();
-                this.evaluacionView.getCriterios(this.curso);
-                this.evaluacionView.getCargosFuncionales(this.curso);
-            });
-        } else if (this.reporte_selected.id == 3) {
-            this.asistenciaView = new AsistenciaView();
-            $('#locales').change(() => {
-                let localvalue = $('#locales').val();
-                this.local_selected = localvalue;
-                this.getAulasAsistencia();
-            });
-        }
         $('#select_aulas_asignadas2').on('change', (element: JQueryEventObject) => {
             let selected = $(element.currentTarget).val();
             if (selected == '') {
@@ -118,28 +105,37 @@ class ReportesView extends UbigeoView {
     }
 
     getLocales() {
-        this.reporteService.getLocales(this.curso, this.ubigeo, this.zona).done((locales) => {
+        this.reporteService.getLocales($('#cursos').val(), this.ubigeo, this.zona).done((locales) => {
             utils.setDropdown(locales, {id: 'id_local', text: ['nombre_local']}, {
                 id_element: 'locales',
                 bootstrap_multiselect: false,
                 select2: false
             });
-        })
+            if (this.reporte_selected.id != 3 && this.reporte_selected.id != 4) {
+                $('#locales').off();
+                $('#locales').on('change', () => {
+                    this.local_selected = $('#locales').val();
+                    this.getAulas();
+                });
+            }
+        });
     }
 
     getAulas() {
-        this.distribucionService.filterLocalAmbientes(this.local_selected).done((aulas) => {
+        this.distribucionService.filterLocalAmbientes(this.local_selected, true).done((aulas) => {
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
             aulas.map((value: any, index: number) => {
                 html += `<option value="${value.id_localambiente}">${value.id_ambiente.nombre_ambiente} - N° ${value.numero}</option>`
             });
             $('#aulas').html(html);
+            $('#select_aulas_asignadas2').html(html);
         });
     }
 
     getAulasAsistencia() {
         this.asistenciaService.getAulasbyLocal(this.local_selected).done((aulas) => {
+            console.log(aulas);
             this.asistenciaView.localesAmbientes = aulas;
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
@@ -163,14 +159,15 @@ class ReportesView extends UbigeoView {
         let url = this.armarUrl();
         $('#span_curso').text($('#cursos :selected').text());
         if (this.reporte_selected.id == 3) {
-            this.asistenciaService.getPersonalAsistenciaDetalle($('#aulas').val()).done((personal) => {
-                this.evaluacionView.personal = personal;
-                this.evaluacionView.drawTbody();
-            });
+            this.asistenciaView.setLocalAmbienteSelected($('#select_aulas_asignadas2').val());
         } else if (this.reporte_selected.id == 4) {
             this.asistenciaService.getPersonalAsistenciaDetalle($('#select_aulas_asignadas').val()).done((personal) => {
                 this.evaluacionView.personal = personal;
                 this.evaluacionView.drawTbody();
+            });
+        } else if (this.reporte_selected.id == 11) {
+            this.distribucionService.filterPersonalbyAula($('#aulas').val()).done((personas) => {
+                $('#tabla_reporte').find('tbody').html(this.reportePorCodigo(11, personas));
             });
         }
         else {
@@ -189,6 +186,11 @@ class ReportesView extends UbigeoView {
                     html = this.reportePorCodigo(7, data);
                 }
                 else {
+                    if (this.reporte_selected.id == 2 || this.reporte_selected.id == 12) {
+                        $('#span_departamento').text($('#departamentos :selected').text());
+                        $('#span_provincia').text($('#provincias :selected').text());
+                        $('#span_distrito').text($('#distritos :selected').text());
+                    }
                     data.map((datareporte: any, index: number) => {
                         html += `<tr><td>${index + 1}</td>`;
                         if (typeof datareporte['ambito'] === "object") {
@@ -221,7 +223,7 @@ class ReportesView extends UbigeoView {
                 break;
             case 1:
                 data.map((datareporte, index) => {
-                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td> <td>${datareporte['ambito'][0].provincia}</td> <td> ${datareporte['ambito'][0].distrito}</td>
+                    html += `<tr><td>${index + 1}</td><td>${datareporte['ambito'][0].departamento}</td> <td>${datareporte['ambito'][0].provincia}</td> <td> ${datareporte['ambito'][0].distrito}</td>
                              <td>${datareporte['aulas_programadas']}</td><td>${datareporte['disponible']}</td><td>${datareporte['disponible_percent']}</td>
                              <td>${datareporte['usar']}</td><td>${datareporte['usar_percent']}</td></tr>`
 
@@ -229,7 +231,7 @@ class ReportesView extends UbigeoView {
                 break;
             case 2:
                 data.map((datareporte, index) => {
-                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                    html += `<tr><td>${index + 1}</td><td>${datareporte['ambito'][0].departamento}</td>
                                  <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
                                  <td>-</td>
                              <td>${datareporte['meta_campo']}</td><td>${datareporte['meta_capa']}</td>
@@ -242,7 +244,7 @@ class ReportesView extends UbigeoView {
                 break;
             case 3:
                 data.map((datareporte, index) => {
-                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                    html += `<tr><td>${index + 1}</td><td>${datareporte['ambito'][0].departamento}</td>
                                  <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
                                  <td>-</td>
                              <td>${datareporte['meta_campo']}</td><td>${datareporte['meta_capa']}</td>
@@ -256,7 +258,7 @@ class ReportesView extends UbigeoView {
                 break;
             case 5:
                 data.map((datareporte, index) => {
-                    html += `<tr><td>${index}</td><td>${datareporte['ambito'][0].departamento}</td>
+                    html += `<tr><td>${index + 1}</td><td>${datareporte['ambito'][0].departamento}</td>
                                  <td>${datareporte['ambito'][0].provincia}</td><td> ${datareporte['ambito'][0].distrito}</td>
                                  <td>-</td>
                              <td>${datareporte['meta_campo']}</td>
@@ -269,19 +271,32 @@ class ReportesView extends UbigeoView {
                 break;
             case 7:
                 data.map((datareporte, index) => {
-                    html += `<tr><td>${index}</td>
+                    html += `<tr><td>${index + 1}</td>
                                  <td>${datareporte['ubigeo'][0].ubigeo}</td>
                                  <td>${datareporte['ubigeo'][0].departamento}</td>
                                  <td>${datareporte['ubigeo'][0].provincia}</td>
                                  <td>${datareporte['ubigeo'][0].distrito}</td>
+                                 <td>-</td>
                                  <td>${datareporte['zona_ubicacion_local']}</td>
-                                 <td>-</td>
-                                 <td>-</td>
-                             <td>${datareporte['nombre_local']}</td>
-                             <td>${datareporte['nombre_via']}</td>
-                             <td>${datareporte['responsable_nombre']}</td>                             
-                             <td>${datareporte['turno_uso_local']}</td><td>-</td><td>-</td><td>-</td><td>-</td>
+                                 <td>${datareporte['manzana']}</td>
+                             <td>${datareporte['nombre_local'] == null ? '-' : datareporte['nombre_local']}</td>
+                             <td>${datareporte['nombre_via'] == null ? '-' : datareporte['nombre_via']}</td>
+                             <td>${datareporte['responsable_nombre'] == null ? '-' : datareporte['responsable_nombre']}</td>                             
+                             <td>${datareporte['turno_uso_local'] == null ? '-' : datareporte['turno_uso_local']}</td>
+                             <td>${datareporte['gestion'] == null ? '-' : datareporte['gestion']}</td>
+                             <td>${datareporte['numero_alumnos'] == null ? '-' : datareporte['numero_alumnos']}</td>
+                             <td>${datareporte['numero_docentes'] == null ? '-' : datareporte['numero_docentes']}</td>
+                             <td>${datareporte['numero_secciones'] == null ? '-' : datareporte['numero_secciones']}</td>
                              </tr>`
+                });
+                break;
+            case 11:
+                data.map((datareporte, index) => {
+                    html += `<tr><td>${index + 1}</td>
+                             <td>${datareporte.id_pea.nombre} ${datareporte.id_pea.ape_paterno} ${datareporte.id_pea.ape_materno}</td>
+                             <td>${datareporte.id_pea.dni}</td>
+                             <td>${datareporte.id_pea.id_cargofuncional.nombre_funcionario}</td>
+                             <td>-</td>`
                 });
                 break;
 
@@ -308,8 +323,12 @@ class ReportesView extends UbigeoView {
 
     armarUrl(): string {
         let params: string = '';
-        if (this.cursoinyection.curso_selected.id_curso != null) {
-            params += `${this.cursoinyection.curso_selected.id_curso}/`
+        if (this.REPORTESCONCARGO.indexOf(this.reporte_selected.id) > -1) {
+            params += `${$('#cargo_funcional').val()}/`
+        } else {
+            if (this.cursoinyection.curso_selected.id_curso != null) {
+                params += `${this.cursoinyection.curso_selected.id_curso}/`
+            }
         }
         if (this.ccdd != null && this.ccdd != "-1") {
             params += `${this.ccdd}/`
@@ -330,24 +349,46 @@ class ReportesView extends UbigeoView {
     getReportes() {
         this.reporteService.listaReportes().done((reportes) => {
             this.reportes = reportes;
-            let html = `<option value="">Seleccione</option>`;
-            this.reportes.map((reporte: IReportes) => {
-                if (this.reporte_selected !== null) {
-                    if (this.reporte_selected.id == reporte.id) {
-                        html += `<option selected value="${reporte.id}">${reporte.nombre}</option>`
-                    } else {
-                        html += `<option value="${reporte.id}">${reporte.nombre}</option>`
-                    }
-                } else {
-                    html += `<option value="${reporte.id}">${reporte.nombre}</option>`
-                }
-            });
-            $('#select_reportes').html(html);
-            $('#select_reportes').selectBoxIt({
-                autoWidth: false,
-                theme: "bootstrap"
-            });
+            let reporte_selected = $('#select_reportes').val();
+            this.reportes.filter((value: IReportes) => value.id == reporte_selected ? this.reporte_selected = value : '');
+            this.filtrosSegunReporte();
+            if (this.reporte_selected.id == 4) {
+                this.evaluacionView = new EvaluacionView(false);
+                $('#locales').change(() => {
+                    let localvalue = $('#locales').val();
+                    this.local_selected = localvalue;
+                    this.getAulas();
+                });
+                $('#aulas').change(() => {
+                    let aulavalue = $('#aulas').val();
+                    this.evaluacionView.getCriterios(this.curso);
+                    this.evaluacionView.getCargosFuncionales(this.curso);
+                });
+            } else if (this.reporte_selected.id == 3) {
+                this.asistenciaView = new AsistenciaView();
+                $('#locales').change(() => {
+                    let localvalue = $('#locales').val();
+                    this.local_selected = localvalue;
+                    this.getAulasAsistencia();
+                    // this.getAulas();
+                });
+            }
         });
+    }
+
+    filtrosSegunReporte() {
+        if (this.REPORTESCONCARGO.indexOf(this.reporte_selected.id) > -1) {
+            this.evaluacionService.cargosCurso($('#cursos').val()).done((cargos) => {
+                let html = `<option value="-1">Seleccione</option>`;
+                cargos.map((cargo: any, index: number) => {
+                    html += `<option value="${cargo.id_cargofuncional.id_cargofuncional}">${cargo.id_cargofuncional.nombre_funcionario}</option>`
+                });
+                $('#cargo_funcional').html(html);
+            });
+            $('#cargo_funcional').change(() => {
+                $('#span_cargofuncional').text($('#cargo_funcional :selected').text());
+            });
+        }
     }
 }
 new ReportesView();
