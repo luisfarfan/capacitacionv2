@@ -24,9 +24,10 @@ from seguridad.views import *
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from controlcalidad.urls import routerControlcalidad
+from seguridad.views import modulosJefeDistrital
 
 urlpatterns = [
-    url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html"), name='bienvenido'),
+    url(r'^bienvenido/$', TemplateView.as_view(template_name="home.html")),
     url(r'^samplegooglemaps/$', TemplateView.as_view(template_name="pagina.html")),
     url(r'^admin/', admin.site.urls),
     url(r'reporte/(?P<slug>.+)/$', ensure_csrf_cookie(RenderReportes.as_view())),
@@ -44,10 +45,9 @@ urlpatterns = [
     url(r'^controlcalidad/', include('controlcalidad.urls')),
     url(r'^controlcalidad/', include(routerControlcalidad.urls)),
     url('^setSession/$', setSession),
+    url('^setrolesmodulos/$', modulosJefeDistrital),
     # url('^setSessionPrueba/$', setSessionPrueba),
     url(r'^monitoreo/', include('monitoreo.urls')),
     url(r'^apirest_establecimientos/', include('apirest_establecimientos.urls')),
-    url('^cargarModulos/$', cargarModulos),
-    url('^cargarModulos2/$', cargarModulos2),
-    url('^visualizaRolCurso/(?P<rol>.+)/(?P<curso>.+)/(?P<modulo>.+)/$', visualizaRolCurso),
+
 ]
