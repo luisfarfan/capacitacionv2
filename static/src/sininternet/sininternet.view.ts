@@ -25,9 +25,14 @@ class SinInternetView {
     private sininternetService: SinInternetService = new SinInternetService();
 
     constructor() {
-        $('#cursos').on('change', () => {
+        this.getPersonas();
+        console.log("constuctor");
+        /*$('#cursos').on('change', () => {
+            alert("Cambio de Curso");
             this.getPersonas();
-        });
+
+        });*/
+
         $('#btn_save_asistencia').on('click', () => {
             utils.alert_confirm(() => {
                 this.saveNotaFinalSinInternet();
