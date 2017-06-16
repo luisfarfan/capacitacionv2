@@ -62,7 +62,7 @@ export interface IPeaNotaFinalSinInternet {
     notacap: number,
     sw_titu: number,
     id: number,
-    nota_final: any
+    nota_final: number
     pea: IPersonal
 }
 

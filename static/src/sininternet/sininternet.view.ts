@@ -196,7 +196,8 @@ class SinInternetView {
         console.log(this.personalNoInternet);
         let disabled:string = '';
         this.personalNoInternet.map((peanota: IPeaNotaFinalSinInternet, index: number) => {
-            if (peanota.nota_final == ''){
+
+            if (peanota.nota_final == null){
                 disabled = '';
             }
             else{
@@ -207,7 +208,7 @@ class SinInternetView {
                         <td>${peanota.pea.ape_paterno} ${peanota.pea.ape_materno} ${peanota.pea.nombre}</td>
                         <td>${peanota.pea.dni}</td>
                         <td>${peanota.pea.zona}</td>
-                        <td><input disabled name="nota_final" value="${peanota.nota_final}" type="number"></td>
+                        <td><input ${disabled} name="nota_final" value="${peanota.nota_final}" type="number"></td>
                       
                      </tr>`;
         });
