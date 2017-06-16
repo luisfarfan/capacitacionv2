@@ -461,7 +461,7 @@ capacita=1, seleccionado=1, sw_titu=0  = RESERVA
 
 class PeaNotaFinalSinInternet(models.Model):
     pea = models.ForeignKey(Personal, related_name='personal_notafinal')
-    nota_final = models.FloatField()
+    nota_final = models.FloatField(null=True,blank=True)
     bandaprob = models.IntegerField(null=True, blank=True)
     capacita = models.IntegerField(null=True, blank=True)
     seleccionado = models.IntegerField(null=True, blank=True)
