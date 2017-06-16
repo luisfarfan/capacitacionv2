@@ -118,7 +118,7 @@ class SinInternetView {
 
     rankear() {
         //let meta: any = $('#meta').text();
-        let meta: any = 5;
+        let meta: any = 13;
         let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
         let count = 0;
         inputsTable.map((index: number, input: Element) => {
@@ -236,7 +236,7 @@ class SinInternetView {
 
     drawEstado(value: IPeaNotaFinalSinInternet, count: number) {
         //let meta: any = $('#meta').text();
-        let meta: any = 5;
+        let meta: any = 13;
         if (value.pea.baja_estado == 1) {
             return `<span class="label label-danger">Dado de baja</span>`
         } else {
@@ -275,7 +275,7 @@ class SinInternetView {
     cerrarCurso() {
         let peanotafinal: Array<any> = [];
         //let meta: any = $('#meta').text();
-        let meta: any = 5;
+        let meta: any = 13;
         let count = 0;
         this.personalRankeoNotaFinal.map((value: IPeaNotaFinalSinInternet) => {
             count++;

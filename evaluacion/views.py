@@ -219,7 +219,7 @@ class Meta(APIView):
             print(meta.ccdd,meta.ccpp,meta.ccdi,meta.id_cargofuncional,meta.zona)
         query = MetaSeleccion_zona.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
             sum=Sum('meta'))
-        return JsonResponse({'meta': 5})
+        return JsonResponse({'meta': 13})
         #return JsonResponse({'meta': query[0]['sum']})
 
 
