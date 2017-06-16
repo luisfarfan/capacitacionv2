@@ -177,25 +177,38 @@ class SinInternetView {
     }
 
     getPersonas() {
+        console.log("getPersonas");
         let curso: number = $('#cursos').val();
         let ubigeo: any = {};
         this.setUbigeo();
+        console.log()
         this.sininternetService.personasSinInternet(curso, `${this.ambitos.ccdd}${this.ambitos.ccpp}${this.ambitos.ccdi}`).done((personalNotaFinal) => {
             this.personalNoInternet = personalNotaFinal;
             console.log(this.personalNoInternet);
+
             this.drawPersonal();
         });
     }
 
     drawPersonal() {
         let html: string = '';
+        console.log("drawPersonal");
+        console.log(this.personalNoInternet);
+        let disabled:string = '';
         this.personalNoInternet.map((peanota: IPeaNotaFinalSinInternet, index: number) => {
+            if (peanota.nota_final == null){
+                disabled = '';
+            }
+            else{
+                disabled='disabled';
+            }
             html += `<tr data-value="${peanota.pea.id_pea}">
                         <td>${index + 1}</td>
                         <td>${peanota.pea.ape_paterno} ${peanota.pea.ape_materno} ${peanota.pea.nombre}</td>
                         <td>${peanota.pea.dni}</td>
                         <td>${peanota.pea.zona}</td>
-                        <td><input name="nota_final" value="${peanota.nota_final}" type="number"></td>
+                        <td><input disabled name="nota_final" value="${peanota.nota_final}" type="number"></td>
+                      
                      </tr>`;
         });
         $('#table_personalnotafinal1').find('tbody').html(html);
