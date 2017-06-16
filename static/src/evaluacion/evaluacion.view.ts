@@ -10,7 +10,7 @@ import {
     ICursoCriterios,
     IDetalleCriterio,
     ICargoFuncionalDetalle,
-    IPeaNotaFinal, IPeanotafinal
+    IPeaNotaFinal, IPeanotafinal, IPeaNotaFinalSinInternet, IPeaNotaFinal_sin
 } from 'evaluacion.interface';
 import {
     ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalNotas,
@@ -38,6 +38,7 @@ export class EvaluacionView extends CursoInyection {
     public zonasRankeo: IZona[] = [];
     public cargosFuncionales: ICargoFuncionalDetalle[] = [];
     public personalNotaFinal: IPeaNotaFinal[] = [];
+    public personalNotaFinalSin: IPeaNotaFinalSinInternet[] = [];
     public ambitos: any = {};
     public ambitoDetalle: any = {};
     public _ubigeo: any = localStorage.getItem('ubigeo') == null ? ubigeo : JSON.parse(localStorage.getItem('ubigeo'));
@@ -68,11 +69,14 @@ export class EvaluacionView extends CursoInyection {
     getMeta() {
         let cargofuncional = $('#select_cargos_funcionales').val();
         let ambito: string = $('#select_zonas').val() == "-1" ? null : $('#select_zonas').val();
+        console.log(ambito);
         let ccdd: string = null;
         let ccpp: string = null;
         let ccdi: string = null;
         let zona: string = null;
+        $('#meta').text('5');//momentaneo hasta que asignen meta
         if (ambito.length == 2) {
+
             ccdd = ambito
         }
         if (ambito.length == 4) {
@@ -84,6 +88,14 @@ export class EvaluacionView extends CursoInyection {
             ccpp = ambito.substring(2, 4)
             ccdi = ambito.substring(4, 6)
         }
+        if (ambito.length == 5) {
+            ccdd = this._ubigeo.ccdd
+            ccpp = this._ubigeo.ccpp
+            ccdi = this._ubigeo.ccdi
+            zona = ambito
+
+        }
+
         this.setearUbigeo();
         this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
         this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
@@ -218,13 +230,17 @@ export class EvaluacionView extends CursoInyection {
     getPersonalNotaFinal() {
         let cargo: number = $('#select_cargos_funcionales').val();
         let ambito_selected = $('#select_zonas').val();
-        let _ubigeo: any = {ccdd: null, ccpp: null, ccdi: null, zona: null}
+        let _ubigeo: any = {ccdd: null, ccpp: null, ccdi: null, zona: null};
+        let sininternet: Array<String> = ['150604'];
         if (ambito_selected == "-1") {
             ambito_selected = null;
         }
+
         this.setUbigeo();
         this.setearUbigeo();
         this._ubigeo = JSON.parse(localStorage.getItem('ubigeo'));
+        console.log('getPersonal',this._ubigeo);
+        console.log('getPersonal');
         if (this._ubigeo.ccdd == null) {
             _ubigeo.ccdd = ambito_selected
             this.ubigeozona = _ubigeo.ccdd
@@ -251,16 +267,51 @@ export class EvaluacionView extends CursoInyection {
         if (ambito_selected == "-1") {
             this._ubigeo.zona = null
         }
-        this.evaluacionService.filterPersonalNotaFinal(cargo, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
+        console.log("Seleccion de Curso");
+        console.log(this.curso_id);
+        if (sininternet.indexOf(_ubigeo.ccdd+_ubigeo.ccpp+_ubigeo.ccdi)>-1)
+        {
+            this.evaluacionService.filterPersonalSinInternet(this.curso_id, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
-            this.drawPersonalNotaFinal();
+            this.drawPersonalNotaFinal_sin();
         });
+        }
+        else{
+            this.evaluacionService.filterPersonalNotaFinal(cargo, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
+                this.personalNotaFinal = personalNotaFinal;
+                this.drawPersonalNotaFinal();
+            });
+        }
+    }
+
+    drawPersonalNotaFinal_sin() {
+        let html: string = '';
+        let count: number = 0;
+        console.log(this.personalNotaFinal);
+        this.personalNotaFinal.map((pea: any, index: number) => {
+
+                count++
+                console.log(pea['ape_paterno']);
+                let estado = this.drawEstado_sin(pea, count);
+                html += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${pea['ape_paterno']} ${pea['ape_materno']} ${pea['nombre']}</td>
+                        <td>&nbsp;${pea['dni']}</td>
+                        <td>${pea['personal_notafinal'][0]['nota_final']}</td>
+                        <td>${estado}</td>
+                        
+                     </tr>`;
+
+        });
+
+        $('#table_personalnotafinal').find('tbody').html(html);
     }
 
     drawPersonalNotaFinal() {
         let html: string = '';
         let count: number = 0;
         this.personalNotaFinal.map((pea: IPeaNotaFinal, index: number) => {
+
             if (pea.personalaula_notafinal.length) {
                 count++
                 let estado = this.drawEstado(pea, count);
@@ -298,6 +349,26 @@ export class EvaluacionView extends CursoInyection {
         }
     }
 
+    drawEstado_sin(value: any, count: number) {
+        let meta: number = $('#meta').text();
+
+        if (meta >= count) {
+                if (value['personal_notafinal'][0]['nota_final'] >= this.curso_selected.nota_minima) {
+                    return `<span class="label label-success">Titular</span>`
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`
+                }
+            } else {
+                if (value['personal_notafinal'][0]['nota_final'] >= this.curso_selected.nota_minima) {
+                    return `<span class="label label-primary">Reserva</span>`;
+                } else {
+                    return `<span class="label label-danger">No seleccionado</span>`;
+                }
+        }
+
+    }
+
+
     rankear() {
         let meta: number = $('#meta').text()
         let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
@@ -332,43 +403,104 @@ export class EvaluacionView extends CursoInyection {
         let peanotafinal: IPeanotafinal[] = [];
         let meta: number = $('#meta').text()
         let count = 0;
-        this.personalNotaFinal.map((value: IPeaNotaFinal) => {
+        let sininternet: Array<String> = ['150604'];
+        if (sininternet.indexOf(this._ubigeo.ccdd+this._ubigeo.ccpp+this._ubigeo.ccdi)<0) {
+            this.personalNotaFinal.map((value: IPeaNotaFinal) => {
+                count++;
+                if (value.personalaula_notafinal.length) {
+                    value.personalaula_notafinal[0].notacap = value.personalaula_notafinal[0].nota_final
+                    if (value.id_pea.alta_estado == 1) {
+                        value.personalaula_notafinal[0].bandaprob = 3
+                    } else if (value.id_pea.baja_estado == 1) {
+                        value.personalaula_notafinal[0].bandaprob = 4
+                    } else {
+                        value.personalaula_notafinal[0].bandaprob = 1
+                    }
+                    if (meta >= count) {
+                        if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
+                            value.personalaula_notafinal[0].capacita = 1
+                            value.personalaula_notafinal[0].seleccionado = 1
+                            value.personalaula_notafinal[0].sw_titu = 1
+                        } else {
+                            value.personalaula_notafinal[0].capacita = 0
+                            value.personalaula_notafinal[0].seleccionado = 0
+                            value.personalaula_notafinal[0].sw_titu = 0
+                        }
+                    } else {
+                        if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
+                            value.personalaula_notafinal[0].capacita = 1
+                            value.personalaula_notafinal[0].seleccionado = 1
+                            value.personalaula_notafinal[0].sw_titu = 0
+                        } else {
+                            value.personalaula_notafinal[0].capacita = 0
+                            value.personalaula_notafinal[0].seleccionado = 0
+                            value.personalaula_notafinal[0].sw_titu = 0
+                        }
+                    }
+                    peanotafinal.push(value.personalaula_notafinal[0]);
+                }
+            });
+            this.evaluacionService.cerrarCursoConInternet(peanotafinal, this.curso_id, this.ubigeozona).done((response) => {
+                if (response.status) {
+                    utils.showSwalAlert('Se cerro el curso correctamente', 'Exito!', 'success');
+                } else {
+                    utils.showSwalAlert('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'Error!', 'error');
+                    // utils.showInfo('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'error');
+                }
+            });
+        }
+        else{
+            this.cerrarCursoSinInternet();
+        }
+    }
+    cerrarCursoSinInternet() {
+        console.log("Sin internet");
+        let peanotafinal: IPeanotafinal[] = [];
+        let meta: number = $('#meta').text()
+        let count = 0;
+        console.log(this.personalNotaFinal);
+        this.personalNotaFinal.map((value: any) => {
             count++;
-            if (value.personalaula_notafinal.length) {
-                value.personalaula_notafinal[0].notacap = value.personalaula_notafinal[0].nota_final
-                if (value.id_pea.alta_estado == 1) {
-                    value.personalaula_notafinal[0].bandaprob = 3
-                } else if (value.id_pea.baja_estado == 1) {
-                    value.personalaula_notafinal[0].bandaprob = 4
-                } else {
-                    value.personalaula_notafinal[0].bandaprob = 1
-                }
-                if (meta >= count) {
-                    if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
-                        value.personalaula_notafinal[0].capacita = 1
-                        value.personalaula_notafinal[0].seleccionado = 1
-                        value.personalaula_notafinal[0].sw_titu = 1
-                    } else {
-                        value.personalaula_notafinal[0].capacita = 0
-                        value.personalaula_notafinal[0].seleccionado = 0
-                        value.personalaula_notafinal[0].sw_titu = 0
-                    }
-                } else {
-                    if (value.personalaula_notafinal[0].nota_final >= this.curso_selected.nota_minima) {
-                        value.personalaula_notafinal[0].capacita = 1
-                        value.personalaula_notafinal[0].seleccionado = 1
-                        value.personalaula_notafinal[0].sw_titu = 0
-                    } else {
-                        value.personalaula_notafinal[0].capacita = 0
-                        value.personalaula_notafinal[0].seleccionado = 0
-                        value.personalaula_notafinal[0].sw_titu = 0
-                    }
-                }
-                peanotafinal.push(value.personalaula_notafinal[0]);
+            value['personal_notafinal'][0]['notacap'] =value['personal_notafinal'][0]['nota_final']
+            console.log(value['personal_notafinal'][0]['notacap'])
+            if (value['alta_estado'] == 1) {
+                        value['personal_notafinal'][0]['bandaprob'] = 3
+            } else if (value['id_pea.baja_estado'] == 1) {
+                        value['personal_notafinal'][0]['bandaprob'] = 4
+            } else {
+                        value['personal_notafinal'][0]['bandaprob'] = 1
             }
+            console.log('value[personal_notafinal][0][bandaprob]');
+            console.log(value['personal_notafinal'][0]['bandaprob']);
+
+            if (meta >= count) {
+                console.log(value['personal_notafinal'][0]['nota_final'])
+                    if (value['personal_notafinal'][0]['nota_final'] >= this.curso_selected.nota_minima) {
+                        value['personal_notafinal'][0]['capacita'] = 1
+                        value['personal_notafinal'][0]['seleccionado'] = 1
+                        value['personal_notafinal'][0]['sw_titu'] = 1
+                    } else {
+                        value['personal_notafinal'][0]['capacita'] = 0
+                        value['personal_notafinal'][0]['seleccionado'] = 0
+                        value['personal_notafinal'][0]['sw_titu']
+                    }
+                } else {
+                    if (value['personal_notafinal'][0]['nota_final'] >= this.curso_selected.nota_minima) {
+                        value['personal_notafinal'][0]['capacita'] = 1
+                        value['personal_notafinal'][0]['seleccionado'] = 1
+                        value['personal_notafinal'][0]['sw_titu'] = 0
+                    } else {
+                        value['personal_notafinal'][0]['capacita'] = 0
+                        value['personal_notafinal'][0]['seleccionado'] = 0
+                        value['personal_notafinal'][0]['sw_titu'] = 0
+                    }
+                }
+                peanotafinal.push(value['personal_notafinal'][0]);
+
         });
-        this.evaluacionService.cerrarCursoConInternet(peanotafinal, this.curso_id, this.ubigeozona).done((response) => {
-            if (response.status) {
+        console.log(peanotafinal)
+        this.evaluacionService.cerrarCursoSinInternet(peanotafinal, this.curso_id, this.ubigeozona).done((response) => {
+            if (response) {
                 utils.showSwalAlert('Se cerro el curso correctamente', 'Exito!', 'success');
             } else {
                 utils.showSwalAlert('Aun hay personas en esta zona que no tienen notas, no se puede cerrar curso', 'Error!', 'error');

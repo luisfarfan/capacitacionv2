@@ -38,6 +38,13 @@ export interface IPeaNotaFinal {
     id_peaaula: number,
     personalaula_notafinal: IPeanotafinal[]
 }
+export interface IPeaNotaFinal_sin {
+    id_localambiente: number,
+    id_pea: number,
+    id_peaaula: number,
+    personalaula_notafinal: IPeaNotaFinalSinInternet_new[]
+}
+
 export interface IPeanotafinal {
     bandaprob: number,
     capacita: number,
@@ -57,4 +64,14 @@ export interface IPeaNotaFinalSinInternet {
     id: number,
     nota_final: number
     pea: IPersonal
+}
+
+export interface IPeaNotaFinalSinInternet_new {
+    bandaprob: number,
+    capacita: number,
+    seleccionado: number,
+    notacap: number,
+    sw_titu: number,
+    id: number,
+    nota_final: number
 }

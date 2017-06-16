@@ -2,7 +2,7 @@ from .serializer import *
 from rest_framework import generics, viewsets
 from django.http import JsonResponse
 from .models import Ficha177
-from reportes.models import MetaSeleccion
+from reportes.models import MetaSeleccion,MetaSeleccion_zona
 import json
 from django.db.models import Count, Sum
 from rest_framework.views import APIView
@@ -63,14 +63,17 @@ class PersonalAulaDetalleNotaFinalViewSet(generics.ListAPIView):
             filter['id_pea__zona'] = self.kwargs['zona']
 
         print(filter)
+        for person in PersonalAula.objects.all():
+            print( person.id_pea)
         return PersonalAula.objects.filter(**filter).order_by(
             '-personalaula_notafinal__nota_final')
 
 
 class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
-    serializer_class = PeaNotaFinalSinInternetSerializer
+    serializer_class = PersonalSinInternetSerializer
 
     def get_queryset(self):
+        print('get_queryset PersonalAulaDetalleNotaFinalSinInternetViewSet')
         curso = self.kwargs['curso']
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
         filter = {}
@@ -86,9 +89,11 @@ class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
 
         if 'zona' in self.kwargs:
             filter['zona'] = self.kwargs['zona']
-
+        for person in Personal.objects.filter(**filter):
+            print(person.ape_paterno)
+        #return Personal.objects.filter(**filter)
         return Personal.objects.filter(**filter).order_by(
-            '-personalaula_notafinal__nota_final')
+           '-personal_notafinal__nota_final')
 
 
 class PersonalNotaFinalSinInternetViewSet(generics.ListAPIView):
@@ -207,11 +212,15 @@ class Meta(APIView):
             annotate = ('ccdd', 'ccpp', 'ccdi')
         if zona is not None:
             filter['zona'] = zona
-
+        print(filter)
         print(annotate)
-        query = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
-            sum=Sum('meta_capa'))
-        return JsonResponse({'meta': query[0]['sum']})
+        print( MetaSeleccion_zona.objects.using('consecucion').all())
+        for meta in MetaSeleccion_zona.objects.using('consecucion').all():
+            print(meta.ccdd,meta.ccpp,meta.ccdi,meta.id_cargofuncional,meta.zona)
+        query = MetaSeleccion_zona.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
+            sum=Sum('meta'))
+        return JsonResponse({'meta': 5})
+        #return JsonResponse({'meta': query[0]['sum']})
 
 
 class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):
@@ -420,11 +429,12 @@ def sendFicha177Empadronador(id_per):
     return True
 
 
-def cerrarCursoSinInternet(request):
+def cerrarCursoSinInternet(request, curso, ubigeo):
     postdata = request.POST['data']
     dataDict = json.loads(postdata)
+
     for data in dataDict:
-        peanota = PeaNotaFinalSinInternet.objects.get(pea_id=data['pea_id'])
+        peanota = PeaNotaFinalSinInternet.objects.get(pea_id=data['pea']['id_pea'])
         peanota.bandaprob = data['bandaprob']
         peanota.capacita = data['capacita']
         peanota.seleccionado = data['seleccionado']

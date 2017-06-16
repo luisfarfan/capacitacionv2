@@ -19,6 +19,7 @@ export class EvaluacionService {
     private url_meta: string = `${BASEURL}/evaluacion/meta/`;
     private url_personalaula_sininternet: string = `${BASEURL}/evaluacion/personalaula_sininternet/`;
     private url_cerrarCursoConInternet: string = `${BASEURL}/evaluacion/cerrarCursoConInternet/`;
+    private url_cerrarCursoSinInternet: string = `${BASEURL}/evaluacion/cerrarCursoSinInternet/`;
 
 
     getMeta(cargofuncional: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
@@ -140,6 +141,14 @@ export class EvaluacionService {
     cerrarCursoConInternet(object: Array<Object>, curso: number, ubigeozona: string) {
         return $.ajax({
             url: `${this.url_cerrarCursoConInternet}${curso}/${ubigeozona}/`,
+            type: 'POST',
+            data: {data: JSON.stringify(object)}
+        });
+    }
+
+    cerrarCursoSinInternet(object: Array<Object>, curso: number, ubigeozona: string) {
+        return $.ajax({
+            url: `${this.url_cerrarCursoSinInternet}${curso}/${ubigeozona}/`,
             type: 'POST',
             data: {data: JSON.stringify(object)}
         });

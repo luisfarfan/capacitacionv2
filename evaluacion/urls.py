@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'saveNotasFinal/$', saveNotasFinal),
     url(r'cerrarCursoConInternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$',
         cerrarCursoConInternet),
-    url(r'cerrarCursoSinInternet/$', cerrarCursoSinInternet),
+    url(r'cerrarCursoSinInternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$', cerrarCursoSinInternet),
     url(r'saveNotaFinalSinInternet/$', saveNotaFinalSinInternet),
     url(r'cerrarCursoEmpadronador/$', cerrarCursoEmpadronador),
     url(r'criteriosdetalle_curso/(?P<curso>[0-9]+)/$',
