@@ -196,7 +196,7 @@ class SinInternetView {
         console.log(this.personalNoInternet);
         let disabled:string = '';
         this.personalNoInternet.map((peanota: IPeaNotaFinalSinInternet, index: number) => {
-            if (peanota.nota_final == null){
+            if (peanota.nota_final == ''){
                 disabled = '';
             }
             else{
