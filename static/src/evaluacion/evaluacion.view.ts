@@ -117,7 +117,7 @@ export class EvaluacionView extends CursoInyection {
 
         else {
             this.evaluacionService.getMeta(cargofuncional, this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi).done((response) => {
-                if (response) {
+                if (response.meta != null) {
                     $('#meta').text(response.meta)
                 } else {
                     $('#meta').text('No existe meta')

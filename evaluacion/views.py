@@ -200,6 +200,7 @@ def ambitosRankeo(ccdd=None, ccpp=None, ccdi=None):
 class Meta(APIView):
     def get(self, request, cargofuncional, ccdd=None, ccpp=None, ccdi=None, zona=None):
         filter = {'id_cargofuncional': cargofuncional}
+        meta = None
         annotate = ()
         if ccdd is not None:
             filter['ccdd'] = ccdd
@@ -212,9 +213,11 @@ class Meta(APIView):
             annotate = ('ccdd', 'ccpp', 'ccdi')
         if zona is not None:
             filter['zona'] = zona
-        print(filter)
-        print(annotate)
-        meta = MetaSeleccion.objects.using('consecucion').filter(**filter)[0].meta_campo
+        query = MetaSeleccion.objects.using('consecucion').filter(**filter)
+        print(len(query))
+        if len(query) > 0:
+            meta = query[0].meta_campo
+
         #query = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
         #    sum=Sum('meta'))
 
