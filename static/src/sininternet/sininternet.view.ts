@@ -40,7 +40,6 @@ class SinInternetView {
 
         });
         $('#select_cargos_funcionales').on('change', () => {
-            $('#meta').text('13');
             this.getMeta();
         });
         $('#select_zonas').on('change', () => {
@@ -58,7 +57,6 @@ class SinInternetView {
             this.getCargosFuncionales(curso_id);
         });
         $('#select_cargos_funcionales').on('change', () => {
-            $('#meta').text('13');
             this.getMeta();
         });
         $('#select_zonas').on('change', () => {
@@ -119,8 +117,7 @@ class SinInternetView {
     }
 
     rankear() {
-        //let meta: any = $('#meta').text();
-        let meta: any = 13;
+        let meta: any = $('#meta').text();
         let inputsTable: any = $('#table_personalnotafinal').find('input[type="number"]');
         let count = 0;
         inputsTable.map((index: number, input: Element) => {
@@ -276,8 +273,7 @@ class SinInternetView {
 
     cerrarCurso() {
         let peanotafinal: Array<any> = [];
-        //let meta: any = $('#meta').text();
-        let meta: any = 13;
+        let meta: any = $('#meta').text();
         let count = 0;
         this.personalRankeoNotaFinal.map((value: IPeaNotaFinalSinInternet) => {
             count++;

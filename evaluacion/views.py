@@ -214,14 +214,13 @@ class Meta(APIView):
             filter['zona'] = zona
         print(filter)
         print(annotate)
-        print( MetaSeleccion_zona.objects.using('consecucion').all())
-        for meta in MetaSeleccion_zona.objects.using('consecucion').all():
-            print(meta.ccdd,meta.ccpp,meta.ccdi,meta.id_cargofuncional,meta.zona)
-        query = MetaSeleccion_zona.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
-            sum=Sum('meta'))
-        return JsonResponse({'meta': 13})
-        #return JsonResponse({'meta': query[0]['sum']})
+        meta = MetaSeleccion.objects.using('consecucion').filter(**filter)[0].meta_campo
+        #query = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
+        #    sum=Sum('meta'))
 
+        #print("meta a contratar --->{0}".format(query[0]['sum']))
+        #return JsonResponse({'meta': query[0]['sum']})
+        return JsonResponse({'meta':meta})
 
 class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):
     queryset = PeaNotaFinalSinInternet.objects.all()

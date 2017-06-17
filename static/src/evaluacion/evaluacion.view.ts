@@ -74,7 +74,6 @@ export class EvaluacionView extends CursoInyection {
         let ccpp: string = null;
         let ccdi: string = null;
         let zona: string = null;
-        $('#meta').text('13');//momentaneo hasta que asignen meta
         if (ambito != null) {
             if (ambito.length == 2) {
 
@@ -99,20 +98,35 @@ export class EvaluacionView extends CursoInyection {
         }
 
         this.setearUbigeo();
+
         this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
         this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
         this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
-        //this.evaluacionService.getMeta(cargofuncional, ccdd, ccpp, ccdi, zona).done((response) => {
-        //    if (response) {
-        //       $('#meta').text(response.meta)
-        //    } else {
-        //        $('#meta').text('No existe meta')
-        //    }
-        //}).fail(() => {
-        //    $('#meta').text('')
-        //});
-    }
+        if (ambito != null) {
+            this.evaluacionService.getMeta(cargofuncional, ccdd, ccpp, ccdi, zona).done((response) => {
+                if (response) {
+                    $('#meta').text(response.meta)
+                } else {
+                    $('#meta').text('No existe meta')
+                }
+            }).fail(() => {
+                $('#meta').text('')
+            });
 
+        }
+
+        else {
+            this.evaluacionService.getMeta(cargofuncional, this._ubigeo.ccdd, this._ubigeo.ccpp, this._ubigeo.ccdi).done((response) => {
+                if (response) {
+                    $('#meta').text(response.meta)
+                } else {
+                    $('#meta').text('No existe meta')
+                }
+            }).fail(() => {
+                $('#meta').text('')
+            });
+        }
+    }
     setearAulas() {
         $('#p_curso_actual').text($('#cursos :selected').text());
         $('[name="p_etapa"]').text($('#etapa :selected').text());
@@ -178,7 +192,6 @@ export class EvaluacionView extends CursoInyection {
 
             $('#select_cargos_funcionales').on('change', () => {
                 this.getMeta();
-                $('#meta').text('13');
             });
             $('#select_zonas').on('change', () => {
                 this.getMeta();
