@@ -238,7 +238,7 @@ class PersonalNotasSinInternet(generics.ListAPIView):
         ubigeo = self.kwargs['ubigeo']
         cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
 
-        return PeaNotaFinalSinInternet.objects.filter(pea__id_cargofuncional__in=cargos, pea__ubigeo=ubigeo).order_by('-nota_final')
+        return PeaNotaFinalSinInternet.objects.filter(pea__id_cargofuncional__in=cargos, pea__ubigeo=ubigeo).order_by('pea__ape_paterno')
 
 
 def validarCerrarCurso(curso, ubigeo, zona=None):
