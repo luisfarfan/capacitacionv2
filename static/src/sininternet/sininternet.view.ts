@@ -40,6 +40,7 @@ class SinInternetView {
 
         });
         $('#select_cargos_funcionales').on('change', () => {
+            $('#meta').text('13');
             this.getMeta();
         });
         $('#select_zonas').on('change', () => {
@@ -57,6 +58,7 @@ class SinInternetView {
             this.getCargosFuncionales(curso_id);
         });
         $('#select_cargos_funcionales').on('change', () => {
+            $('#meta').text('13');
             this.getMeta();
         });
         $('#select_zonas').on('change', () => {

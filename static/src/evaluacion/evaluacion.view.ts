@@ -74,41 +74,43 @@ export class EvaluacionView extends CursoInyection {
         let ccpp: string = null;
         let ccdi: string = null;
         let zona: string = null;
-        $('#meta').text('5');//momentaneo hasta que asignen meta
-        if (ambito.length == 2) {
+        $('#meta').text('13');//momentaneo hasta que asignen meta
+        if (ambito != null) {
+            if (ambito.length == 2) {
 
-            ccdd = ambito
-        }
-        if (ambito.length == 4) {
-            ccdd = ambito.substring(0, 2)
-            ccpp = ambito.substring(2, 4)
-        }
-        if (ambito.length == 6) {
-            ccdd = ambito.substring(0, 2)
-            ccpp = ambito.substring(2, 4)
-            ccdi = ambito.substring(4, 6)
-        }
-        if (ambito.length == 5) {
-            ccdd = this._ubigeo.ccdd
-            ccpp = this._ubigeo.ccpp
-            ccdi = this._ubigeo.ccdi
-            zona = ambito
+                ccdd = ambito
+            }
+            if (ambito.length == 4) {
+                ccdd = ambito.substring(0, 2)
+                ccpp = ambito.substring(2, 4)
+            }
+            if (ambito.length == 6) {
+                ccdd = ambito.substring(0, 2)
+                ccpp = ambito.substring(2, 4)
+                ccdi = ambito.substring(4, 6)
+            }
+            if (ambito.length == 5) {
+                ccdd = this._ubigeo.ccdd
+                ccpp = this._ubigeo.ccpp
+                ccdi = this._ubigeo.ccdi
+                zona = ambito
 
+            }
         }
 
         this.setearUbigeo();
         this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
         this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
         this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
-        this.evaluacionService.getMeta(cargofuncional, ccdd, ccpp, ccdi, zona).done((response) => {
-            if (response) {
-                $('#meta').text(response.meta)
-            } else {
-                $('#meta').text('No existe meta')
-            }
-        }).fail(() => {
-            $('#meta').text('')
-        });
+        //this.evaluacionService.getMeta(cargofuncional, ccdd, ccpp, ccdi, zona).done((response) => {
+        //    if (response) {
+        //       $('#meta').text(response.meta)
+        //    } else {
+        //        $('#meta').text('No existe meta')
+        //    }
+        //}).fail(() => {
+        //    $('#meta').text('')
+        //});
     }
 
     setearAulas() {
@@ -176,6 +178,7 @@ export class EvaluacionView extends CursoInyection {
 
             $('#select_cargos_funcionales').on('change', () => {
                 this.getMeta();
+                $('#meta').text('13');
             });
             $('#select_zonas').on('change', () => {
                 this.getMeta();
