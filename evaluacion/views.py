@@ -222,8 +222,7 @@ class Meta(APIView):
         #    sum=Sum('meta'))
 
         #print("meta a contratar --->{0}".format(query[0]['sum']))
-        #return JsonResponse({'meta': query[0]['sum']})
-        return JsonResponse({'meta':meta})
+        return JsonResponse({'meta': meta})
 
 class PersonalNotasSinInternetViewSet(viewsets.ModelViewSet):
     queryset = PeaNotaFinalSinInternet.objects.all()

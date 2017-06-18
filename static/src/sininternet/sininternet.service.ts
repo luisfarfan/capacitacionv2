@@ -13,6 +13,7 @@ export class SinInternetService {
 
 
     personasSinInternet(curso: number, ubigeo: string): JQueryXHR {
+        console.log(`${this.url_personalnotas_sininternet}${curso}/${ubigeo}/`);
         return $.ajax({
             url: `${this.url_personalnotas_sininternet}${curso}/${ubigeo}/`
         });

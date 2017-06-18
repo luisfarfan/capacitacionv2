@@ -157,6 +157,7 @@ class ReportesView extends UbigeoView {
 
     consultarReporte() {
         let url = this.armarUrl();
+        console.log(url)
         $('#span_curso').text($('#cursos :selected').text());
         if (this.reporte_selected.id == 3) {
             this.asistenciaView.setLocalAmbienteSelected($('#select_aulas_asignadas2').val());

@@ -101,7 +101,7 @@ export class EvaluacionService {
             url += `${ccdi}/`
         }
         if (zona != null) {
-            url += `${zona}/`
+            url += `${zona}`
         }
         return $.ajax({
             url: url

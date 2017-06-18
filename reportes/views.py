@@ -432,3 +432,48 @@ def calcPocentaje(partial, total):
 
     porcentaje = (partial * 100) / total
     return float("{0:.2f}".format(porcentaje) or 0)
+
+
+class postulantesSeleccionadosporCurso_new(APIView):
+    def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
+        filter = {}
+        filter['id_cargofuncional'] = curso
+        filter3 = {}
+        filter3['id_cargofuncional'] = curso
+        if ccdd is None:
+            annotate = ('ubigeo',)
+        if ccdd is not None:
+            filter['ccdd'] = ccdd
+            filter3['ccdd_i'] = ccdd
+            annotate = ('ubigeo',)
+        if ccpp is not None:
+            filter['ccpp'] = ccpp
+            filter3['ccpp_i'] = ccdd
+            annotate = ('ubigeo',)
+        if ccdi is not None:
+            filter['ccdi'] = ccdi
+            filter3['ccdi_i'] = ccdd
+            annotate = ('ubigeo',)
+        if zona is not None:
+            filter['zona'] = zona
+
+        metas = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(dcount=Count(*annotate))
+        response = []
+        #meta = MetaSeleccion.objects.using('consecucion').filter(**filter)[0].meta_campo
+        #ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
+
+        #seleccionados = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo']).count()
+        Seleccion = PeaNotaFinalSinInternet.objects.filter(sw_titu = 1).values_list('pea_id', flat=True)
+        Per_select = Personal.objects.filter(id_pea__in=Seleccion).values()
+        print(Per_select)
+
+
+        #reserva = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo'],
+        #                                          contingencia=1).count()
+        #response.append({'meta_campo': meta_campo['sum'], 'meta_capa': meta_capa['sum'], 'inscritos': inscritos,
+        #                         'inscritos_percent': calcPocentaje(inscritos, meta_capa['sum']),
+        #                         'seleccionados_percent': calcPocentaje(seleccionados, meta_capa['sum']),
+        #                         'reserva_percent': calcPocentaje(reserva, meta_capa['sum']),
+        #                         'seleccionados': seleccionados, 'reserva': reserva, 'ambito': ambito})
+
+        return JsonResponse({'defaul':'default'}, safe=False)

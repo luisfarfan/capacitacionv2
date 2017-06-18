@@ -98,7 +98,9 @@ export class EvaluacionView extends CursoInyection {
         }
 
         this.setearUbigeo();
-
+        console.log(this._ubigeo.ccdd)
+        console.log(this._ubigeo.ccpp)
+        console.log(this._ubigeo.ccdi)
         this._ubigeo.ccdd == '' ? this._ubigeo.ccdd = null : '';
         this._ubigeo.ccpp == '' ? this._ubigeo.ccpp = null : '';
         this._ubigeo.ccdi == '' ? this._ubigeo.ccdi = null : '';
@@ -249,7 +251,8 @@ export class EvaluacionView extends CursoInyection {
         let _ubigeo: any = {ccdd: null, ccpp: null, ccdi: null, zona: null};
         let sininternet: Array<String> = ['150604'];
         if (ambito_selected == "-1") {
-            ambito_selected = null;
+            //ambito_selected = null;
+            ambito_selected ='';
         }
 
         this.setUbigeo();

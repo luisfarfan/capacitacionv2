@@ -58,6 +58,18 @@ urlpatterns = [
         r'postulantesSeleccionadosporCurso/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         postulantesSeleccionadosporCurso.as_view()),
 
+    url(r'postulantesSeleccionadosporCursodd/(?P<curso>[0-9]+)/$', postulantesSeleccionadosporCurso_new.as_view()),
+    url(r'postulantesSeleccionadosporCursodd/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+        postulantesSeleccionadosporCurso_new.as_view()),
+    url(r'postulantesSeleccionadosporCursodd/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+        postulantesSeleccionadosporCurso_new.as_view()),
+    url(r'postulantesSeleccionadosporCursodd/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+        postulantesSeleccionadosporCurso_new.as_view()),
+    url(
+        r'postulantesSeleccionadosporCursodd/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        postulantesSeleccionadosporCurso_new.as_view()),
+
+
     url(r'coberturaPersonal/(?P<cargo>[0-9]+)/$', coberturaPersonal.as_view()),
     url(r'coberturaPersonal/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/$',
         coberturaPersonal.as_view()),
