@@ -9,6 +9,7 @@ from rest_framework import generics, viewsets
 from django.utils.text import slugify
 from evaluacion.serializer import PeaNotaFinalSinInternetSerializer
 from reportes.models import MetaSeleccion, Inscritos
+import json
 
 
 def getReportes(request):
@@ -465,7 +466,8 @@ class postulantesSeleccionadosporCurso_new(APIView):
         #seleccionados = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo']).count()
         Seleccion = PeaNotaFinalSinInternet.objects.filter(sw_titu = 1).values_list('pea_id', flat=True)
         Per_select = Personal.objects.filter(id_pea__in=Seleccion).values()
-        print(Per_select)
+
+
 
 
         #reserva = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo'],
@@ -476,4 +478,4 @@ class postulantesSeleccionadosporCurso_new(APIView):
         #                         'reserva_percent': calcPocentaje(reserva, meta_capa['sum']),
         #                         'seleccionados': seleccionados, 'reserva': reserva, 'ambito': ambito})
 
-        return JsonResponse({'defaul':'default'}, safe=False)
+        return JsonResponse(list(Per_select), safe=False)
