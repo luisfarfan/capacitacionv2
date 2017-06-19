@@ -437,36 +437,35 @@ def calcPocentaje(partial, total):
 
 class postulantesSeleccionadosporCurso_new(APIView):
     def get(self, request, curso, ccdd=None, ccpp=None, ccdi=None, zona=None):
+        print(curso)
         filter = {}
-        filter['id_cargofuncional'] = curso
         filter3 = {}
+        ubigeo = ''
         filter3['id_cargofuncional'] = curso
         if ccdd is None:
             annotate = ('ubigeo',)
         if ccdd is not None:
-            filter['ccdd'] = ccdd
-            filter3['ccdd_i'] = ccdd
+            ubigeo = ubigeo+ccdd
             annotate = ('ubigeo',)
         if ccpp is not None:
-            filter['ccpp'] = ccpp
-            filter3['ccpp_i'] = ccdd
+            ubigeo=ubigeo+ccpp
             annotate = ('ubigeo',)
         if ccdi is not None:
-            filter['ccdi'] = ccdi
-            filter3['ccdi_i'] = ccdd
+            ubigeo=ubigeo+ccdi
             annotate = ('ubigeo',)
         if zona is not None:
             filter['zona'] = zona
+        filter['ubigeo']=ubigeo
 
-        metas = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(dcount=Count(*annotate))
         response = []
-        #meta = MetaSeleccion.objects.using('consecucion').filter(**filter)[0].meta_campo
-        #ambito = list(Ubigeo.objects.filter(ubigeo=meta['ubigeo']).values())
-
-        #seleccionados = Personal.objects.filter(id_cargofuncional=curso, ubigeo_id=meta['ubigeo']).count()
         Seleccion = PeaNotaFinalSinInternet.objects.filter(sw_titu = 1).values_list('pea_id', flat=True)
-        Per_select = Personal.objects.filter(id_pea__in=Seleccion).values()
-
+        cargo = CargoFuncional.objects.filter(cursocargofuncional__id_curso=curso).values('id_cargofuncional')
+        local = Local.objects.filter(**filter,localcurso__curso_id=curso).values('nombre_local', 'nombre_via', 'n_direccion','curso__fecha_inicio','curso__fecha_fin')
+        print(local)
+        data=[None,None]
+        Per_select = Personal.objects.filter(id_pea__in=Seleccion, id_cargofuncional_id__in=cargo, **filter).values('ape_paterno','ape_materno','nombre','dni','id_cargofuncional__nombre_funcionario','zona')
+        data[0]=(list(Per_select))
+        data[1]=(list(local))
 
 
 
@@ -478,4 +477,4 @@ class postulantesSeleccionadosporCurso_new(APIView):
         #                         'reserva_percent': calcPocentaje(reserva, meta_capa['sum']),
         #                         'seleccionados': seleccionados, 'reserva': reserva, 'ambito': ambito})
 
-        return JsonResponse(list(Per_select), safe=False)
+        return JsonResponse(data, safe=False)

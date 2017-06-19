@@ -186,6 +186,14 @@ class ReportesView extends UbigeoView {
                 } else if (this.reporte_selected.codigo == "7") {
                     html = this.reportePorCodigo(7, data);
                 }
+                 else if (this.reporte_selected.codigo == "12") {
+                    console.log(data[1]);
+                    html = this.reportePorCodigo(12, data);
+                    $('#span_nombre_local').text(data[1][0]['nombre_local']);
+                    $('#span_direccion').text(data[1][0]['nombre_via']+' '+data[1][0]['n_direccion']);
+                    $('#span_fecha_inicio').text(data[1][0]['curso__fecha_inicio']+' - '+data[1][0]['curso__fecha_fin']);
+                }
+
                 else {
                     if (this.reporte_selected.id == 2 || this.reporte_selected.id == 12) {
                         $('#span_departamento').text($('#departamentos :selected').text());
@@ -294,10 +302,21 @@ class ReportesView extends UbigeoView {
             case 11:
                 data.map((datareporte, index) => {
                     html += `<tr><td>${index + 1}</td>
-                             <td>${datareporte.id_pea.nombre} ${datareporte.id_pea.ape_paterno} ${datareporte.id_pea.ape_materno}</td>
-                             <td>${datareporte.id_pea.dni}</td>
-                             <td>${datareporte.id_pea.id_cargofuncional.nombre_funcionario}</td>
+                             <td>${datareporte['nombre']} ${datareporte['ape_paterno']} ${datareporte['ape_materno']}</td>
+                             <td>${datareporte['dni']}</td>
+                             <td>${datareporte['id_cargofuncional_id']}</td>
                              <td>-</td>`
+                });
+                break;
+
+            case 12:
+                data[0].map((datareporte:any, index:any) => {
+                    html += `<tr><td>${index + 1}</td>
+                             <td>${datareporte['nombre']} ${datareporte['ape_paterno']} ${datareporte['ape_materno']}</td>
+                             <td>${datareporte['dni']}</td>
+                             <td>${datareporte['id_cargofuncional__nombre_funcionario']}</td>
+                             <td>${datareporte['zona']}</td>
+                            <td>-</td>`
                 });
                 break;
 
