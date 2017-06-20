@@ -258,17 +258,26 @@ class SinInternetView {
     saveNotaFinalSinInternet() {
         let inputsNotafinal: any = $('input[name="nota_final"]')
         let request: Array<Object> = [];
+        let error_nota=false;
         inputsNotafinal.each((index: number, element: Element) => {
             let trpeaaula: number;
-            if ($(element).val() != '') {
+            if ($(element).val() != '' && $(element).val()<=20 && $(element).val()>=0) {
                 trpeaaula = $(element).parent().parent().data('value')
                 request.push({id_pea: trpeaaula, nota_final: $(element).val()})
             }
+            else{
+                error_nota=true
+            }
         });
+        if (error_nota){
+            utils.showSwalAlert('Revizar notas ingresadas, Rango [0-20]', 'Error!', 'error');
+        }
+        else{
         this.sininternetService.saveNotasFinalSinInternet(request).done((response) => {
             this.getPersonas();
             utils.showSwalAlert('La nota final se guardo correctamente', 'Exito', 'success');
         });
+        }
     }
 
     cerrarCurso() {

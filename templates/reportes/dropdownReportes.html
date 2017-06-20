@@ -20,9 +20,10 @@
                 <option value="">Seleccione</option>
                 {% for reporte in reportes %}
                     <option {% if selected == reporte.id %}selected {% endif %}
-                            value="{{ reporte.id }}">{{ reporte.nombre }}</option>
+                            value="{{ reporte.id }}">R{{ reporte.order }} - {{ reporte.nombre }}</option>
                 {% endfor %}
             </select>
         </div>
+
     </div>
 </div>

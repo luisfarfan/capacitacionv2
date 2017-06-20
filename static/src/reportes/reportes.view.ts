@@ -28,7 +28,8 @@ class ReportesView extends UbigeoView {
     private cursoinyection: CursoInyection = null;
     private local_selected: number = null;
     private evaluacionService: EvaluacionService = new EvaluacionService();
-    private REPORTESCONCARGO: Array<number> = [6, 7, 9]
+    private REPORTESCONCARGO: Array<number> = [6, 7, 9];
+
 
     constructor() {
         super('departamentos', 'provincias', 'distritos', 'zona', {
@@ -88,7 +89,7 @@ class ReportesView extends UbigeoView {
             if (selected == '') {
                 this.asistenciaView.localAmbienteSelected = null;
             } else {
-                console.log(this.asistenciaView.localesAmbientes)
+
                 this.asistenciaView.localesAmbientes.map((value: any, index: number) => value.id_localambiente == selected ? this.asistenciaView.localAmbienteSelected = value : '');
                 $('#span_nombre_local').text(`${this.asistenciaView.localAmbienteSelected.localcurso.local.nombre_local}`)
                 $('#span_direccion').text(`${this.asistenciaView.localAmbienteSelected.localcurso.local.nombre_via} - ${this.asistenciaView.localAmbienteSelected.localcurso.local.n_direccion}`)
@@ -135,7 +136,7 @@ class ReportesView extends UbigeoView {
 
     getAulasAsistencia() {
         this.asistenciaService.getAulasbyLocal(this.local_selected).done((aulas) => {
-            console.log(aulas);
+
             this.asistenciaView.localesAmbientes = aulas;
             let html: string = '';
             html += `<option value="">Seleccione Aula</option>`
@@ -187,11 +188,8 @@ class ReportesView extends UbigeoView {
                     html = this.reportePorCodigo(7, data);
                 }
                  else if (this.reporte_selected.codigo == "12") {
-                    console.log(data[1]);
                     html = this.reportePorCodigo(12, data);
-                    $('#span_nombre_local').text(data[1][0]['nombre_local']);
-                    $('#span_direccion').text(data[1][0]['nombre_via']+' '+data[1][0]['n_direccion']);
-                    $('#span_fecha_inicio').text(data[1][0]['curso__fecha_inicio']+' - '+data[1][0]['curso__fecha_fin']);
+
                 }
 
                 else {
@@ -219,6 +217,7 @@ class ReportesView extends UbigeoView {
                         html += `</tr>`
                     })
                 }
+
                 $('#tabla_reporte').find('tbody').html(html);
             })
         }

@@ -14,6 +14,11 @@ import json
 
 def getReportes(request):
     query = list(Reportes.objects.all().values().order_by('order'))
+    x=0
+    for i in query:
+        i['nombre'] = 'R'+str(i['order'])+'-'+i['nombre']
+        x+=1
+    print(query)
     return JsonResponse(query, safe=False)
 
 

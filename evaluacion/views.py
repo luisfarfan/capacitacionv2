@@ -213,10 +213,16 @@ class Meta(APIView):
             annotate = ('ccdd', 'ccpp', 'ccdi')
         if zona is not None:
             filter['zona'] = zona
+
         query = MetaSeleccion.objects.using('consecucion').filter(**filter)
-        print(len(query))
+        print(query)
+
+        meta = 0
         if len(query) > 0:
-            meta = query[0].meta_campo
+            x=0
+            for i in query:
+                meta = meta + query[x].meta_campo
+                x+=1
 
         #query = MetaSeleccion.objects.using('consecucion').filter(**filter).values(*annotate).annotate(
         #    sum=Sum('meta'))
