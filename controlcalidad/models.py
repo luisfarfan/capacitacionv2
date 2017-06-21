@@ -48,6 +48,7 @@ class TipoFormato(models.Model):
 
 
 class Manual(models.Model):
+    codigo = models.CharField(max_length=255, blank=True, null=True)
     nombre = models.CharField(max_length=100)
     curso = models.ForeignKey(Curso, null=True)
     formato = models.IntegerField( null=True)
