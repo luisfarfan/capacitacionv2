@@ -195,11 +195,13 @@ class SinInternetView {
         console.log(this.personalNoInternet);
         let disabled:string = '';
         this.personalNoInternet.map((peanota: IPeaNotaFinalSinInternet, index: number) => {
-
+            let nota_fina_p:string;
             if (peanota.nota_final == null){
                 disabled = '';
+                nota_fina_p=(peanota.nota_final).toString();
             }
             else{
+                nota_fina_p=(peanota.nota_final).toFixed(2);
                 disabled='disabled';
             }
             html += `<tr data-value="${peanota.pea.id_pea}">
@@ -207,7 +209,7 @@ class SinInternetView {
                         <td>${peanota.pea.ape_paterno} ${peanota.pea.ape_materno} ${peanota.pea.nombre}</td>
                         <td>${peanota.pea.dni}</td>
                         <td>${peanota.pea.zona}</td>
-                        <td><input ${disabled} name="nota_final" value="${peanota.nota_final.toFixed(2)}" type="number"></td>
+                        <td><input ${disabled} name="nota_final" value="${nota_fina_p}" type="number"></td>
                       
                      </tr>`;
         });
