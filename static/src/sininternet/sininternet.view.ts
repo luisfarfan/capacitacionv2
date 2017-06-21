@@ -234,7 +234,7 @@ class SinInternetView {
                         <td>${pea.pea.ape_paterno} ${pea.pea.ape_materno} ${pea.pea.nombre}</td>
                         <td>${pea.pea.dni}</td>
                         <td>${pea.pea.zona}</td>
-                        <td><input name="nota_final_rankeo" value="${pea.nota_final}" type="number"></td>
+                        <td><input name="nota_final_rankeo" value="${pea.nota_final.toFixed(2)}" type="number"></td>
                         <td>${estado}</td>
                      </tr>`;
 
