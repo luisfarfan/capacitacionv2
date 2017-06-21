@@ -653,7 +653,8 @@ export class EvaluacionView extends CursoInyection {
                     if (nota == null) {
                         tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
                     } else {
-                        tbody += `<td><input ${disabled} data-value=${objCriterio} disabled value="${nota}" min="0" max="20" type="number"></td>`
+
+                        tbody += `<td><input ${disabled} data-value=${objCriterio} disabled value="${nota.toFixed(2)}" min="0" max="20" type="number"></td>`
                     }
 
                 }
@@ -695,7 +696,7 @@ export class EvaluacionView extends CursoInyection {
             console.log(inputs);
             inputs.map((ind: number, inputElement: Element) => {
                 let nota: any = $(inputElement).val();
-                if (nota > 20) {
+                if (nota > 20 || nota<0) {
                     error++;
                     if (error == 1) {
                         input = $(inputElement);
