@@ -11,6 +11,7 @@ class Ubigeo(models.Model):
     provincia = models.CharField(max_length=100, blank=True, null=True)
     distrito = models.CharField(max_length=100, blank=True, null=True)
 
+
     class Meta:
         managed = True
         db_table = 'UBIGEO'

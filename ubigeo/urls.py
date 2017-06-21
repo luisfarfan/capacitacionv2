@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^zonas/(?P<ubigeo>[0-9]+)/$', ZonasList.as_view()),
     url(r'^locales/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/(?P<zona>[0-9]+)/$', LocalesList.as_view()),
     url(r'^aulas/(?P<id_local>[0-9]+)/$', AulasList.as_view()),
+    url(r'^departamento_ubigeo/(?P<ubigeo>[0-9]+)/$', Dep_ubigeo.as_view()),
 ]

@@ -363,15 +363,21 @@ export class AsistenciaView extends CursoInyection {
     drawPersonal() {
         let tbody: string = '';
         this.personalAsistencia.map((value: IPersonalAsistenciaDetalle, index: number) => {
+            let enume:any;
             if (value.id_pea.baja_estado == 1) {
                 tbody += `<tr style="background-color: #ffc1c1">`;
+                enume="";
             }
             else if (value.id_pea.alta_estado == 1) {
                 tbody += `<tr style="background-color: #cdf7cd">`;
+                enume=index + 1
             } else {
                 tbody += `<tr>`;
+                enume=index + 1
+
             }
-            tbody += `<td>${index + 1}</td>
+
+            tbody += `<td>${enume}</td>
                       <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
                       <td>&nbsp;${value.id_pea.dni}</td>
                       <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>

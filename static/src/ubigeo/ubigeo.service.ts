@@ -8,6 +8,7 @@ interface UbigeoUrls {
     provincias: string,
     distritos: string,
     zonas: string,
+    departamentos_get: string,
 }
 export default class UbigeoService {
     private url: UbigeoUrls = {
@@ -15,6 +16,7 @@ export default class UbigeoService {
         provincias: `${BASEURL}/ubigeo/provincias/`,
         distritos: `${BASEURL}/ubigeo/distritos/`,
         zonas: `${BASEURL}/ubigeo/zonas/`,
+        departamentos_get: `${BASEURL}/ubigeo/departamento_ubigeo/`,
     }
 
     getDepartamentos(): JQueryXHR {
@@ -23,6 +25,14 @@ export default class UbigeoService {
             url: this.url.departamentos,
         });
     }
+
+    getDepartamentos_ubigeo(ubigeo: string): JQueryXHR {
+        return $.ajax({
+            async:false,
+            url: `${this.url.departamentos_get}${ubigeo}`,
+        });
+    }
+
 
     getProvincias(ccdd: string): JQueryXHR {
         return $.ajax({

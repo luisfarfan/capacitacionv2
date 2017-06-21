@@ -25,6 +25,7 @@ export interface IPersonal {
     id_pea_reemplazo: IPersonal,
     celular: string,
     correo: string,
+
 }
 
 export interface ICargoFuncional {

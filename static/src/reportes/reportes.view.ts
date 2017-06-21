@@ -38,6 +38,8 @@ class ReportesView extends UbigeoView {
             ccdi: ubigeo.ccdi,
             zona: ubigeo.zona,
         });
+
+        //this.load_reporter_list();
         $('#select_reportes').selectBoxIt({
             autoWidth: false,
             theme: "bootstrap"

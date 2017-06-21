@@ -51,3 +51,10 @@ class AulasList(APIView):
         response = LocalAmbiente.objects.filter(localcurso__local_id=id_local).values()
 
         return JsonResponse(list(response), safe=False)
+
+class Dep_ubigeo(APIView):
+    def get(self, request, ubigeo):
+        response = Ubigeo.objects.get(ubigeo=ubigeo).departamento
+        print(response)
+
+        return JsonResponse(response, safe=False)

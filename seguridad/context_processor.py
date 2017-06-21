@@ -24,7 +24,6 @@ def recursive_menu(request):
     context = {
         "menu": drawSidebar(menu, base_url, modulo_id, modulos, request),
     }
-
     return {'CLIENT_MENU': context}
 
 

@@ -363,6 +363,8 @@ class DistribucionView extends CursoInyection {
             let html = '';
             let table_personal_capacitar = $('#tabla_pea_capacitar').DataTable();
             this.personal.map((value: IPersonal, index: number) => {
+
+
                 html += `<tr>
                              <td>${index + 1}</td>
                              <td>&nbsp;${value.dni}</td>
@@ -430,7 +432,10 @@ class DistribucionView extends CursoInyection {
             this.personalAula = personalAula;
             this.setCabeceraDistribucion(localambiente_id);
             let html: string = '';
+
             this.personalAula.map((personal: IPersonalAula, index: number) => {
+
+
                 html += `<tr>
                             <td>${index + 1}</td>
                             <td>${personal.id_pea.ape_paterno}</td>
@@ -438,12 +443,22 @@ class DistribucionView extends CursoInyection {
                             <td>${personal.id_pea.nombre}</td>
                             <td>&nbsp;${personal.id_pea.dni}</td>
                             <td>${personal.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                            <td>&nbsp;${personal.id_pea.zona == null ? '-' : personal.id_pea.zona}</td>
+                            <td>${this.drarDepartamento(personal.id_pea.ubigeo)}</td>
                          </tr>`;
             });
             this.localAmbienteSelected.id_instructor == null ? $('#select_instructor').val('').trigger('change') : $('#select_instructor').val(this.localAmbienteSelected.id_instructor).trigger('change');
             $('#tabla_pea').find('tbody').html(html);
         });
+    }
+
+    drarDepartamento(departamento: any) {
+        let html = ''
+        this.ubigeoService.getDepartamentos_ubigeo(departamento).done((dep)=>{
+
+            html = `${dep}`
+
+        });
+        return html;
     }
 
     setCabeceraDistribucion(localambiente: number) {
