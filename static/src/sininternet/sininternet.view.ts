@@ -207,7 +207,7 @@ class SinInternetView {
                         <td>${peanota.pea.ape_paterno} ${peanota.pea.ape_materno} ${peanota.pea.nombre}</td>
                         <td>${peanota.pea.dni}</td>
                         <td>${peanota.pea.zona}</td>
-                        <td><input ${disabled} name="nota_final" value="${peanota.nota_final}" type="number"></td>
+                        <td><input ${disabled} name="nota_final" value="${peanota.nota_final}" type="number" step="0.01"></td>
                       
                      </tr>`;
         });
