@@ -17,7 +17,6 @@ class ControlCalidadView extends CursoInyection {
     private aulas: IAula[] = null;
     private manual: IManual[] = null;
     private respuesta: IRespuesta[] = [];
-    private veces: number = 4;
     private idLocal: number = null
     private tipo: number = null
     private tipoFormato: number = null
@@ -28,19 +27,26 @@ class ControlCalidadView extends CursoInyection {
     private manualMaster: number = null
     private opcionGuardar: number = null
     private titulomanual: string = null
+    private cursoMaster: number = null
+    private usuariologin: number = null
 
     constructor() {
         super();
 
+        this.cursoMaster = $("#cursos").val()
+        this.usuariologin = $('#span_usuario_nombre').attr('data-id')
         console.log(this.getLocales())
 
         $("#tablaR1").on('click', '#guardarForm', (element: JQueryEventObject) => {
             this.respuesta = []
             let opcion: any
             let bodyrespuesta: any = {}
-            var llave: number
-            var llave2: number
-            var condicion = this.opcionGuardar
+            let llave: number
+            let llave2: number
+            let condicion = this.opcionGuardar
+            let cantidadDocumentos: number = $("#cantidadDocumentos").val()
+            let cantidadDefectuosos: number = $("#cantidadDocumentosDefectuosos").val()
+
             if (condicion == 1) {
                 llave = this.localMaster
             }
@@ -60,14 +66,32 @@ class ControlCalidadView extends CursoInyection {
                     let grupoPregunta = $(dato).data("id")
                     let input = $(dato).find("input");
                     bodyrespuesta['id'] = llave;
+                    if (condicion == 2) {
+                        bodyrespuesta['local'] = this.localMaster;
+                    }
                     if (condicion == 3) {
                         bodyrespuesta['id_manual'] = llave2;
+                        bodyrespuesta['cantidadDocumento'] = cantidadDocumentos;
+                        bodyrespuesta['cantidadDefectuosos'] = cantidadDefectuosos;
                     }
+                    bodyrespuesta['curso'] = this.cursoMaster;
                     bodyrespuesta['pregunta'] = grupoPregunta;
+                    bodyrespuesta['instructor'] = this.usuariologin;
                     bodyrespuesta['opciones'] = []
                     input.map((i: number, f: Element) => {
                         let tipoPregunta = $(f).attr("data-tipo")
                         let doble = $(f).attr("data-id")
+                        if (doble == 3) {
+                            if (($(f).is(':checked'))) {
+                                bodyrespuesta['opciones'].push({
+                                    'opcion': $(f).attr("data-opcion"),
+                                    'respuesta': 'no',
+                                    'opcional': $("#inputChk" + tipoPregunta).val()
+                                });
+                            }
+                            else {
+                            }
+                        }
                         if (doble == 4) {
                             if (($(f).is(':checked'))) {
                                 bodyrespuesta['opciones'].push({
@@ -78,15 +102,15 @@ class ControlCalidadView extends CursoInyection {
                             }
                             else {
                             }
-
                         }
-                        if (doble == 3) {
-                            if (($(f).is(':checked'))) {
-                                    bodyrespuesta['opciones'].push({
-                                        'opcion': $(f).attr("data-opcion"),
-                                        'respuesta': 'no',
-                                        'opcional': $("#inputChk"+tipoPregunta).val()
-                                    });
+
+                        if (doble == 0) {
+                            if (($(f).val() != "")) {
+                                bodyrespuesta['opciones'].push({
+                                    'opcion': $(f).attr("data-opcion"),
+                                    'respuesta': $(f).val(),
+                                    'opcional': $("#inputChk" + tipoPregunta).val()
+                                });
                             }
                         }
                         if (doble == 1) {
@@ -95,15 +119,6 @@ class ControlCalidadView extends CursoInyection {
                                     'opcion': $(f).attr("data-opcion"),
                                     'respuesta': $(f).val(),
                                     'opcional': ''
-                                });
-                            }
-                        }
-                        if (doble == 0) {
-                            if (($(f).val() != "")) {
-                                bodyrespuesta['opciones'].push({
-                                    'opcion': $(f).attr("data-opcion"),
-                                    'respuesta': $(f).val(),
-                                    'opcional': $("#inputChk"+tipoPregunta).val()
                                 });
                             }
                         }
@@ -116,15 +131,19 @@ class ControlCalidadView extends CursoInyection {
                                     'cantidad': $("#inputChk" + tipoPregunta + tipoPregunta).val()
                                 });
                             }
+                            else {
+                            }
                         }
                         if (doble == 6) {
                             if (($(f).is(':checked'))) {
                                 bodyrespuesta['opciones'].push({
                                     'opcion': $(f).attr("data-opcion"),
                                     'respuesta': 'no',
-                                    'opcional': $("#inputChk"+tipoPregunta).val(),
+                                    'opcional': $("#inputChk" + tipoPregunta).val(),
                                     'cantidad': $("#inputChk" + tipoPregunta + tipoPregunta).val()
                                 });
+                            }
+                            else {
                             }
                         }
                         else {
@@ -143,13 +162,20 @@ class ControlCalidadView extends CursoInyection {
 
         $("#tablaR1").on('click', '#activarInput', (element: JQueryEventObject) => {
             let aux = $(element.currentTarget).data('value');
+            $("#inputChk" + aux + aux).prop('disabled', false)
             $("#inputChk" + aux).prop('disabled', true)
         });
 
         $("#tablaR1").on('click', '#desactivarInput', (element: JQueryEventObject) => {
             let aux = $(element.currentTarget).data('value');
             $("#inputChk" + aux).prop('disabled', false)
+            $("#inputChk" + aux + aux).prop('disabled', true)
         });
+
+        // $("#exportarTabla").click(function (e: any) {
+        //     window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#exportarRespuestas').html()));
+        //     e.preventDefault();
+        // });
 
         $('#divInformacion').hide();
 
@@ -164,7 +190,6 @@ class ControlCalidadView extends CursoInyection {
 
         $('#tablaAulas').on('click', '[name="btnGPreguntas2"]', (element: JQueryEventObject) => {
             this.aulaMaster = $(element.currentTarget).data('value');
-            this.getManuales()
             this.getManual()
         })
 
@@ -179,7 +204,7 @@ class ControlCalidadView extends CursoInyection {
 
         $('#grupolistaformato').on('click', '[name="modalManual"]', (element: JQueryEventObject) => {
             this.tipo = $(element.currentTarget).data('value');
-            this.preguntas = $(element.currentTarget).data('grupo');
+            this.preguntas = 5
             this.tipoFormato = $(element.currentTarget).data('tipo');
             this.manualMaster = $(element.currentTarget).data('value');
             this.titulomanual = $(element.currentTarget).data('titulo');
@@ -189,60 +214,37 @@ class ControlCalidadView extends CursoInyection {
 
         $('#tablaAnalista').on('click', '[name="btn_EvaluarAula"]', (element: JQueryEventObject) => {
             this.idLocal = $(element.currentTarget).data('value');
+            this.localMaster = $(element.currentTarget).data('value');
             this.getAulas();
         })
-
-        $('#div_repetir1').on('click', '#btn_guardar', (element: JQueryEventObject) => {
-            $('#div_repetir1').hide();
-            $('#div_repetir2').show();
-            this.veces = 5;
-            let serialArray = $("#div_repetir1").serializeArray();
-        })
-
-    }
-
-    drawEstado(aux: any) {
-        let html = ''
-        if(aux == false ) html = `<td><span class="label label-info">Pendiente</span></td>`
-        else html = `<td><span class="label label-success">Completo</span></td>`
-        return html
     }
 
     getManual() {
         if (this.curso_selected) {
             this.controlcalidadService.getManuales(this.curso_selected.id_curso).done((manual) => {
                 this.manual = manual
+                this.drawManuales()
             })
         } else {
             this.locales = null
         }
     }
 
-    getManuales() {
+    drawManuales() {
         let html = '';
         if (this.manual) {
             html += `<thead>
                 <tr class="bg-table-inei1">
-                    <th>ID</th>
                     <th>FORMATO</th>
                     <th>EVALUAR</th>
-                    <th>ESTADO</th>
                 </tr>
                 </thead>
                 <tbody>`
             this.manual.map((value: IManual, index: number) => {
                 this.controlcalidadService.getEstadoManual(this.aulaMaster, value.id).done((estado) => {
-                html += `<tr data-titulo="${value.nombre}">
-                            <td>${value.id + index}</td>
+                    html += `<tr>
                             <td>${value.nombre}</td>                            
-                            <td><ul class="icons-list">                            
-                                     <li data-value="${value.id}" data-popup="tooltip" title="Editar" data-grupo="${value.id + 2}" data-tipo="3"
-                                     name="modalManual" style="color: #8bc34a" data-toggle="modal" data-target="#tablaR1">
-                                     <a><i class="icon-pencil"></i></a>
-                                     </li>
-                                 </ul>
-                            </td>
-                            ${this.drawEstado(estado.success)} 
+                            <td>${this.drawEstadoManual(estado.success, value.id, 2,value.nombre)}</td>
                             </tr>`
                     html += `</tbody>`
                     $('#listaformato').html(html);
@@ -255,12 +257,14 @@ class ControlCalidadView extends CursoInyection {
         if (condicion == 1) {
             utils.alert_confirm(() => {
                 this.controlcalidadService.addEditRespuestas(this.respuesta).done((response) => {
+                    this.getLocales()
                 });
             })
         }
         if (condicion == 2) {
             utils.alert_confirm(() => {
                 this.controlcalidadService.addEditRespuestasAula(this.respuesta).done((response) => {
+                    this.getAulas()
                 });
             })
         }
@@ -268,7 +272,7 @@ class ControlCalidadView extends CursoInyection {
             utils.alert_confirm(() => {
                 this.controlcalidadService.addEditManuales(this.respuesta).done((response) => {
                 });
-                this.getManuales()
+                this.getManual()
             })
         }
     }
@@ -276,27 +280,36 @@ class ControlCalidadView extends CursoInyection {
     getGrupoPreguntas() {
         this.controlcalidadService.getLocalFotmato(this.preguntas).done((gpregunta) => {
             let aux = ""
+            let htmlAux = ""
             this.controlcalidadService.getPregunta().done((pregunta) => {
                 for (let entryG of gpregunta) {
                     aux += `<table class="table datatable-basic table-bordered" id="a${entryG.id}">
                                     <thead>
                                     <tr class="bg-table-inei1">
-                                        <td>${entryG.id}</td>
                                         <td>${entryG.titulo1}</td>
-                                        ${this.drawRespuestas(entryG.tipo_titulo)}                        
+                                        ${this.drawRespuestas(entryG.tipo_titulo)}
                                     </tr>
                                      </thead>
                                     <tbody>`
                     for (let entryP of pregunta) {
                         if (entryG.conjunto == entryP.conjunto) {
                             aux += `<tr data-id="${entryP.id}">
-                                    <td>${entryP.id}</td>
-                                    <td>${entryP.nombre}</td> 
-                                    ${this.drawTipoPregunta(entryP.tipo, entryP.id)}                            
+                                    <td>${entryP.nombre}</td>
+                                    ${this.drawTipoPregunta(entryP.tipo, entryP.id)}
                                     </tr>`
+                            if (entryP.tipo == 3) {
+                                htmlAux = `<tr>
+                                            <td>Cantidad de documentos</td>
+                                            <td colspan="3"><input id="cantidadDocumentos" type="number" class="form-control valid" aria-invalid="false"></td>
+                                         </tr>
+                                         <tr>
+                                            <td>Cantidad de defectuosos</td>
+                                            <td colspan="3"><input id="cantidadDocumentosDefectuosos" type="number" class="form-control valid" aria-invalid="false"></td>
+                                         </tr>`
+                            }
                         }
                     }
-                    aux += `</tbody></table>`
+                    aux += htmlAux + `</tbody></table>`
                 }
                 $('#grupoPregunta1').html(aux);
             })
@@ -326,41 +339,37 @@ class ControlCalidadView extends CursoInyection {
 
     drawAulas() {
         let html = '';
+        let html2 = '';
         if (this.aulas) {
-            html += `<table class="table datatable-basic" id="listaAulas">
+            html2 += `<table class="table datatable-basic" id="listaAulas">
                         <thead>
                         <tr class="bg-table-inei1">
-                            <th>ID</th>
                             <th>SALON</th>
                             <th>EVALULAR</th>
                             <th>MANUALES</th>
                         </tr>
                         </thead>
-                        <tbody>`
+                        <tbody>
+                        </tbody></table>`
+            $('#tablaAulas').html(html2);
             this.aulas.map((value: IAula, index: number) => {
+                this.controlcalidadService.getEstadoAula(this.localMaster, value.id_localambiente, this.cursoMaster, this.usuariologin).done((estado) => {
                     html += `<tr>
-                             <td>${index + 1}</td>
                              <td>${value.id_localambiente}</td>
-                             <td>
-                                 <ul class="icons-list">
-                                     <li data-value="${value.id_localambiente}" data-popup="tooltip" title="Editar" data-tipo="2"
-                                     name="modalPregunta" style="color: #8bc34a" data-toggle="modal" data-target="#tablaR1">
-                                     <a><i class="icon-pencil"></i></a>
-                                     </li>
-                                 </ul>
-                             </td>
+                             <td>${this.drawEstadoManual(estado.success, value.id_localambiente, 1,"")}</td>
                              <td>
                                 <button data-value="${value.id_localambiente}" type="button" class="btn btn-primary active legitRipple"
                                 name="btnGPreguntas2">Evaluar </button>
                             </td>
                         </tr>`
-
+                    html += ``
+                    $('#listaAulas').find('tbody').html(html);
+                })
 
             })
-            html += `</tbody></table>`
+
         }
 
-        $('#tablaAulas').html(html);
     }
 
     drawRespuestas(tipoRespuesta: String) {
@@ -374,30 +383,36 @@ class ControlCalidadView extends CursoInyection {
 
     drawTipoPregunta(tipo: number, id: number) {
         let preguntaHTML = ''
-        if (tipo == 1) preguntaHTML += `<td><input data-id="1" type="number" id="pregunta"  class="form-control valid requerido" data-opcion="1"
-                                            required="required" value="" aria-invalid="false" value="1"></td>`
+        if (tipo == 1) preguntaHTML += `<td>
+                                            <input data-id="1" type="number" id="inputChk${id}" data-opcion="1" class="form-control"aria-invalid="false">
+                                        </td>`
         if (tipo == 2) preguntaHTML += `<td>
-											<input data-id="4" type="radio" id="activarInput" name="radio-${id}" class="styled" checked="checked" data-value="${id}" data-opcion="2">
+                                            <input data-id="4" type="radio" id="activarInput" name="radio-${id}" class="styled" data-value="${id}" data-opcion="2">
                                         </td>
                                         <td>
                                             <input data-id="3"  data-tipo="${id}" type="radio" id="desactivarInput" name="radio-${id}" class="styled" data-value="${id}" data-opcion="2">
                                         </td>
-                                        <td><input data-id="2" type="text" name="radio-${id}" class="form-control valid requerido" data-opcion="3"
-                                           required="required" aria-invalid="false" data-tipo="1" id="inputChk${id}" disabled></td>`
+                                        <td>
+                                            <input type="text" name="radio-${id}" class="form-control" data-opcion="3" aria-invalid="false" data-tipo="1" id="inputChk${id}" disabled>
+                                        </td>`
         if (tipo == 3) preguntaHTML += `<td>
-											<input data-id="5" data-tipo="${id}" data-value="${id}" data-id="4" id="activarInput" type="radio" name="radio-${id}" class="styled" checked="checked" value="0" data-opcion="2" >
+                                            <input data-id="5" data-tipo="${id}" data-value="${id}" data-id="4" id="activarInput" type="radio" name="radio-${id}" class="styled" data-opcion="2" >
                                         </td>
                                         <td>
-                                            <input data-id="6" data-tipo="${id}" data-value="${id}" data-id="4" type="radio" id="desactivarInput" name="radio-${id}" class="styled" value="0" data-opcion="2">
+                                            <input data-id="6" data-tipo="${id}" data-value="${id}" data-id="4" type="radio" id="desactivarInput" name="radio-${id}" class="styled" data-opcion="2">
                                         </td>
-                                        <td><input data-id="3" type="text" name="pregunta" class="form-control valid requerido" data-opcion="${tipo}"
-                                            required="required" id="inputChk${id}${id}" aria-invalid="false" data-opcion="3"></td>
-                                        <td><input data-id="3" type="text" name="pregunta" class="form-control valid requerido" data-opcion="${tipo}"
-                                            required="required" id="inputChk${id}" aria-invalid="false" data-opcion="3" disabled></td>`
-        if (tipo == 4) preguntaHTML += `<td><input type="number" data-id="0" name="pregunta" class="form-control valid requerido" data-opcion="${tipo}"
-                                            required="required" value="" aria-invalid="false" data-opcion="1" data-tipo="${id}"></td>
-                                        <td><input type="number" data-id="1" name="pregunta" class="form-control valid requerido" data-opcion="${tipo}"
-                                            required="required" value="" id="inputChk${id}" aria-invalid="false" data-opcion="1" value="1"></td>`
+                                        <td>
+                                            <input type="text" name="pregunta" class="form-control" data-opcion="${tipo}" id="inputChk${id}${id}" data-opcion="3" disabled>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="pregunta" class="form-control" data-opcion="${tipo}" id="inputChk${id}" data-opcion="3" disabled>
+                                        </td>`
+        if (tipo == 4) preguntaHTML += `<td>
+                                            <input type="number" data-id="0" name="pregunta" class="form-control" data-opcion="${tipo}" data-value="${id}" data-opcion="1" data-tipo="${id}">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="pregunta" class="form-control" data-opcion="${tipo}" id="inputChk${id}" data-opcion="1">
+                                        </td>`
 
         return preguntaHTML
     }
@@ -406,29 +421,57 @@ class ControlCalidadView extends CursoInyection {
         let html = '';
         if (this.locales) {
             this.locales.map((value: ILocal, index: number) => {
-                if (value.seleccionar != 0 && value.instructor != null) {
-                    html += `<tr>
+                this.controlcalidadService.getEstadoLocal(value.id_local, this.cursoMaster, this.usuariologin).done((estado) => {
+                    if (value.seleccionar != 0 && value.instructor != null) {
+                        html += `<tr>
                             <td>${value.nombre_local}</td>
                             <td>${value.zona_ubicacion_local}</td>
                             <td>${value.nombre_via}</td>
                             <td>${value.referencia}</td>
                             <td>${value.total_aulas}</td>
                             <td>${this.drawObtenerAnalista(value.instructor)}</td>
-                            <td></td>
-                            <td>
-                                <button data-value="${value.id_local}" data-tipo="1" type="button" class="btn btn-primary active legitRipple" 
-                                data-toggle="modal" data-target="#tablaR1" name="btn_EvaluarLocal">Evaluar </button>
+                            <td>${this.drawEstadoManual(estado.success, value.id_local, 0,"")}</td>
                             <td>
                                 <button data-value="${value.id_directoriolocal_id}" name="btn_EvaluarAula" type="button" 
                                 class="btn btn-primary active legitRipple">Evaluar</button>
-                            </td>
-                            
+                            </td>   
                            </tr>`
-                }
+                    }
+                    $('#tablaAnalista').find('tbody').html(html);
+                })
 
             });
         }
-        $('#tablaAnalista').find('tbody').html(html);
+
+    }
+
+    drawEstadoManual(estado: any, id: number, tipo: number, nombre:any) {
+        let html = ''
+        if (tipo == 0) {
+            if (estado == false) html = `<button data-value="${id}" data-tipo="1" type="button" class="btn btn-primary active legitRipple" 
+                                data-toggle="modal" data-target="#tablaR1" name="btn_EvaluarLocal">Evaluar </button>`
+            else html = `<span class="label label-success">Completo</span>`
+        }
+        if (tipo == 1) {
+            if (estado == false) html = `<ul class="icons-list">
+                                     <li data-value="${id}" data-popup="tooltip" title="Editar" data-tipo="2"
+                                     name="modalPregunta" style="color: #8bc34a" data-toggle="modal" data-target="#tablaR1">
+                                     <a><i class="icon-pencil"></i></a>
+                                     </li>
+                                 </ul>`
+            else html = `<span class="label label-success">Completo</span>`
+        }
+        if (tipo == 2) {
+            if (estado == false) html = `<ul class="icons-list">                            
+                                     <li data-titulo="${nombre}" data-value="${id}" data-popup="tooltip" title="Editar" data-grupo="${id + 2}" data-tipo="3"
+                                     name="modalManual" style="color: #8bc34a" data-toggle="modal" data-target="#tablaR1">
+                                     <a><i class="icon-pencil"></i></a>
+                                     </li>
+                                 </ul>`
+            else html = `<span class="label label-success">Completo</span>`
+        }
+
+        return html
     }
 
     drawObtenerAnalista(analista: number) {

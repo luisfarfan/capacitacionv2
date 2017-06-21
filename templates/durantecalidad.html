@@ -4,26 +4,76 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row" id="tablaPrincipalManual">
-        <div class="panel panel-primary panel-bordered">
-            <div class="panel-heading">
-                <h6 class="panel-title">Manuales a evaluar</h6>
-                <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li><a data-action="collapse"></a></li>
-                        <li><a data-action="reload"></a></li>
-                        <li><a data-action="close"></a></li>
-                    </ul>
+    <div class="panel panel-flat panel-inei">
+        <div class="panel-heading">
+            <h5 class="panel-title text-inei">UBICACIÓN GEOGRÁFICA</h5>
+        </div>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Local</label>
+                    <select id="local" class="form-control bg-white text-grey-400">
+
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Provincia</label>
+                    <select id="aula" class="form-control bg-white text-grey-400">
+                        <option value="">Seleccione aula</option>
+                    </select>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="panel-body">
-                <div class="panel panel-flat table-responsive">
-                    <form id="formControl" class="form-validate-jquery">
-                        <table class="table datatable-basic" id="tablaManual">
+    <div class="content">
+        <div class="row col-sm-6" id="tablaPrincipalManual">
+            <div class="panel panel-primary panel-bordered">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Manuales a evaluar</h6>
+                    <div class="heading-elements">
+                        <ul class="icons-list">
+                            <li><a data-action="collapse"></a></li>
+                            <li><a data-action="reload"></a></li>
+                            <li><a data-action="close"></a></li>
+                        </ul>
+                    </div>
+                </div>
 
-                        </table>
-                    </form>
+                <div class="panel-body">
+                    <div class="panel panel-flat table-responsive">
+                        <form id="formControl" class="form-validate-jquery">
+                            <table class="table datatable-basic" id="tablaManual">
+
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content col-sm-6" id="tablaPrincipalCapitulo">
+            <div class="panel panel-primary panel-bordered">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Capitulos a evaluar</h6>
+                    <div class="heading-elements">
+                        <ul class="icons-list">
+                            <li><a data-action="collapse"></a></li>
+                            <li><a data-action="reload"></a></li>
+                            <li><a data-action="close"></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="panel panel-flat table-responsive">
+                        <form id="formControl" class="form-validate-jquery">
+                            <table class="table datatable-basic" id="tablaCapitulos">
+
+                            </table>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,7 +84,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">---</h5>
+                    <h5 class="modal-title"></h5>
                 </div>
 
                 <div class="modal-body" id="grupoPregunta1">
@@ -43,11 +93,13 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="guardarForm">Save changes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="guardarForm">Save changes
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
 
 
 {% endblock %}

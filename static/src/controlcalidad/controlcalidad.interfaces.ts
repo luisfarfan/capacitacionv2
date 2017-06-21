@@ -15,19 +15,19 @@ export interface IAnalista {
     nombre: string,
 }
 
-export interface IGrupoPregunta {
+export interface IGrupoTitulo {
     titulo1: string,
     conjunto: number,
     formato: null,
     tipo_titulo: number
 }
 
-export  interface IPregunta {
+export  interface IGrupoPregunta {
     id: number,
     nombre: string,
-    order: number,
+    conjunto: number,
     grupo: number,
-    tipo: null
+    tipo: number
 }
 
 export interface IRol {
@@ -86,7 +86,7 @@ export interface IInstructor {
 }
 
 export interface IInstAulas {
-   id_instructor:number
+    id_instructor: number
 }
 
 export interface IManual {
@@ -108,6 +108,66 @@ export interface IOpcion {
     opcion: string,
 }
 
-export interface  IEstado {
-    estado: boolean
+export interface IRDurante {
+    instructor: number
+    aula: number
+    fecha: string,
+    pregunta: number,
+    opcion: IOrespuestas,
+}
+
+export interface IOrespuestas {
+    respuesta1: number,
+    respuesta2: number,
+    respuesta3: number,
+    respuesta4: number,
+}
+
+export interface IRespuestaLocal {
+    id: number,
+    llave: number,
+    pregunta: number,
+    opcional: string,
+    respuesta_texto: string,
+    curso: number,
+    local: number,
+    opcionselected: number
+}
+
+export interface IRespuestaManual {
+    id: number,
+    llave: number,
+    pregunta: 11,
+    respuesta_texto: string,
+    opcional: string,
+    cantidad: string,
+    curso: number,
+    cantidaddocumentos: number,
+    cantidaddodefectuosos: number,
+    aula: number,
+    opcionselected: number,
+    manual: number
+}
+
+export  interface  IRespuestaAula {
+    id: number,
+    local: number,
+    llave: number,
+    pregunta: number,
+    respuesta_texto: string,
+    opcional: string,
+    curso: number,
+    aula: number,
+    opcionselected: number
+}
+
+export interface  ICManual {
+    id: number,
+    manual: number,
+    capitulo: number
+}
+
+export interface  ICapitulo {
+    id: number,
+    nombre: string
 }

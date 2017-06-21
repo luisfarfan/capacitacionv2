@@ -143,8 +143,9 @@ class addEditRespuestasLocales(generics.ListAPIView):
         for preguntas in data:
             for opciones in preguntas['opciones']:
                 if RespuestaLocal.objects.filter(local_id=preguntas['id'],
-                                                 llave=c).count() == 0:
-                    RespuestaLocal(llave=c, pregunta=preguntas['pregunta'], local_id=preguntas['id'],
+                                                 llave=c, curso=preguntas['curso']).count() == 0:
+                    RespuestaLocal(llave=c, pregunta=preguntas['pregunta'], curso=preguntas['curso'],
+                                   local_id=preguntas['id'], instructor=preguntas['instructor'],
                                    opcionselected_id=opciones['opcion'],
                                    respuesta_texto=opciones['respuesta'], opcional=opciones['opcional']).save()
                     c = c + 1
@@ -160,8 +161,10 @@ class addEditRespuestasAulas(generics.ListAPIView):
         for preguntas in data:
             for opciones in preguntas['opciones']:
                 if RespuestaAula.objects.filter(aula_id=preguntas['id'],
-                                                llave=c).count() == 0:
-                    RespuestaAula(llave=c, pregunta=preguntas['pregunta'], respuesta_texto=opciones['respuesta'],
+                                                llave=c, curso=preguntas['curso']).count() == 0:
+                    RespuestaAula(llave=c, pregunta=preguntas['pregunta'], local=preguntas['local'],
+                                  instructor=preguntas['instructor'],
+                                  respuesta_texto=opciones['respuesta'], curso=preguntas['curso'],
                                   aula_id=preguntas['id'], opcionselected_id=opciones['opcion'],
                                   opcional=opciones['opcional']).save()
                     c = c + 1
@@ -178,10 +181,13 @@ class addEditRespuestasManuales(generics.ListAPIView):
             for opciones in preguntas['opciones']:
 
                 if RespuestaManuales.objects.filter(aula_id=preguntas['id'],
-                                                    llave=c, manual_id=preguntas['id_manual']).count() == 0:
+                                                    llave=c, manual_id=preguntas['id_manual'],
+                                                    curso=preguntas['curso']).count() == 0:
                     RespuestaManuales(llave=c, pregunta=preguntas['pregunta'], respuesta_texto=opciones['respuesta'],
                                       aula_id=preguntas['id'], manual_id=preguntas['id_manual'],
-                                      opcionselected_id=opciones['opcion'],
+                                      cantidaddocumentos=preguntas['cantidadDocumento'],
+                                      cantidaddodefectuosos=preguntas['cantidadDefectuosos'],
+                                      opcionselected_id=opciones['opcion'], curso=preguntas['curso'],
                                       opcional=opciones['opcional'], cantidad=opciones['cantidad']).save()
                     c = c + 1
 
@@ -201,6 +207,154 @@ class EstadoManualsFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
             return {"success": False}
 
 
+class EstadoDuranteManualsFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
+    serializer_class = SuccessSerializer
+
+    def get_queryset(self):
+        user = self.kwargs.get('user')
+        aula = self.kwargs.get('aula')
+        manual = self.kwargs.get('manual')
+        curso = self.kwargs.get('curso')
+        datos = RespuestaDuranteManual.objects.filter(instructor=user, aula=aula, manual=manual, curso=curso)
+        if datos.exists():
+            return {"success": True}
+        else:
+            return {"success": False}
+
+
+class EstadoDuranteCapituloFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
+    serializer_class = SuccessSerializer
+
+    def get_queryset(self):
+        user = self.kwargs.get('user')
+        aula = self.kwargs.get('aula')
+        capitulo = self.kwargs.get('capitulo')
+        manual = self.kwargs.get('manual')
+        curso = self.kwargs.get('curso')
+        datos = RespuestaDuranteCapitulo.objects.filter(instructor=user, aula=aula, capitulo=capitulo, manual=manual,
+                                                        curso=curso)
+        if datos.exists():
+            return {"success": True}
+        else:
+            return {"success": False}
+
+
+class EstadoLocalFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
+    serializer_class = SuccessSerializer
+
+    def get_queryset(self):
+        local = self.kwargs.get('local')
+        curso = self.kwargs.get('curso')
+        usuario = self.kwargs.get('usuario')
+        datos = RespuestaLocal.objects.filter(local=local, curso=curso, instructor=usuario)
+        if datos.exists():
+            return {"success": True}
+        else:
+            return {"success": False}
+
+
+class EstadoAulaFilterViewSet(CustomQueryMixin, generics.GenericAPIView):
+    serializer_class = SuccessSerializer
+
+    def get_queryset(self):
+        local = self.kwargs.get('local')
+        aula = self.kwargs.get('aula')
+        curso = self.kwargs.get('curso')
+        usuario = self.kwargs.get('usuario')
+        datos = RespuestaAula.objects.filter(local=local, aula=aula, curso=curso, instructor=usuario)
+        if datos.exists():
+            return {"success": True}
+        else:
+            return {"success": False}
+
+
 class AulaInstructorViewSet(viewsets.ModelViewSet):
     queryset = AulaInstructor.objects.all()
     serializer_class = AulaInstructorSerializer
+
+
+class RespuestaLocalViewSet(generics.ListAPIView):
+    serializer_class = RespuestaLocalSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        return RespuestaLocal.objects.filter(curso=curso)
+
+
+class RespuestaAulaViewSet(viewsets.ModelViewSet):
+    queryset = RespuestaAula.objects.all()
+    serializer_class = RespuestaAulaSerializer
+
+
+class RespuestaManualViewSet(generics.ListAPIView):
+    serializer_class = RespuestaManualSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        return RespuestaManuales.objects.filter(curso=curso)
+
+
+class RespuestaAulaLocalViewSet(generics.ListAPIView):
+    serializer_class = RespuestaAulaSerializer
+
+    def get_queryset(self):
+        curso = self.kwargs['curso']
+        return RespuestaAula.objects.filter(curso=curso)
+
+
+class CapitulosManualViewSet(generics.ListAPIView):
+    serializer_class = CapitulosManualSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return CapitulosManual.objects.filter(manual_id=id)
+
+
+class CapitulosViewSet(generics.ListAPIView):
+    serializer_class = CapitulosSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Capitulos.objects.filter(id=id)
+
+
+class addEditRespuestaDurante(generics.ListAPIView):
+    def post(self, request):
+        postdata = request.POST['data']
+        data = json.loads(postdata)
+        c = 1
+        for preguntas in data:
+            for opciones in preguntas['opciones']:
+                if RespuestaDuranteManual.objects.filter(aula=preguntas['aula'],
+                                                         llave=c, manual=preguntas['manual'],
+                                                         curso=preguntas['curso']).count() == 0:
+                    RespuestaDuranteManual(llave=c, instructor=preguntas['instructor'], aula=preguntas['aula'],
+                                           fecha=preguntas['fecha'], pregunta=preguntas['pregunta'],
+                                           curso=preguntas['curso'], manual=preguntas['manual'],
+                                           respuesta1=opciones['respuesta1'], respuesta2=opciones['respuesta2'],
+                                           respuesta3=opciones['respuesta3'], respuesta4=opciones['respuesta4']).save()
+                    c = c + 1
+
+        return JsonResponse({'msg': 'Hecho'})
+
+
+class addEditRespuestaDuranteCapitulo(generics.ListAPIView):
+    def post(self, request):
+        postdata = request.POST['data']
+        data = json.loads(postdata)
+        c = 1
+        for preguntas in data:
+            for opciones in preguntas['opciones']:
+                if RespuestaDuranteCapitulo.objects.filter(aula=preguntas['aula'],
+                                                           llave=c, manual=preguntas['manual'],
+                                                           curso=preguntas['curso'],
+                                                           capitulo=preguntas['capitulo']).count() == 0:
+                    RespuestaDuranteCapitulo(llave=c, instructor=preguntas['instructor'], aula=preguntas['aula'],
+                                             fecha=preguntas['fecha'], pregunta=preguntas['pregunta'],
+                                             capitulo=preguntas['capitulo'],
+                                             curso=preguntas['curso'], manual=preguntas['manual'],
+                                             respuesta1=opciones['respuesta1'],
+                                             respuesta2=opciones['respuesta2']).save()
+                c = c + 1
+
+        return JsonResponse({'msg': 'Hecho'})

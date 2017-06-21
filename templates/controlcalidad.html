@@ -9,38 +9,33 @@
             <div class="panel-heading">
                 <h6 class="panel-title">Locales activados</h6>
                 <div class="heading-elements">
-                    <ul class="icons-list">
-                        <li><a data-action="collapse"></a></li>
-                        <li><a data-action="reload"></a></li>
-                        <li><a data-action="close"></a></li>
-                    </ul>
+                    <div class="btn-group pull-right">
+                    </div>
                 </div>
             </div>
+            <div class="table-responsive">
 
-            <div class="panel-body">
-                <div class="panel panel-flat table-responsive" id="tablaAnalista">
-                    <form id="formControl" class="form-validate-jquery">
-                        <table class="table datatable-basic">
-                            <thead>
-                            <tr>
-                                <th>Nombre Local</th>
-                                <th>Zona</th>
-                                <th>Nombre de Via</th>
-                                <th>Referencia</th>
-                                <th>Número de ambientes a usar</th>
-                                <th>Encargado</th>
-                                <th>Aulas</th>
-                                <th>Local</th>
-                                <th>Salones</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </form>
+                <div class="datatable-scroll" id="tablaAnalista">
+                    <table class="table table-hover datatable-highlight dataTable no-footer">
+                        <thead>
+                        <tr>
+                            <th>Nombre Local</th>
+                            <th>Zona</th>
+                            <th>Nombre de Via</th>
+                            <th>Referencia</th>
+                            <th>Ambientes a usar</th>
+                            <th>Encargado</th>
+                            <th>Local</th>
+                            <th>Salones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="content col-sm-4" id="contentTablaAulas">
@@ -153,7 +148,74 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="guardarForm">Save changes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="guardarForm">Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tablaR2" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+
+                <div class="modal-body" id="exportarRespuestas">
+                    <table class="table datatable-basic table-bordered">
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTabla">Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tablaR3" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+                <div class="modal-body" id="exportarRespuestasAula">
+                    <table class="table datatable-basic table-bordered">
+
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTablaAulas">Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tablaR3" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+                <div class="modal-body" id="exportarRespuestasAula">
+                    <table class="table datatable-basic table-bordered">
+
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTablaManuales">
+                        Exportar
+                    </button>
                 </div>
             </div>
         </div>
@@ -175,6 +237,6 @@
     <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bootpag.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bs_pagination.min.js" %}"></script>
     {#    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/datepaginator.min.js" %}"></script>#}
-{#    <script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>#}
+    {#    <script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>#}
 
 {% endblock %}

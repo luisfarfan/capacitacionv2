@@ -129,11 +129,13 @@ class UsuarioLocales(models.Model):
 
 class RespuestaLocal(models.Model):
     local = models.ForeignKey(Local)
+    instructor = models.IntegerField(null=True, blank=True)
     llave = models.IntegerField(null=True, blank=True)
     pregunta = models.IntegerField(null=True, blank=True)
     opcional = models.CharField(max_length=255, blank=True, null=True)
     opcionselected = models.ForeignKey(Opciones)
     respuesta_texto = models.CharField(max_length=255, blank=True, null=True)
+    curso = models.IntegerField(null=True, blank=True)
 
     class Meta:
         managed = True
@@ -141,11 +143,14 @@ class RespuestaLocal(models.Model):
 
 class RespuestaAula(models.Model):
     aula = models.ForeignKey(Local)
+    local = models.IntegerField(null=True, blank=True)
+    instructor = models.IntegerField(null=True, blank=True)
     llave = models.IntegerField(null=True, blank=True)
     pregunta = models.IntegerField(null=True, blank=True)
     opcionselected = models.ForeignKey(Opciones)
     respuesta_texto = models.CharField(max_length=255, blank=True, null=True)
     opcional = models.CharField(max_length=255, blank=True, null=True)
+    curso = models.IntegerField(null=True, blank=True)
 
     class Meta:
         managed = True
@@ -160,8 +165,62 @@ class RespuestaManuales(models.Model):
     respuesta_texto = models.CharField(max_length=255, blank=True, null=True)
     opcional = models.CharField(max_length=255, blank=True, null=True)
     cantidad = models.CharField(max_length=255, blank=True, null=True)
+    curso = models.IntegerField(null=True, blank=True)
+    cantidaddocumentos = models.IntegerField(null=True, blank=True)
+    cantidaddodefectuosos = models.IntegerField(null=True, blank=True)
 
     class Meta:
         managed = True
         db_table = 'RESPUESTAMANUALES'
+
+class Capitulos(models.Model):
+    nombre = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'CAPITULOS'
+
+class CapitulosManual(models.Model):
+    manual = models.ForeignKey(Manual)
+    capitulo = models.ForeignKey(Capitulos)
+
+    class Meta:
+        managed = True
+        db_table = 'CAPITULOSMANUAL'
+
+
+class RespuestaDuranteManual(models.Model):
+    llave = models.IntegerField(null=True, blank=True)
+    manual = models.IntegerField(null=True, blank=True)
+    curso = models.IntegerField(null=True, blank=True)
+    instructor = models.IntegerField(null=True, blank=True)
+    aula = models.IntegerField(null=True, blank=True)
+    fecha = models.CharField(max_length=255, blank=True, null=True)
+    pregunta = models.IntegerField(null=True, blank=True)
+    respuesta1 = models.CharField(max_length=255, blank=True, null=True)
+    respuesta2 = models.CharField(max_length=255, blank=True, null=True)
+    respuesta3 = models.CharField(max_length=255, blank=True, null=True)
+    respuesta4 = models.CharField(max_length=255, blank=True, null=True)
+
+
+    class Meta:
+        managed = True
+        db_table = 'RESPUESTADURANTEMANUAL'
+
+
+class RespuestaDuranteCapitulo(models.Model):
+    llave = models.IntegerField(null=True, blank=True)
+    manual = models.IntegerField(null=True, blank=True)
+    capitulo = models.IntegerField(null=True, blank=True)
+    curso = models.IntegerField(null=True, blank=True)
+    instructor = models.IntegerField(null=True, blank=True)
+    aula = models.IntegerField(null=True, blank=True)
+    fecha = models.CharField(max_length=255, blank=True, null=True)
+    pregunta = models.IntegerField(null=True, blank=True)
+    respuesta1 = models.CharField(max_length=255, blank=True, null=True)
+    respuesta2 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'RESPUESTADURANTECAPITULO'
 

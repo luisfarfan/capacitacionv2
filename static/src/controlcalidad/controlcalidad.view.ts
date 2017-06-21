@@ -16,7 +16,6 @@ class ControlCalidadView extends CursoInyection {
     private localSelected: ILocal = null;
     private analista: "" = null;
     private localMaster: number = null;
-    private instructorMaster: number = null;
 
     constructor() {
         super();
@@ -30,12 +29,12 @@ class ControlCalidadView extends CursoInyection {
         $('#div_tabla_locales_filter').on('click', '[name="a_save_instructor"]', (element: JQueryEventObject) => {
             let id = $(element.currentTarget).data('value');
             let selectValue = $(element.currentTarget).parent().find('select').val();
-            let aux = 0;
             this.setLocalSelected(id);
             utils.alert_confirm(() => {
                 this.setAnalistaLocal(selectValue, 0);
             }, 'Esta seguro de guardar este instructor?');
         });
+
         $('#div_tabla_locales_filter').on('click', '[name="btn_seleccionar"]', (element: JQueryEventObject) => {
             let id = $(element.currentTarget).data('value');
             this.setLocalSelected(id);
@@ -43,6 +42,7 @@ class ControlCalidadView extends CursoInyection {
                 this.seleccionarLocal()
             }, 'Esta seguro de seleccionar este Local?');
         });
+
         $('#div_tabla_locales_filter').on('click', '[name="btn_deseleccionar"]', (element: JQueryEventObject) => {
             let id = $(element.currentTarget).data('value');
             this.setLocalSelected(id);
@@ -50,19 +50,19 @@ class ControlCalidadView extends CursoInyection {
                 this.deseleccionarLocal()
             }, 'Esta seguro de deseleccionar este Local?', 'error');
         });
+
         $('#div_tabla_locales_filter').on('click', '[name="btn_modal"]', (element: JQueryEventObject) => {
             let id = $(element.currentTarget).data('value');
             this.setLocalSelected(id);
             this.localMaster = id
             this.getAulas()
         })
+
         $('#div_tabla_aulas_filter').on('click', '[name="a_save_instructor"]', (element: JQueryEventObject) => {
             let id = $(element.currentTarget).data('value');
             let selectValue = $(element.currentTarget).parent().find('select').val();
-            let aux = 0;
             this.setLocalSelected(selectValue);
             this.analista = selectValue;
-
             utils.alert_confirm(() => {
                 this.setAnalistaLocal(id, 1);
             }, 'Esta seguro de guardar este instructor?');
@@ -71,8 +71,8 @@ class ControlCalidadView extends CursoInyection {
 
     getAulas() {
         this.controlcalidadService.getAulas(this.localMaster).done((aulas) => {
-                this.aulas = aulas;
-                this.drawAulas();
+            this.aulas = aulas;
+            this.drawAulas();
         })
     }
 
@@ -96,11 +96,8 @@ class ControlCalidadView extends CursoInyection {
         let html = '';
         if (this.locales) {
             this.aulas.map((value: IAula, index: number) => {
-
                 this.controlcalidadService.set_userAula(value.id_localambiente).done((data) => {
-                    console.log(data.id_instructor)
                     html += `<tr>
-                                <td>${index}</td>
                                 <td>${value.id_localambiente}</td>
                                 <td>${this.drawDropdownAnalistasAula(data.id_instructor, value.id_localambiente, 1)}</td>
                             </tr>`

@@ -1,0 +1,38 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% block css %}
+{% endblock %}
+{% block content %}
+
+
+    <div class="content col-sm-6">
+        <div id="graficoCursoCapacitacion"></div>
+    </div>
+    <div class="content col-sm-6">
+        <div id="graficoCursoCapacitacion2"></div>
+    </div>
+    <div class="content col-sm-6">
+        <div id="graficoCursoCapacitacion3"></div>
+    </div>
+    <div class="content col-sm-6">
+        <div id="graficoCursoCapacitacion4"></div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/forms/validation/validate.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/jquery.battatech.excelexport.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/require.js" %}"
+            data-main="{% static "build/controlcalidad/reporte.view.js" %}"></script>
+
+    {#    <script type="text/javascript" src="{% static "assets/js/pages/components_pagination.js" %}"></script>#}
+    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bootpag.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bs_pagination.min.js" %}"></script>
+    {#    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/datepaginator.min.js" %}"></script>#}
+    {#    <script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>#}
+
+{% endblock %}
