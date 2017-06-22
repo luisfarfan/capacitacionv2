@@ -316,7 +316,7 @@ export class EvaluacionView extends CursoInyection {
                         <td>${index + 1}</td>
                         <td>${pea['ape_paterno']} ${pea['ape_materno']} ${pea['nombre']}</td>
                         <td>&nbsp;${pea['dni']}</td>
-                        <td>${pea['personal_notafinal'][0]['nota_final']}</td>
+                        <td>${pea['personal_notafinal'][0]['nota_final'].toFixed(2)}</td>
                         <td>${estado}</td>
                         
                      </tr>`;
@@ -338,7 +338,7 @@ export class EvaluacionView extends CursoInyection {
                         <td>${index + 1}</td>
                         <td>${pea.id_pea.ape_paterno} ${pea.id_pea.ape_materno} ${pea.id_pea.nombre}</td>
                         <td>&nbsp;${pea.id_pea.dni}</td>
-                        <td>${pea.personalaula_notafinal[0].nota_final}</td>
+                        <td>${pea.personalaula_notafinal[0].nota_final.toFixed(2)}</td>
                         <td>${estado}</td>
                      </tr>`;
             }
