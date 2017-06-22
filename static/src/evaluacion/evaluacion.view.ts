@@ -598,21 +598,25 @@ export class EvaluacionView extends CursoInyection {
         let tbody = ``;
         let nota_validate = 0;
         this.personal.map((persona: IPersonalAsistenciaDetalle, index: number) => {
+            let enume:any;
             let nota_final: number = 0;
             let disabled: string = '';
 
             if (persona.id_pea.baja_estado == 1) {
                 disabled = 'disabled'
+                enume="";
                 tbody += `<tr style="background-color: #ffc1c1" data-value="${persona.id_peaaula}">`;
             }
             else if (persona.id_pea.alta_estado == 1) {
+                enume=index + 1
                 disabled = ''
                 tbody += `<tr style="background-color: #cdf7cd" data-value="${persona.id_peaaula}">`;
             } else {
                 disabled = ''
+                enume=index + 1
                 tbody += `<tr data-value="${persona.id_peaaula}">`;
             }
-            tbody += `<td>${index + 1}</td>
+            tbody += `<td>${enume}</td>
                       <td>${persona.id_pea.ape_paterno} ${persona.id_pea.ape_materno} ${persona.id_pea.nombre}</td>
                       <td>&nbsp;${persona.id_pea.dni}</td>
                       <td>${persona.id_pea.id_cargofuncional.nombre_funcionario}</td>
