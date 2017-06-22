@@ -161,3 +161,18 @@ def visualizaRolCurso(request, rol, curso, modulo):
         visualiza = 0
 
     return JsonResponse({'visualiza': visualiza})
+
+from seguridad.models import RolCursoModulosSeguridad
+from locales_consecucion.models import Curso
+
+def modulosJefeDistrital(request):
+    modulos = ['reportes', 'reglocal', 'dist', 'asist', 'eval', 'result', 'localsin', 'evalsin', 'resulsin', 'calidad','asigana']
+    roles = ['jefedepa', 'jefesubdepa', 'jefeprov', 'jefedist', 'jefezona','anacal']
+    cursos = Curso.objects.filter(etapa=3)
+    for curso in cursos:
+        for modulo in modulos:
+            for rol in roles:
+                rcms = RolCursoModulosSeguridad(rol=rol, modulo=modulo, curso_id=curso.id_curso)
+                rcms.save()
+
+    return JsonResponse({'msg': True})

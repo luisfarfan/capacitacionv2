@@ -4,10 +4,44 @@
 {% endblock %}
 {% block content %}
 
-    <div class="content">
+    <div class="row" id="tablaLocales">
         <div class="panel panel-primary panel-bordered">
             <div class="panel-heading">
-                <h6 class="panel-title">Primary panel</h6>
+                <h6 class="panel-title">Locales activados</h6>
+                <div class="heading-elements">
+                    <div class="btn-group pull-right">
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+
+                <div class="datatable-scroll" id="tablaAnalista">
+                    <table class="table table-hover datatable-highlight dataTable no-footer">
+                        <thead>
+                        <tr>
+                            <th>Nombre Local</th>
+                            <th>Zona</th>
+                            <th>Nombre de Via</th>
+                            <th>Referencia</th>
+                            <th>Ambientes a usar</th>
+                            <th>Encargado</th>
+                            <th>Local</th>
+                            <th>Salones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content col-sm-4" id="contentTablaAulas">
+        <div class="panel panel-primary panel-bordered">
+            <div class="panel-heading">
+                <h6 class="panel-title">Aulas activadas</h6>
                 <div class="heading-elements">
                     <ul class="icons-list">
                         <li><a data-action="collapse"></a></li>
@@ -18,66 +52,30 @@
             </div>
 
             <div class="panel-body">
-                <div class="panel panel-flat">
+                <div class="panel panel-flat table-responsive" id="tablaAulas">
 
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <table class="table datatable-basic">
-                        <thead>
-                        <tr>
-                            <th>Departamento</th>
-                            <th>Provincia</th>
-                            <th>Distrito</th>
-                            <th>Nombre Local</th>
-                            <th># Aulas</th>
-                            <th># Cursos</th>
-                            <th>Status</th>
-                            <th class="text-center">Evaluacion</th>
-                            <th class="text-center">Reportes</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Marth</td>
-                            <td><a href="#">Enright</a></td>
-                            <td>Traffic Court Referee</td>
-                            <td>22 Jun 1972</td>
-                            <td>22 Jun 1972</td>
-                            <td>22 Jun 1972</td>
-                            <td><span class="label label-success">Active</span></td>
-                            <td class="text-center">
-                                <ul class="icons-list">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                            <i class="icon-menu9"></i>
-                                        </a>
+    <div class="content col-sm-6" id="tablaFormatos">
+        <div class="panel panel-primary panel-bordered">
+            <div class="panel-heading">
+                <h6 class="panel-title">Formatos a evaluar</h6>
+                <div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>
+            </div>
 
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li><a href="#" class="antes"><i class="icon-file-pdf"></i> Antes</a></li>
-                                            <li><a href="#" class="durante"><i class="icon-file-excel"></i> Durante</a>
-                                            </li>
-                                            <li><a href="#" class="despues"><i class="icon-file-word"></i> Despues</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                            <td class="text-center">
-                                <ul class="icons-list">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                            <i class="icon-menu9"></i>
-                                        </a>
+            <div class="panel-body">
+                <div class="panel panel-flat table-responsive" id="grupolistaformato">
+                    <table class="table datatable-basic" id="listaformato">
 
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li><a href="#"><i class="icon-file-pdf"></i> Export to .pdf</a></li>
-                                            <li><a href="#"><i class="icon-file-excel"></i> Export to .csv</a></li>
-                                            <li><a href="#"><i class="icon-file-word"></i> Export to .doc</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -134,69 +132,97 @@
             </div>
         </div>
     </div>
-    <div class="content" id="divGrupopreguntas1">
-        <div class="panel panel-flat">
-            <div class="panel-body">
-                <div class="tabbable">
-                    <div class="tab-pane" id="toolbar-justified-pill">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="toolbar-justified-pill1">
-                            </div>
 
-                            <div class="tab-pane" id="toolbar-justified-pill2">
-                                <div class="table-responsive" style="margin-bottom: 10px">
-                                    <table class="table-responsive table table-striped table-hover table-bordered ">
-                                        <caption>
-                                            <p class="col-lg-12"
-                                               style="color: #2196F3 !important;font-weight: 700;text-align: center;">
-                                                DOCUMENTO A VERIFICAR: MANUAL DE JEFE REGIONAL <span
-                                                    id="span_fecha_inicio"></span></p>
-                                            <p class="col-lg-12"
-                                               style="color: #2196F3 !important;font-weight: 700;text-align: center;">
-                                                CANTIDAD DE DOCUMENTOS: 30<span
-                                                    id="span_fecha_inicio"></span>
-                                            </p>
-                                            <p class="col-lg-12"
-                                               style="color: #2196F3 !important;font-weight: 700;text-align: left;">
-                                                Documentos a verificar:<span id="span_fecha_inicio"></span>
-                                            </p>
-                                        </caption>
-                                        <thead>
 
-                                        </thead>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <th></th>
-                                            <th>El número de documentos es el esperado</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+    <div id="tablaR1" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
 
-                                </div>
-                            </div>
+                <div class="modal-body" id="grupoPregunta1">
 
-                            <div class="tab-pane" id="toolbar-justified-pill3">
-                                DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.
-                                Williamsburg whatever.
-                            </div>
+                </div>
 
-                            <div class="tab-pane" id="toolbar-justified-pill4">
-                                Aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic,
-                                assumenda
-                                labore aesthet.
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="guardarForm">Save changes
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <div id="tablaR2" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+
+                <div class="modal-body" id="exportarRespuestas">
+                    <table class="table datatable-basic table-bordered">
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTabla">Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tablaR3" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+                <div class="modal-body" id="exportarRespuestasAula">
+                    <table class="table datatable-basic table-bordered">
+
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTablaAulas">Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tablaR3" class="modal fade">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Ubicacion geografica</h5>
+                </div>
+                <div class="modal-body" id="exportarRespuestasAula">
+                    <table class="table datatable-basic table-bordered">
+
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportarTablaManuales">
+                        Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 {% endblock %}
 
 {% block js %}
@@ -205,5 +231,12 @@
             src="{% static "assets/js/plugins/tables/datatables/datatables.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/plugins/jquery.battatech.excelexport.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/require.js" %}"
-            data-main="{% static "build/distribucion/distribucion.view.js" %}"></script>
+            data-main="{% static "build/controlcalidad/antescalidad.view.js" %}"></script>
+
+    {#    <script type="text/javascript" src="{% static "assets/js/pages/components_pagination.js" %}"></script>#}
+    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bootpag.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/bs_pagination.min.js" %}"></script>
+    {#    <script type="text/javascript" src="{% static "assets/js/plugins/pagination/datepaginator.min.js" %}"></script>#}
+    {#    <script type="text/javascript" src="assets/js/pages/form_checkboxes_radios.js"></script>#}
+
 {% endblock %}

@@ -11,7 +11,7 @@
                     <div class="media-body">
                         <h3 class="media-heading text-bold">{{ request.session.user_data.user.rol.nombre }}</h3>
                         <div class="text-size-mini text-muted">
-                            <span id="span_usuario_nombre">{{ request.session.user_data.user.nombre }} {{ request.session.user_data.user.ape_pat }} {{ request.session.user_data.user.ape_mat }}</span>
+                            <span id="span_usuario_nombre" data-id="{{request.session.user_data.user.rol.id}}">{{ request.session.user_data.user.nombre }} {{ request.session.user_data.user.ape_pat }} {{ request.session.user_data.user.ape_mat }}</span>
                         </div>
                     </div>
                 </div>
