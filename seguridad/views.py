@@ -20,7 +20,6 @@ def setSession(request):
     request.session['user_session'] = data
     request.session['user_data'] = userDataDecode
     request.session['seguridadurl'] = seguridadurl
-
     return redirect('/bienvenido/')
 
 
@@ -30,6 +29,7 @@ class RenderTemplate(TemplateView):
     def get(self, request, *args, **kwargs):
         if self.user:
             return redirect('http://{}'.format(request.META['HTTP_HOST']))
+
         return super(RenderTemplate, self).get(request, *args, **kwargs)
 
     def get_template_names(self):
