@@ -75,7 +75,8 @@ class PersonalAulaDetalleNotaFinalSinInternetViewSet(generics.ListAPIView):
     def get_queryset(self):
         print('get_queryset PersonalAulaDetalleNotaFinalSinInternetViewSet')
         curso = self.kwargs['curso']
-        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso).values_list('id_cargofuncional', flat=True)
+        cargo = self.kwargs['cargo']
+        cargos = CursoCargoFuncional.objects.filter(id_curso_id=curso, id_cargofuncional=cargo).values_list('id_cargofuncional', flat=True)
         filter = {}
         filter['id_cargofuncional_id__in'] = cargos
         if 'ccdd' in self.kwargs:
@@ -428,7 +429,7 @@ def sendFicha177Empadronador(id_per):
         ficha.capacita = 1
         ficha.seleccionado = 1
         ficha.sw_titu = 1
-        ficha.notacap = 20
+        ficha.notacap = 1
         ficha.save()
     except:
         pass
@@ -466,3 +467,33 @@ def sendChio(peanota):
         pass
 
     return True
+####################################################EMPADRONADOR URBANO SIN INTERNET##################################################
+def saveAsistenciaEmpadronadorUrbano(request):
+    postdata = request.POST['personalasistencia']
+    dataDict = json.loads(postdata)
+    print(dataDict)
+    bulk_insert = []
+
+    for data in dataDict:
+        peanota = PeaNotaFinalSinInternet.objects.get(id=data['id_persona'])
+        peanota.sw_titu = data['titular']
+        peanota.capacita = data['capacitado']
+        peanota.seleccionado = data['seleccionado']
+        peanota.bandaprob = 1
+        peanota.nota_final = 0
+        peanota.notacap = 0
+        peanota.save()
+    return JsonResponse({'msg': 'Guardado correcto'})
+
+def sendChio_Urbano(request):
+
+    data = json.loads(request.POST['data'])
+    print(data)
+    try:
+        for per in data:
+            sendFicha177Empadronador(per['id_per'])
+
+    except:
+        pass
+
+    return JsonResponse({'msg': 'Curso se Cerro Correctamente'})

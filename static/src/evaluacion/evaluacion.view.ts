@@ -290,7 +290,8 @@ export class EvaluacionView extends CursoInyection {
         console.log(this.curso_id);
         if (sininternet.indexOf(_ubigeo.ccdd+_ubigeo.ccpp+_ubigeo.ccdi)>-1)
         {
-            this.evaluacionService.filterPersonalSinInternet(this.curso_id, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona).done((personalNotaFinal: IPeaNotaFinal[]) => {
+            console.log(cargo);
+            this.evaluacionService.filterPersonalSinInternet(this.curso_id, _ubigeo.ccdd, _ubigeo.ccpp, _ubigeo.ccdi, _ubigeo.zona, cargo).done((personalNotaFinal: IPeaNotaFinal[]) => {
             this.personalNotaFinal = personalNotaFinal;
             this.drawPersonalNotaFinal_sin();
         });

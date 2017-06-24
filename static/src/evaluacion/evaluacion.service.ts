@@ -89,8 +89,11 @@ export class EvaluacionService {
     }
 
 
-    filterPersonalSinInternet(curso: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null): JQueryXHR {
+    filterPersonalSinInternet(curso: number, ccdd: string = null, ccpp: string = null, ccdi: string = null, zona: string = null, cargo:number = null): JQueryXHR {
         let url = `${this.url_personalaula_sininternet}${curso}/`;
+        if (cargo != null) {
+            url += `${cargo}/`
+        }
         if (ccdd != null) {
             url += `${ccdd}/`
         }

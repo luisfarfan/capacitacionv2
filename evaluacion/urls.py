@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'cerrarCursoConInternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$',cerrarCursoConInternet),
     url(r'cerrarCursoSinInternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$', cerrarCursoSinInternet),
     url(r'saveNotaFinalSinInternet/$', saveNotaFinalSinInternet),
-    url(r'cerrarCursoEmpadronador/$', cerrarCursoEmpadronador),
+    url(r'cerrarCursoEmpadronador/$', sendChio_Urbano),
     url(r'criteriosdetalle_curso/(?P<curso>[0-9]+)/$',
         CriterioCursoFilterViewSet.as_view()),
 
@@ -45,14 +45,14 @@ urlpatterns = [
     url(r'meta/(?P<cargofuncional>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         Meta.as_view()),
 
-    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/$',
+    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/$',
         PersonalAulaDetalleNotaFinalSinInternetViewSet.as_view()),
-    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
+    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/$',
         PersonalAulaDetalleNotaFinalSinInternetViewSet.as_view()),
-    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
+    url(r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/$',
         PersonalAulaDetalleNotaFinalSinInternetViewSet.as_view()),
     url(
-        r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
+        r'personalaula_sininternet/(?P<curso>[0-9]+)/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         PersonalAulaDetalleNotaFinalSinInternetViewSet.as_view()),
     url(r'personalnotas_sininternet/(?P<curso>[0-9]+)/(?P<ubigeo>[0-9]+)/$',
         PersonalNotasSinInternet.as_view()),
@@ -66,6 +66,8 @@ urlpatterns = [
     url(
         r'personalrankeo_sininternet/(?P<cargo>[0-9]+)/(?P<ccdd>[0-9]+)/(?P<ccpp>[0-9]+)/(?P<ccdi>[0-9]+)/(?P<zona>[0-9]+)/$',
         PersonalNotaFinalSinInternetViewSet.as_view()),
+    url(r'saveAsistenciaEmpadronadorUrbano/$',
+        saveAsistenciaEmpadronadorUrbano),
     url(r'algo/$', algo),
     url(r'bajas/$', bajas),
     url(r'altas/$', altas),

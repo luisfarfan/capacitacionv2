@@ -64,4 +64,5 @@ urlpatterns = [
     url(r'diccionarioCursos/$', diccionarioCursos),
     url(r'seleccionar_local/$', SeleccionarLocalDisponible.as_view()),
     url(r'addLocalesCurso/$', addLocalesCurso),
+    url(r'get_data_curso/(?P<curso_id>[0-9]+)$', getCurso),
 ]

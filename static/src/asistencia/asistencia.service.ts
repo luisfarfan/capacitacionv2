@@ -43,11 +43,13 @@ export class AsistenciaService {
     private url_personalaula: string = `${BASEURL}/asistencia/personalaula_bylocalambiente/`;
     private url_saveAsistencia: string = `${BASEURL}/asistencia/saveAsistencia/`;
     private url_saveAsistenciaEmpadronadorUrbano: string = `${BASEURL}/asistencia/saveAsistenciaEmpadronadorUrbano/`;
+    private url_saveAsistenciaEmpadronadorUrbanoV2: string = `${BASEURL}/evaluacion/saveAsistenciaEmpadronadorUrbano/`;
     private url_darAlta: string = `${BASEURL}/asistencia/darAlta/`;
     private url_cerrarCursoEmpadronador: string = `${BASEURL}/evaluacion/cerrarCursoEmpadronador/`;
     private url_deshacerBaja: string = `${BASEURL}/asistencia/deshacerBaja/`;
     private url_deshacerAlta: string = `${BASEURL}/asistencia/deshacerAlta/`;
     private url_localambientes_bylocalasistencia: string = `${BASEURL}/asistencia/localambientes_bylocalasistencia/`;
+    private url_curso_id: string = `${BASEURL}/locales/get_data_curso/`;
 
 
     getAulasbyInstructor(id_instructor: number, curso: number): JQueryXHR {
@@ -68,7 +70,7 @@ export class AsistenciaService {
         })
     }
 
-    cerrarCursoEmpadronador(object: Array<number>) {
+    cerrarCursoEmpadronador(object: Array<any>) {
         return $.ajax({
             url: this.url_cerrarCursoEmpadronador,
             type: 'POST',
@@ -92,6 +94,14 @@ export class AsistenciaService {
         });
     }
 
+    saveAsistenciaEmpadronadorUrbanov2(data: Array<Object>) {
+        return $.ajax({
+            url: this.url_saveAsistenciaEmpadronadorUrbanoV2,
+            type: 'POST',
+            data: {personalasistencia: JSON.stringify(data)}
+        });
+    }
+
     getPersonalAsistenciaDetalle(id_localambiente: number): JQueryXHR {
         return $.ajax({
             url: `${this.url_personalaula}${id_localambiente}/`
@@ -109,6 +119,12 @@ export class AsistenciaService {
             url: this.url_getrangofechas,
             type: 'POST',
             data: {fecha_inicio: fechainicio, fecha_fin: fechafin}
+        });
+    }
+
+    getCursoId(id_curso : number):JQueryXHR {
+        return $.ajax({
+            url: `${this.url_curso_id}${id_curso}`
         });
     }
 

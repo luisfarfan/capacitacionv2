@@ -373,6 +373,7 @@ class Personal(models.Model):
     id_cargofuncional = models.ForeignKey(CargoFuncional, null=True, blank=True)
     id_convocatoriacargo = models.CharField(max_length=4, blank=True, null=True)
     zona = models.CharField(max_length=5, blank=True, null=True)
+    seccion = models.CharField(max_length=3, blank=True, null=True)
     ubigeo = models.ForeignKey(Ubigeo)
     contingencia = models.IntegerField(blank=True, null=True)
     baja_estado = models.IntegerField(null=True, blank=True, default=0)

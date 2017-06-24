@@ -5,13 +5,19 @@ import {AsistenciaService, PersonalService} from '../asistencia/asistencia.servi
 import {DistribucionService} from '../distribucion/distribucion.service'
 import {CursoInyection} from '../comun.utils';
 import {ILocalAmbienteAsignados, IPersonalAsistenciaDetalle, IPersonalAula} from './asistencia.interface';
-
+import {LocalService} from '../locales_consecucion/locales.service';
+import {ILocalCurso, ILocal, ILocalAmbienteDetail, ILocalAmbiente} from '../locales_consecucion/local.interface';
 import * as utils from '../core/utils';
 import {IPersonal} from "../distribucion/distribucion.interface";
 import {alert_confirm} from "../core/utils";
 import PermisosView from '../core/permisos/permisos.view';
+import UbigeoService from '../ubigeo/ubigeo.service';
+import {IZona} from '../ubigeo/ubigeo.interface';
+import {SinInternetService} from '../sininternet/sininternet.service';
 declare var IDUSUARIO: number;
 declare var $: any;
+declare var ubigeo: any;
+
 
 
 interface ModelDivAsistencia {
@@ -24,6 +30,9 @@ interface ModelDivAsistencia {
 }
 
 export class AsistenciaView extends CursoInyection {
+    private localService: LocalService = new LocalService();
+    private localesCurso: ILocalCurso[] = [];
+    private locales: ILocal[] = [];
     public asistenciaService: AsistenciaService;
     public personalService: PersonalService;
     public distribucionService: DistribucionService;
@@ -37,49 +46,50 @@ export class AsistenciaView extends CursoInyection {
     public personalContingencia: IPersonal[] = [];
     public pea_id: number = null;
     public cursoSelectedAsistencia: number;
+    public curso: any;
     public hoy: string = '';
     public hoystamp: number = 0;
     public cursosEmpadronador: Array<number> = [4, 19, 20]
+    private sininternetService: SinInternetService = new SinInternetService();
     private permisos: PermisosView;
-
+    private filterFields: any = {
+        ccdd: ubigeo.ccdd != '' ? ubigeo.ccdd : null,
+        ccpp: ubigeo.ccpp != '' ? ubigeo.ccpp : null,
+        ccdi: ubigeo.ccdi != '' ? ubigeo.ccdi : null,
+        zona: ubigeo.zona == '' ? null : ubigeo.zona,
+        curso: null
+    };
     constructor() {
         super();
         this.permisos = new PermisosView(this.curso_id);
         this.asistenciaService = new AsistenciaService();
         this.personalService = new PersonalService();
         this.distribucionService = new DistribucionService();
-        this.setearAulas();
+        //this.setearAulas();
+        this.setearLocales();
         $('#select_aulas_asignadas').on('change', (element: JQueryEventObject) => {
             let selected = $(element.currentTarget).val();
             if (selected == '') {
                 this.localAmbienteSelected = null;
             } else {
-                this.localesAmbientes.map((value: ILocalAmbienteAsignados, index: number) => value.id_localambiente == selected ? this.localAmbienteSelected = value : '');
-                $('#span_nombre_local').text(`${this.localAmbienteSelected.localcurso.local.nombre_local}`);
-                $('#span_direccion').text(`${this.localAmbienteSelected.localcurso.local.nombre_via} - ${this.localAmbienteSelected.localcurso.local.n_direccion}`);
-                $('#span_fecha_inicio').text(`${this.localAmbienteSelected.localcurso.local.fecha_inicio} hasta ${this.localAmbienteSelected.localcurso.local.fecha_fin}`);
-                $('#span_aula').text(`${this.localAmbienteSelected.numero}`);
-                $('[name="p_etapa"]').text($('#etapa :selected').text());
+                $('#span_nombre_local').text(`${$('#select_aulas_asignadas option:selected').text()}`);
+                $('#span_direccion').text(`${this.locales[0].nombre_via+" "+this.locales[0].n_direccion}`);
 
-                this.asistenciaService.getRangoFechas(this.localAmbienteSelected.localcurso.local.fecha_inicio, this.localAmbienteSelected.localcurso.local.fecha_fin).done((fechasRango) => {
-                    this.rangoFechas = fechasRango;
-                    this.drawHeaderFechas();
-                    this.cargarPersonalAsistenciaPorAula();
+                this.asistenciaService.getCursoId(this.curso_id).done((cursos_select:any) => {
+                    $('#span_fecha_inicio').text(`${cursos_select[0]['fecha_inicio']} hasta ${cursos_select[0]['fecha_fin']}`);
+                this.asistenciaService.getRangoFechas(cursos_select[0]['fecha_inicio'], cursos_select[0]['fecha_fin']).done((fechasRango) => {
+                this.rangoFechas = fechasRango;
+                this.drawHeaderFechas();
+                this.cargarPersonalAsistenciaPorAula();
                 });
+            });
             }
         });
         $('#span_nombre_instructor').text($('#span_usuario_nombre').text());
         $('#btn_save_asistencia').on('click', () => {
-            if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
-                if (utils.isDataTable('#tabla_asistencia')) {
-                    $('#tabla_asistencia').dataTable().fnFilterClear()
-                }
+
                 this.saveAsistenciaEmpadronadorUrbano();
-            } else {
-                this.permisos.ucan(() => {
-                    this.saveAsistencia()
-                })
-            }
+
         });
 
         $('#btn_bajas_altas').on('click', () => {
@@ -161,6 +171,56 @@ export class AsistenciaView extends CursoInyection {
         });
     }
 
+    setearLocales() {
+        let curso_id = this.curso_id;
+        //this.filterFields.curso = this.curso_id;
+        //$('[name="p_curso_actual"]').text($('#cursos :selected').text());
+        //$('[name="p_etapa"]').text($('#etapa :selected').text());
+        this.filterLocalesSeleccionados(curso_id);
+        //this.getZonasDistrito();
+    }
+    filterLocalesSeleccionados(curso_id: number) {
+
+        this.localService.getbyAmbienteGeografico(curso_id, this.setUbigeoparaFiltro(), true).done((localesCurso: any) => {
+            this.localesCurso = localesCurso;
+            this.locales = [];
+            this.localesCurso.map((value: ILocalCurso, index: number) => {
+                this.locales.push(value.local);
+            });
+            utils.setDropdown(this.locales, {
+                id: 'id_local',
+                text: ['nombre_local']
+            }, {id_element: 'select_aulas_asignadas', bootstrap_multiselect: true, select2: false});
+            console.log(this.locales, this.localesCurso);
+            utils.setDropdown(this.locales, {
+                id: 'id_local',
+                text: ['nombre_local']
+            }, {id_element: 'select_aulas_asignadas', bootstrap_multiselect: true, select2: false});
+        }).fail((error) => {
+            console.log(error);
+            utils.showInfo('Error!!!');
+        });
+    }
+
+    setUbigeoparaFiltro() {
+        let ubigeo: any = {}
+        if (this.filterFields.ccdd != null) {
+            ubigeo['ccdd'] = this.filterFields.ccdd;
+        }
+        if (this.filterFields.ccpp != null) {
+            ubigeo['ccpp'] = this.filterFields.ccpp;
+        }
+        if (this.filterFields.ccdi != null) {
+            ubigeo['ccdi'] = this.filterFields.ccdi;
+        }
+        if (this.filterFields.zona != null) {
+            ubigeo['zona'] = this.filterFields.zona;
+        }
+        console.log(this.filterFields, ubigeo)
+        return ubigeo
+    }
+
+
     setearAulas() {
         this.cursoSelectedAsistencia = this.curso_id != "-1" && this.curso_id != "" ? parseInt(this.curso_id) : this.curso_id;
         $('#p_curso_actual').text($('#cursos :selected').text());
@@ -191,14 +251,30 @@ export class AsistenciaView extends CursoInyection {
         this.hoy = dd + '/' + mm + '/' + yyyy;
         this.hoystamp = Date.parse(mm + '/' + dd + '/' + yyyy);
     }
+    getPersonas() {
+        console.log("getPersonas");
+        let curso: number = $('#cursos').val();
+        let ubigeo: any = {};
+        this.sininternetService.personasSinInternet(curso, `${this.filterFields.ccdd}${this.filterFields.ccpp}${this.filterFields.ccdi}`).done((personalNotaFinal) => {
+            console.log(personalNotaFinal);
+            //this.drawPersonal();
+        });
+    }
+
 
     cargarPersonalAsistenciaPorAula() {
-        this.asistenciaService.getPersonalAsistenciaDetalle(this.localAmbienteSelected.id_localambiente).done((personalAsistencia) => {
-            this.personalAsistencia = personalAsistencia;
-            this.setPersonalParaBaja(true);
-            this.drawPersonal();
-            this.getContingencia();
+        //this.getPersonas();
+        let curso: number = $('#cursos').val();
+        let ubigeo: any = {};
+        this.sininternetService.personasSinInternet(curso, `${this.filterFields.ccdd}${this.filterFields.ccpp}${this.filterFields.ccdi}`).done((personalNotaFinal) => {
+            //console.log(personalNotaFinal)
+            this.drawPersonal(personalNotaFinal);
+            //this.drawPersonal();
         });
+        //this.sininternetService.personasSinInternet(curso, `${this.filterFields.ccdd}${this.filterFields.ccpp}${this.filterFields.ccdi}`).done((personalNotaFinal) => {
+
+
+    //});
     }
 
     setPersonalParaBaja(draw: boolean = false) {
@@ -308,10 +384,14 @@ export class AsistenciaView extends CursoInyection {
 
     cerrarCursoEmpadronador() {
         let inputsChecked = $('#tabla_asistencia').find('input[type="checkbox"]:checked');
-        let aprobados: Array<number> = [];
+
+        let aprobados: Array<any> = [];
         inputsChecked.map((index: number, domElement: Element) => {
-            let peaaula = $(domElement).data('value').id_personalaula
-            aprobados.push(peaaula)
+            console.log($(domElement));
+            let id_persona = $(domElement)[0].id
+            let titular = $(domElement)[0].value
+            let id_per = $(domElement)[0].name
+            aprobados.push({id_persona: id_persona, titular: 1, id_per: id_per})
         })
         console.log(aprobados)
         this.asistenciaService.cerrarCursoEmpadronador(aprobados).done((response) => {
@@ -324,23 +404,13 @@ export class AsistenciaView extends CursoInyection {
         let subHeader: string = '<tr>';
         let colspan: number = 1;
         let spanEmpadronadorUrbano: string = '';
-        if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
-            colspan = 2;
-        }
-        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
-            header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
-        } else {
-            header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
-                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>`;
 
-        }
+        header += `<tr><th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">N°</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Apellidos y Nombres</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">DNI</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Cargo</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Zona</th>
+                        <th style="padding: 12px 20px;line-height: 1.5384616;" rowspan="2">Seccion</th>`;
 
 
         this.rangoFechas.map((fecha: string, index: number) => {
@@ -348,87 +418,79 @@ export class AsistenciaView extends CursoInyection {
                 spanEmpadronadorUrbano = `<span id="fecha${fecha.replace(/\//g, '')}" style="font-size: 22px; margin-left: 6%" class="label label-success">0</span>`;
             }
             header += `<th style="padding: 12px 20px;line-height: 1.5384616;" colspan="${colspan}"><center>${fecha} ${spanEmpadronadorUrbano}</center></th>`;
-            if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 0) {
-                subHeader += `<th>MAÑANA</th>`
-            } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 1) {
-                subHeader += `<th>TARDE</th>`
-            } else if (this.localAmbienteSelected.localcurso.local.turno_uso_local == 2) {
-                subHeader += `<th>TARDE</th><th>MAÑANA</th>`
-            }
+            subHeader += `<th>ASISTENCIA</th>`
+
         });
         header += `</tr>`;
+
         $('#tabla_asistencia').find('thead').html(header + subHeader + '</tr>');
     }
+    draw_checkt(capacitado:number,titular:number, id:number, id_per:number, disabled: string){
 
-    drawPersonal() {
-        let tbody: string = '';
-        this.personalAsistencia.map((value: IPersonalAsistenciaDetalle, index: number) => {
-            let enume:any;
-            if (value.id_pea.baja_estado == 1) {
-                tbody += `<tr style="background-color: #ffc1c1">`;
-                enume="";
-            }
-            else if (value.id_pea.alta_estado == 1) {
-                tbody += `<tr style="background-color: #cdf7cd">`;
-                enume=index + 1
-            } else {
-                tbody += `<tr>`;
-                enume=index + 1
-
-            }
-
-            tbody += `<td>${enume}</td>
-                      <td>${value.id_pea.ape_paterno} ${value.id_pea.ape_materno} ${value.id_pea.nombre}</td>
-                      <td>&nbsp;${value.id_pea.dni}</td>
-                      <td>${value.id_pea.id_cargofuncional.nombre_funcionario}</td>
-                      <td>&nbsp;${value.id_pea.zona}</td>`
-            this.rangoFechas.map((fecha: string, ind: number) => {
-                let divParams: ModelDivAsistencia = {
-                    fecha: fecha,
-                    id_personalaula: value.id_peaaula,
-                    turno_manana: null,
-                    turno_tarde: null,
-                    baja: value.id_pea.baja_estado,
-                    alta: value.id_pea.alta_estado
-                };
-                value.personalaula.map((personalaula: IPersonalAula, index: number) => {
-                    if (personalaula.fecha == fecha) {
-                        divParams.turno_manana = personalaula.turno_manana
-                        divParams.turno_tarde = personalaula.turno_tarde
-                    }
-                });
-                if (value.id_pea.baja_estado == 1) {
-                    tbody += `<td></td>`;
-                } else {
-                    if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
-                        tbody += this.drawDivAsistenciaEmpadronadorUrbano(divParams, ind);
-                    } else {
-                        if (divParams.turno_manana != null || divParams.turno_tarde != null) {
-                            tbody += this.drawDivAsistencia(divParams, true);
-                        } else {
-                            tbody += this.drawDivAsistencia(divParams);
-                        }
-
-                        console.log(divParams)
-                    }
+            let td:string = '';
+            if(capacitado==1){
+                if(titular==1){
+                   td = `<td>
+                            <div name="checkManana" class="form-group" align="center">
+                                <label style="display: table;">
+                                    <input type="checkbox" value=${titular} checked="true" id=${id} name=${id_per} ${disabled}>
+                                </label>
+                            </div>
+                        </td>
+                        `
                 }
-            });
-            tbody += `</tr>`
-        });
-        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
-            if (utils.isDataTable('#tabla_asistencia')) {
-                $('#tabla_asistencia').DataTable().destroy();
+                else
+                {
+                     td = `
+                        <td>    
+                            <div name="checkManana" class="form-group" align="center">
+                                <label style="display: table;">
+                                    <input type="checkbox" value=${titular} id=${id} ${disabled} >
+                                </label>
+                            </div>
+                        </td>
+                        `
+                }
             }
-            $('#tabla_asistencia').find('tbody').html(tbody);
-            $('#tabla_asistencia').DataTable({
-                bPaginate: false,
-            });
-            this.disabledChecks();
-            this.countAsistenciaTotalPorFecha();
-        } else {
-            $('#tabla_asistencia').find('tbody').html(tbody);
-            this.validarFechasDiv();
-        }
+            else{
+                 td = ` <td>
+                            <div name="checkManana" class="form-group" align="center">
+                                <label style="display: table;">
+                                    <input type="checkbox" value=${titular} id=${id} ${disabled} >
+                                </label>    
+                            </div>                           
+                        </td>
+                        `
+            }
+            return td;
+
+    }
+    drawPersonal(personalNotaFinal:any) {
+        let tbody: string = `<tr>`;
+        let tr: string = '';
+        let disabled:string='';
+        if(personalNotaFinal[0]['bandaprob'])
+            disabled='disabled'
+        personalNotaFinal.map((value: any, index: number) => {
+            let enume:any;
+            console.log(value)
+            tbody += `<td>${index+1}</td>
+                      <td>${value['pea']['ape_paterno']} ${value['pea']['ape_materno']} ${value['pea']['nombre']}</td>
+                      <td>&nbsp;${value['pea']['dni']}</td>
+                      <td>${value['pea']['id_cargofuncional']['nombre_funcionario']}</td>
+                      <td>&nbsp;${value['pea']['zona']}</td>
+                      <td>&nbsp;${value['pea']['seccion']}</td>    
+                   `
+            //
+
+            tbody += this.draw_checkt(value['capacita'],value['sw_titu'], value['id'], value['pea']['id_per'], disabled);
+            tbody += `</tr>`
+
+        });
+
+
+        $('#tabla_asistencia').find('tbody').html(tbody);
+
         $('#btn_exportar').off();
         $('#btn_exportar').on('click', () => {
             this.exportar();
@@ -648,28 +710,29 @@ export class AsistenciaView extends CursoInyection {
         let labelsTarde = $('[name="checkTarde"]');
         let request: Array<any> = [];
         let exist: boolean = false;
+
         labelsManana.map((index: number, domElement: Element) => {
             let input = $(domElement).find('input');
-            if (input.is(':checked') && !input.is(':disabled')) {
-                let id_personalaula = $(domElement).find('input').data('value').id_personalaula;
-                let fecha = $(domElement).find('input').data('value').fecha;
-                request.push({id_personalaula: id_personalaula, fecha: fecha, turno_manana: 0, turno_tarde: null});
+
+            if (input.is(':checked')) {
+                let id_persona = $(domElement).find('input')[0].id
+                let titular = $(domElement).find('input')[0].value
+                request.push({id_persona: id_persona, titular: 1, capacitado:1, seleccionado:1});
+            }
+            else{
+                let id_persona = $(domElement).find('input')[0].id;
+                let titular = $(domElement).find('input')[0].value;
+                request.push({id_persona: id_persona, titular: 0, capacitado:0, seleccionado:0});
+
             }
         });
-        labelsTarde.map((index: number, domElement: Element) => {
-            let input = $(domElement).find('input');
-            if (input.is(':checked') && !input.is(':disabled')) {
-                let id_personalaula = $(domElement).find('input').data('value').id_personalaula
-                let fecha = $(domElement).find('input').data('value').fecha;
-                request.push({id_personalaula: id_personalaula, fecha: fecha, turno_tarde: 0, turno_manana: null});
-            }
-        });
+
         if (!request.length) {
             utils.showInfo('No ha marcado la asistencia de ninguna persona, no puede guardar aún');
             return false;
         }
         utils.alert_confirm(() => {
-            this.asistenciaService.saveAsistenciaEmpadronadorUrbano(request).done((response) => {
+            this.asistenciaService.saveAsistenciaEmpadronadorUrbanov2(request).done((response) => {
                 utils.showSwalAlert('La asistencia fue guardada con éxito!', 'Exito', 'success');
                 this.cargarPersonalAsistenciaPorAula();
             });
@@ -812,8 +875,10 @@ export class AsistenciaView extends CursoInyection {
         let divsManana: any = $('#asistenciaclone').find('[name="divTurnosManana"]')
         let divsTarde: any = $('#asistenciaclone').find('[name="divTurnosTarde"]')
         divsManana.map((index: number, domElement: Element) => {
-            let name = $(domElement).find('input[type="radio"]').attr('name')
+            let name = $(domElement).find('input[type="checkbox"]').attr('name')
             let selected = $(`[name="${name}"]:checked`);
+            console.log(selected);
+
             if (selected.length) {
                 let letra = $(selected).val()
                 if (letra == 0) {
@@ -852,18 +917,16 @@ export class AsistenciaView extends CursoInyection {
             if (input.is(':checked')) {
                 $(domElement).replaceWith(`<span>ASISTIO</span>`)
             } else {
-                $(domElement).replaceWith(`<span></span>`)
+                $(domElement).replaceWith(`<span>NO ASISTIO</span>`)
             }
         });
     }
 
     exportar() {
         $('#asistenciaclone').html($('#div_tabla_asistencia').clone())
-        if ($.inArray(this.cursoSelectedAsistencia, this.cursosEmpadronador) >= 0) {
-            this.exportarEmpadronadorUrbano();
-        } else {
-            this._exportarGeneral();
-        }
+
+        this.exportarEmpadronadorUrbano();
+
         let td = $('#asistenciaclone').find('table').find('td')
         let theadtr = $('#asistenciaclone').find('table').find('thead').find('th')
         td.map((index: number, domElement: Element) => {

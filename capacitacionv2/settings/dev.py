@@ -11,10 +11,10 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'CPV2017_CAPACITACION',
+        'NAME': 'CPV2017_CAPACITACION_DEV',
         'USER': 'us_capacitacion_web',
         'PASSWORD': 'cap5wegU$re',
-        'HOST': '172.18.1.41',
+        'HOST': '192.168.200.250',
         'OPTIONS': {
             'driver': 'SQL Server',
             'unicode_results': True
@@ -23,9 +23,9 @@ DATABASES = {
     'consecucion': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'INEI_BDRRHH_CONSECUCION_CENSO',
-        'USER': 'us_inei_bdrrhh_consecucion',
-        'PASSWORD': 'nU6&beTRi',
-        'HOST': '192.168.203.160',
+        'USER': 'us_conscenso_des_web',-
+        'PASSWORD': '2abruWeRA_Ru',
+        'HOST': '172.18.1.41',
         'OPTIONS': {
             'driver': 'SQL Server',
             'unicode_results': True

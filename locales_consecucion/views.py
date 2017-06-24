@@ -511,6 +511,13 @@ def llenarDBGISDep(request):
 
     return JsonResponse({'msg': 'Actualizado con exito'}, safe=False)
 
+
+def getCurso(request, **kwargs):
+
+    data_curse = list(Curso.objects.filter(id_curso=kwargs['curso_id']).values())
+    print(list(data_curse))
+    return JsonResponse(list(data_curse), safe=False)
+
 # def llenarDBGISProv(request):
 #     metaubigeos = MetaAula.objects.values('ubigeo').distinct()
 #     responseTotal = []
