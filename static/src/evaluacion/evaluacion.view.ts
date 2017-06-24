@@ -658,7 +658,6 @@ export class EvaluacionView extends CursoInyection {
                     if (nota == null) {
                         tbody += `<td><input ${disabled} data-value=${objCriterio} value="${nota}" min="0" max="20" type="number"></td>`
                     } else {
-
                         tbody += `<td><input ${disabled} data-value=${objCriterio} disabled value="${nota.toFixed(2)}" min="0" max="20" type="number"></td>`
                     }
 
